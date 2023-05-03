@@ -18,8 +18,9 @@ V(:,1) = H(:,1).*double(p.W).*double(p.L); % volume
 VT(:,1) = V(:,1).*T(:,1); % heat
 VS(:,1) = V(:,1).*S(:,1); % salt
 
-hf_track = monitor_boxmodel([],1,H,T,S,f);
-
+if p.plot_runtime
+    hf_track = monitor_boxmodel([],1,H,T,S,f);
+end
 % the main loop
 for i=1:length(t)-1,    
 
@@ -60,8 +61,9 @@ for i=1:length(t)-1,
     I(:,i+1) = I(:,i) + dt*p.sid*((f.D(i)/(p.W*p.L))*f.xi-M(:,i).*I(:,i)-p.E0*I(:,i));
 
     % plot model evolution (mainly debugging)
-    hf_track = monitor_boxmodel(hf_track,i,H,T,S,f);
-
+    if p.plot_runtime
+        hf_track = monitor_boxmodel(hf_track,i,H,T,S,f);
+    end
 end
 
 % put solution into output structure
@@ -139,6 +141,7 @@ function [QpV0,QpT0,QpS0] = plume_fluxes(H0,T0,S0,Qsg0,p);
         % find box model layer containing grounding line
         ints = cumsum(H0);
         kgl = min(find(ints>=abs(p.zgl)-1e-6));
+        if isempty(kgl), kgl = 4; end % in case the gl is at the bottom of the fjord
     
         % plume properties at grounding line
         k = kgl;
@@ -214,8 +217,13 @@ function [QVs0,QTs0,QSs0,Se0,Te0,phi0] = shelf_fluxes(H0,T0,S0,zs,Ts,Ss,Qsg0,p),
         
         for k=1:length(ints)-1,
             inds = find(zs0<=ints(k) & zs0>=ints(k+1));
-            Se0(k) = trapz(zs0(inds),Ss0(inds))/H0(k);
-            Te0(k) = trapz(zs0(inds),Ts0(inds))/H0(k);
+            if length(inds) == 1 % if there is only one data point, no need to average it
+                Se0(k) = Ss0(inds);
+                Te0(k) = Ts0(inds);
+            else
+                Se0(k) = trapz(zs0(inds),Ss0(inds))/H0(k);
+                Te0(k) = trapz(zs0(inds),Ts0(inds))/H0(k);
+            end
         end
         Se0 = Se0';
         Te0 = Te0';
