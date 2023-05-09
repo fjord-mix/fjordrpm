@@ -9,7 +9,9 @@ for i=1:length(names)
     eval([names{i} '=fjord_model.' names{i} ]);
 end
 
-cd ../plots/
+orig_dir = pwd;
+folder = dir(outputfile);
+eval(['cd ',folder.folder,'/plots/']);
 
 Slims = [min([min(s.S(:)),min(f.Ss(:))]),...
          max([max(s.S(:)),max(f.Ss(:))])];
@@ -46,7 +48,7 @@ for i=1:round((length(s.t)-1)/nframes):length(s.t)-1,
     a3 = axes('position',[lspace+pw2+hspace1+hspace2+pw1,bspace+ph2+vspace,pw3,ph2]); hold on;
     plot(s.t,s.H,'linewidth',1);
     plot(s.t(i),s.H(:,i),'k.');
-    ylabel('$H$ (m)','fontsize',fs2);
+    ylabel('H (m)','fontsize',fs2);
     set(gca,'box','on','fontsize',fs2);
     legend({'1','2','3','4'},'location','north','orientation','horizontal','fontsize',4);
 
@@ -54,7 +56,7 @@ for i=1:round((length(s.t)-1)/nframes):length(s.t)-1,
     plot(s.t,s.phi,'linewidth',1);
     plot(s.t(i),s.phi(:,i),'k.');
     xlabel('t (days)','fontsize',fs2);
-    ylabel('$\phi$ (shelf-fjord pressure difference)','fontsize',fs2);
+    ylabel('\phi (shelf-fjord pressure difference)','fontsize',fs2);
     set(gca,'box','on','fontsize',fs2);
 
     a2 = axes('position',[lspace+pw2+hspace1,bspace,pw1,ph]);
@@ -113,7 +115,7 @@ for i=1:round((length(s.t)-1)/nframes):length(s.t)-1,
 
 end
 close(video);
-
-cd ../
+delete([fname,'*.png'])
+eval(['cd ',orig_dir]); 
 
 end

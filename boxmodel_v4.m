@@ -19,24 +19,27 @@ VT(:,1) = V(:,1).*T(:,1); % heat
 VS(:,1) = V(:,1).*S(:,1); % salt
 
 if p.plot_runtime
-    hf_track = monitor_boxmodel([],1,H,T,S,f);
+    % hf_track = monitor_boxmodel([],1,H,T,S,f);
+    hf_track = show_box_model([],1,t,H,T,S,[],[],[],[],f);
 end
 % the main loop
-for i=1:length(t)-1,    
+for i=1:length(t)-1
+
+    if ~isreal(H(:,i))
+        disp(['it became imaginary at timestep ', num2str(i-1)])
+    end
 
     % calculate plume fluxes
     [QVg(:,i),QTg(:,i),QSg(:,i)] = ...
-        plume_fluxes(H(:,i),T(:,i),S(:,i),f.Qsg(i),p);
-    if ~isreal(H(:,i))
-    disp(['it became imaginary at timestep ', num2str(i)])
-    end
+        plume_fluxes(H(:,i),T(:,i),S(:,i),f.Qsg(i),p,i);
+    
     % calculate shelf fluxes
     [QVs(:,i),QTs(:,i),QSs(:,i),Se(:,i),Te(:,i),phi(:,i)] = ...
         shelf_fluxes(H(:,i),T(:,i),S(:,i),f.zs,f.Ts(:,i),f.Ss(:,i),f.Qsg(i),p);
 
     % calculate vertical mixing fluxes
     [QVk(:,i),QTk(:,i),QSk(:,i)] = ...
-        mixing_fluxes(H(:,i),T(:,i),S(:,i),QVg(:,i),QVs(:,i),p,i);
+        mixing_fluxes(H(:,i),T(:,i),S(:,i),QVg(:,i),QVs(:,i),p);
     
     % calculate "artificial" fluxes
     [QVb(:,i),QTb(:,i),QSb(:,i)] = ...
@@ -62,7 +65,8 @@ for i=1:length(t)-1,
 
     % plot model evolution (mainly debugging)
     if p.plot_runtime
-        hf_track = monitor_boxmodel(hf_track,i,H,T,S,f);
+        % hf_track = monitor_boxmodel(hf_track,i,H,T,S,f);
+        hf_track = show_box_model(hf_track,i,t,H,T,S,QVs,QVg,QVk,QVb,f);
     end
 end
 
@@ -128,7 +132,7 @@ f.D = f.D(1:int:end-1);
 end
 
 %% function to calculate plume fluxes
-function [QpV0,QpT0,QpS0] = plume_fluxes(H0,T0,S0,Qsg0,p);
+function [QpV0,QpT0,QpS0] = plume_fluxes(H0,T0,S0,Qsg0,p,i)
 
     if Qsg0==0 | p.P0==0, % i.e. if no plume
     
@@ -137,6 +141,11 @@ function [QpV0,QpT0,QpS0] = plume_fluxes(H0,T0,S0,Qsg0,p);
         QpS0 = 0*H0;    
     
     else
+        % [!] initialise variables
+        % Qp(1:4) = 0;
+        % Sp(1:4) = 0;
+        % Tp(1:4) = 0;
+        % gp(1:4) = 0;
     
         % find box model layer containing grounding line
         ints = cumsum(H0);
@@ -154,7 +163,7 @@ function [QpV0,QpT0,QpS0] = plume_fluxes(H0,T0,S0,Qsg0,p);
         % need special treatment because box might be partial if
         % grounding line does not coincide with box boundaries
         k = k-1;
-        % if k < 1, k=1; end % provisory fix to avoid the "interface" being at a box that does not exist        
+        % if k < 1, k=1; end %[!] provisory fix to avoid the "interface" being at a box that does not exist        
         try
         Qp(k) = Qp(k+1) + p.P0^(2/3)*Qp(k+1)^(1/3)*gp(k+1)^(1/3)*(abs(p.zgl)-ints(k));
         Tp(k) = (Qp(k+1)*Tp(k+1)+(Qp(k)-Qp(k+1))*T0(k+1))/Qp(k);
@@ -258,11 +267,7 @@ function [QVs0,QTs0,QSs0,Se0,Te0,phi0] = shelf_fluxes(H0,T0,S0,zs,Ts,Ss,Qsg0,p),
 end
 
 %% function to calculate vertical mixing fluxes
-function [QVk0,QTk0,QSk0] = mixing_fluxes(H0,T0,S0,QVg0,QVs0,p,i_model)
-if i_model==22
-    disp('w will become imaginary here')
-end
-
+function [QVk0,QTk0,QSk0] = mixing_fluxes(H0,T0,S0,QVg0,QVs0,p)
     if p.K0==0,
     
         QVk0 = 0*H0;
