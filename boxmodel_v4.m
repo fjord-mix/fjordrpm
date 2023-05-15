@@ -8,6 +8,7 @@ function [s,f] = boxmodel_v4(p,f,a,t)
 
 % OUTPUTS
 % s - solution stucture, contents below
+s.status=0; % initial assumption that the model ran successfully
 
 % initialise variables
 H(:,1) = a.H0; % thickness
@@ -24,6 +25,7 @@ if p.plot_runtime
 end
 % the main loop
 for i=1:length(t)-1    
+    try
 
     % calculate plume fluxes
     [QVg(:,i),QTg(:,i),QSg(:,i)] = ...
@@ -44,32 +46,34 @@ for i=1:length(t)-1
     % calculate iceberg fluxes
     [QIi(:,i),QTi(:,i),QSi(:,i),M(:,i)] = ...
         iceberg_fluxes(H(:,i),T(:,i),S(:,i),I(:,i),f.zi,p);
+    
 
-    % Check for possible blow up
-    if ~isreal(H(:,i))
-        disp(['it became imaginary at timestep ', num2str(i)])
+    % step fjord forwards
+    dt = t(i+1)-t(i);
+    V(:,i+1)  = V(:,i)  + dt*p.sid*(QVg(:,i)-QVs(:,i)+QVk(:,i)+QVb(:,i));
+    VT(:,i+1) = VT(:,i) + dt*p.sid*(QTg(:,i)-QTs(:,i)+QTk(:,i)+QTb(:,i)+QTi(:,i));
+    VS(:,i+1) = VS(:,i) + dt*p.sid*(QSg(:,i)-QSs(:,i)+QSk(:,i)+QSb(:,i)+QSi(:,i));
+
+    % calculate thicknesses and tracers
+    H(:,i+1) = V(:,i+1)/(p.W*p.L);
+    T(:,i+1) = VT(:,i+1)./V(:,i+1);
+    S(:,i+1) = VS(:,i+1)./V(:,i+1);
+    
+    % step icebergs forwards
+    I(:,i+1) = I(:,i) + dt*p.sid*((f.D(i)/(p.W*p.L))*f.xi-M(:,i).*I(:,i)-p.E0*I(:,i));
+
+    % plot model evolution (mainly debugging)
+    if p.plot_runtime
+        % hf_track = monitor_boxmodel(hf_track,i,H,T,S,f);
+        hf_track = show_box_model(hf_track,i,t,H,T,S,QVs,QVg,QVk,QVb,f);
+    end
+
+        % Check for possible blow up
+    catch
+        disp(['Model error at timestep ', num2str(i)])
         disp('Breaking out of loop and saving outputs')
+        s.status=1; % status == 1 means there was an error
         break
-    else
-        % step fjord forwards
-        dt = t(i+1)-t(i);
-        V(:,i+1)  = V(:,i)  + dt*p.sid*(QVg(:,i)-QVs(:,i)+QVk(:,i)+QVb(:,i));
-        VT(:,i+1) = VT(:,i) + dt*p.sid*(QTg(:,i)-QTs(:,i)+QTk(:,i)+QTb(:,i)+QTi(:,i));
-        VS(:,i+1) = VS(:,i) + dt*p.sid*(QSg(:,i)-QSs(:,i)+QSk(:,i)+QSb(:,i)+QSi(:,i));
-    
-        % calculate thicknesses and tracers
-        H(:,i+1) = V(:,i+1)/(p.W*p.L);
-        T(:,i+1) = VT(:,i+1)./V(:,i+1);
-        S(:,i+1) = VS(:,i+1)./V(:,i+1);
-        
-        % step icebergs forwards
-        I(:,i+1) = I(:,i) + dt*p.sid*((f.D(i)/(p.W*p.L))*f.xi-M(:,i).*I(:,i)-p.E0*I(:,i));
-    
-        % plot model evolution (mainly debugging)
-        if p.plot_runtime
-            % hf_track = monitor_boxmodel(hf_track,i,H,T,S,f);
-            hf_track = show_box_model(hf_track,i,t,H,T,S,QVs,QVg,QVk,QVb,f);
-        end
     end
 end
 
