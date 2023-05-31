@@ -67,11 +67,11 @@ for i=1:length(t)-1
         % hf_track = monitor_boxmodel(hf_track,i,H,T,S,f);
         hf_track = show_box_model(hf_track,i,t,H,T,S,QVs,QVg,QVk,QVb,f);
     end
-
+    
         % Check for possible blow up
-    catch
-        disp(['Model error at timestep ', num2str(i)])
-        disp('Breaking out of loop and saving outputs')
+    catch ME
+        fprintf('Model error at timestep %d: %s\n',i,ME.message)
+        disp('Breaking out of loop and returning outputs until the previous time step')
         s.status=1; % status == 1 means there was an error
         break
     end
