@@ -40,8 +40,8 @@ for i=1:length(t)-1
         mixing_fluxes(H(:,i),T(:,i),S(:,i),QVg(:,i),QVs(:,i),p);
     
     % calculate "artificial" fluxes
-    [QVb(:,i),QTb(:,i),QSb(:,i)] = ...
-        artificial_fluxes(QVg(:,i)-QVs(:,i)+QVk(:,i),H(:,i),V(:,i),T(:,i),S(:,i),f.zs,f.Ts(:,i),f.Ss(:,i),p);
+    % [QVb(:,i),QTb(:,i),QSb(:,i)] = ...
+    %     artificial_fluxes(QVg(:,i)-QVs(:,i)+QVk(:,i),H(:,i),V(:,i),T(:,i),S(:,i),f.zs,f.Ts(:,i),f.Ss(:,i),p);
 
     % calculate iceberg fluxes
     [QIi(:,i),QTi(:,i),QSi(:,i),M(:,i)] = ...
