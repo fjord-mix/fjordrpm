@@ -14,10 +14,11 @@ function [QVs0,QTs0,QSs0,Se0,Te0,phi0] = shelf_fluxes(H0,T0,S0,zs,Ts,Ss,Qsg0,p)
     
         % calculate mean shelf T/S over box model layers
         ints = [0;-cumsum(H0)];
-        zs0 = unique(sort([zs,-cumsum(H0)']));        
+        zs0 = unique(sort([zs;-cumsum(H0)]));        
         Ss0 = interp1(zs,Ss,zs0,'pchip','extrap');
         Ts0 = interp1(zs,Ts,zs0,'pchip','extrap');
-        
+
+        % figure; hold on;
         for k=1:length(ints)-1
             inds = find(zs0<=ints(k) & zs0>=ints(k+1));
             if length(inds) == 1 % if there is only one data point, no need to average it
@@ -25,11 +26,18 @@ function [QVs0,QTs0,QSs0,Se0,Te0,phi0] = shelf_fluxes(H0,T0,S0,zs,Ts,Ss,Qsg0,p)
                 Te0(k) = Ts0(inds);
             else
                 Se0(k) = trapz(zs0(inds),Ss0(inds))/H0(k);
-                Te0(k) = trapz(zs0(inds),Ts0(inds))/H0(k);
+                Te0(k) = trapz(zs0(inds),Ts0(inds))/H0(k);                                
+                % plot(Ss0(inds),zs0(inds));
             end
         end
+        % box 1 does not quite work with the integral due to really sharp
+        % gradients
+        Se0(1) = mean(Ss0(zs0<=ints(1) & zs0>=ints(2)));
+        Te0(1) = mean(Ts0(zs0<=ints(1) & zs0>=ints(2)));
+        % scatter(Se0,-cumsum(H0)); yline(ints,':k','linewidth',0.5);
+        % figure; plot(Ts0,zs0); hold on; scatter(Te0,-cumsum(H0)); yline(ints,':k','linewidth',0.5);
         Se0 = Se0';
-        Te0 = Te0';
+        Te0 = Te0';        
     
         % get fjord to shelf reduced gravity
         for k=1:length(ints)-1
