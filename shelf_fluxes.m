@@ -18,24 +18,25 @@ function [QVs0,QTs0,QSs0,Se0,Te0,phi0] = shelf_fluxes(H0,T0,S0,zs,Ts,Ss,Qsg0,p)
         Ss0 = interp1(zs,Ss,zs0,'pchip','extrap');
         Ts0 = interp1(zs,Ts,zs0,'pchip','extrap');
 
-        % figure; hold on;
+        % figure; hold on; % this is to monitor the integration if debugging is nedded
         for k=1:length(ints)-1
             inds = find(zs0<=ints(k) & zs0>=ints(k+1));
             if length(inds) == 1 % if there is only one data point, no need to average it
                 Se0(k) = Ss0(inds);
                 Te0(k) = Ts0(inds);
+            elseif H0(k) < 1*p.Hmin 
+                % sometimes a very thin layer with sharp gradients will
+                % not yield satisfactory results. even with a high-res profile
+                % so we use a simple average instead of numerical integration
+                Se0(k) = mean(Ss0(inds));
+                Te0(k) = mean(Ts0(inds));
             else
                 Se0(k) = trapz(zs0(inds),Ss0(inds))/H0(k);
-                Te0(k) = trapz(zs0(inds),Ts0(inds))/H0(k);                                
-                % plot(Ss0(inds),zs0(inds));
+                Te0(k) = trapz(zs0(inds),Ts0(inds))/H0(k);                                                
             end
-        end
-        % box 1 does not quite work with the integral due to really sharp
-        % gradients
-        Se0(1) = mean(Ss0(zs0<=ints(1) & zs0>=ints(2)));
-        Te0(1) = mean(Ts0(zs0<=ints(1) & zs0>=ints(2)));
-        % scatter(Se0,-cumsum(H0)); yline(ints,':k','linewidth',0.5);
-        % figure; plot(Ts0,zs0); hold on; scatter(Te0,-cumsum(H0)); yline(ints,':k','linewidth',0.5);
+            % plot(Ss0(inds),zs0(inds)); % to monitor interpolation results
+        end                
+        % scatter(Se0,-cumsum(H0)); yline(ints,':k','linewidth',0.5);  % to monitor interpolation results        
         Se0 = Se0';
         Te0 = Te0';        
     
