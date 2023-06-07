@@ -14,7 +14,7 @@ function [QVs0,QTs0,QSs0,Se0,Te0,phi0] = shelf_fluxes(H0,T0,S0,zs,Ts,Ss,Qsg0,p)
     
         % calculate mean shelf T/S over box model layers
         ints = [0;-cumsum(H0)];
-        zs0 = unique(sort([zs;-cumsum(H0)]));        
+        zs0 = unique(sort([zs,-cumsum(H0)']));        
         Ss0 = interp1(zs,Ss,zs0,'pchip','extrap');
         Ts0 = interp1(zs,Ts,zs0,'pchip','extrap');
 

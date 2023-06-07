@@ -19,6 +19,16 @@ V(:,1) = H(:,1).*double(p.W).*double(p.L); % volume
 VT(:,1) = V(:,1).*T(:,1); % heat
 VS(:,1) = V(:,1).*S(:,1); % salt
 
+% increases the profile resolution for better accuracy when integrating
+nz_orig=1:length(f.zs);
+nz_hr=linspace(1,length(f.zs),100*length(f.zs));
+zs_hr=interp1(nz_orig,f.zs,nz_hr);
+Ts_hr=interp1(f.zs,f.Ts,zs_hr);
+Ss_hr=interp1(f.zs,f.Ss,zs_hr);
+f.zs   = zs_hr;
+f.Ts = Ts_hr;
+f.Ss = Ss_hr;
+
 if p.plot_runtime
     % hf_track = monitor_boxmodel([],1,H,T,S,f);
     hf_track = show_box_model([],1,t,H,T,S,[],[],[],[],f);
