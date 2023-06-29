@@ -19,13 +19,34 @@ V(:,1) = H(:,1).*double(p.W).*double(p.L); % volume
 VT(:,1) = V(:,1).*T(:,1); % heat
 VS(:,1) = V(:,1).*S(:,1); % salt
 
+% check initialisation is consistent with specified number of layers
+if any([length(H)~=p.N+p.sill,length(T)~=p.N+p.sill,length(S)~=p.N+p.sill]),
+    disp('Error: Initial conditions not consistent with number of layers');
+    s.status=1; % status == 1 means there was an error
+    return
+end
+
+% check bottom box is consistent with sill depth
+if p.sill==1 & H(end,1)~=p.H-p.silldepth,
+    disp('Error: when p.sill=1, bottom box must have thickness p.H-p.silldepth');
+    s.status=1; % status == 1 means there was an error
+    return
+end
+
+% check sum of layer thicknesses is equal to fjord depth
+if abs(sum(H(:,1))-p.H)>1e-10,
+    disp('Error: box thicknesses must sum to fjord depth');
+    s.status=1; % status == 1 means there was an error
+    return
+end
+
 if p.plot_runtime
     % hf_track = monitor_boxmodel([],1,H,T,S,f);
     hf_track = show_box_model([],1,t,H,T,S,[],[],[],[],f);
 end
+
 % the main loop
-for i=1:length(t)-1    
-    try
+for i=1:length(t)-1
 
     % calculate plume fluxes
     [QVg(:,i),QTg(:,i),QSg(:,i)] = ...
@@ -68,13 +89,14 @@ for i=1:length(t)-1
         hf_track = show_box_model(hf_track,i,t,H,T,S,QVs,QVg,QVk,QVb,f);
     end
     
-        % Check for possible blow up
-    catch ME
-        fprintf('Model error at timestep %d: %s\n',i,ME.message)
-        disp('Breaking out of loop and returning outputs until the previous time step')
-        s.status=1; % status == 1 means there was an error
-        break
-    end
+    % check for possible blow up
+%     catch ME
+%         fprintf('Model error at timestep %d: %s\n',i,ME.message)
+%         disp('Breaking out of loop and returning outputs until the previous time step')
+%         s.status=1; % status == 1 means there was an error
+%         break
+%     end
+
 end
 
 % put solution into output structure
@@ -113,15 +135,15 @@ s.QVk = QVk(:,1:int:end);
 s.QTk = QTk(:,1:int:end);
 s.QSk = QSk(:,1:int:end);
 % derive 21 and 32 fluxes from these
-s.QV21 = s.QVk(1,:);
-s.QV32 = s.QVk(1,:)+s.QVk(2,:);
+% s.QV21 = s.QVk(1,:);
+% s.QV32 = s.QVk(1,:)+s.QVk(2,:);
 
 % artificial fluxes
 s.QVb = QVb(:,1:int:end);
 s.QTb = QTb(:,1:int:end);
 s.QSb = QSb(:,1:int:end);
 % 43 flux
-s.QV43 = -s.QVb(4,:);
+% s.QV43 = -s.QVb(4,:);
 
 % iceberg fluxes
 s.QIi = QIi(:,1:int:end);

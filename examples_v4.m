@@ -6,7 +6,7 @@ clear; close all;
 % 4 for HIGH SUBGLACIAL DISCHARGE
 % 5 for NUDGING
 % 6 for NUDGING WITH HIGH SUBGLACIAL DISCHARGE
-runno = 1;
+runno = 3;
 
 % physical constants
 p.g = 9.81; % gravity
@@ -32,13 +32,18 @@ p.wmax = 4e-5;
 p.S12 = 33;
 p.S23 = 33.5;
 p.trelax = 10*86400; % in seconds
+p.Hmin = 25; % min box thickness
 
-% fjord geometry
+% fjord and model geometry
 p.W = 6e3; % fjord width
 p.L = 80e3; % fjord length
 p.H = 800; % fjord depth
 p.zgl = -800; % grounding line depth
-p.Hmin = 25; % min box thickness
+p.N = 2; % number of above-sill model layers
+p.sill = 0; % flag for sill (0 = no sill, 1 = sill)
+p.silldepth = 250; % only used if p.sill=1
+
+% model set-up
 
 %% shelf-driven (intermediary) circulation
 if runno==1,
@@ -47,13 +52,18 @@ if runno==1,
     p.P0 = 0; % no plume
     p.M0 = 0; % no icebergs
     p.trelax = NaN; % no nudging
+    p.Hmin = NaN; % no min thickness
 
     % time stepping (units are days)
     p.dt = 0.1;
-    t = [0:p.dt:100];
+    t = [0:p.dt:50];
 
     % initial thicknesses
-    a.H0 = [50,100,350,300];
+    if p.sill
+        a.H0 = [(p.silldepth/p.N)*ones(1,p.N),p.H-p.silldepth];
+    else
+        a.H0 = [(p.H/p.N)*ones(1,p.N)];
+    end
 
     % initial icebergs
     f.zi = [-800:10:0]';
@@ -66,7 +76,7 @@ if runno==1,
     % subglacial discharge
     f.Qsg = zeros(1,length(t));
     % shelf stratification - oscillating
-    f.zs = [-500:0];
+    f.zs = [-p.H:0];
     Sbottom = 35;
     Stop = 30;
     tw = 10; % 10 day period
@@ -89,11 +99,12 @@ if runno==1,
     end
 
     % run model
+    p.plot_runtime = 0;
     s = boxmodel_v4(p,f,a,t);
     save INT.mat s p f
 
     % animate
-    animate_v4('INT.mat','INT',50);
+    animate_v4('INT.mat','INT_N2',50);
 
 end
 
@@ -162,14 +173,19 @@ if runno==3,
 
     % turn off processes not needed
     p.M0 = 0; % no icebergs
-    p.trelax = NaN;
+    p.trelax = NaN; % no nudging
+    p.Hmin = NaN; % no min thickness
 
     % time stepping (units are days)
-    p.dt = 0.25;
-    t = [0:p.dt:800];
+    p.dt = 1;
+    t = [0:p.dt:1000];
 
     % initial thicknesses
-    a.H0 = [50,100,350,300];
+    if p.sill
+        a.H0 = [(p.silldepth/p.N)*ones(1,p.N),p.H-p.silldepth];
+    else
+        a.H0 = [(p.H/p.N)*ones(1,p.N)];
+    end
 
     % initial icebergs
     f.zi = [-800:10:0]';
@@ -181,9 +197,9 @@ if runno==3,
     f.xi = (p.nu0/sum(a.H0))*exp(p.nu0*f.zi/sum(a.H0))/(1-exp(-p.nu0));
     % subglacial discharge
     f.Qsg = zeros(1,length(t));
-    f.Qsg(find(t>10)) = 100;
+    f.Qsg(find(t>5)) = 100;
     % shelf stratification - constant
-    f.zs = [-500:0];
+    f.zs = [-800:0];
     Sbottom = 35;
     Stop = 30;
     z0 = 50;
@@ -203,11 +219,12 @@ if runno==3,
     end
 
     % run model
+    p.plot_runtime = 0;
     s = boxmodel_v4(p,f,a,t);
     save LOWQSG.mat s p f
 
     % animate
-    animate_v4('LOWQSG.mat','LOWQSG',50);
+    animate_v4('LOWQSG.mat','LOWQSG_N2',50);
 
 end
 

@@ -1,19 +1,24 @@
 %% function to calculate iceberg fluxes
 function [QIi0,QTi0,QSi0,M0] = iceberg_fluxes(H0,T0,S0,I0,zi,p)
 
-    if p.M0==0
+    if p.M0==0, % if no icebergs
+
         QIi0 = 0*H0;
         QTi0 = 0*H0;
         QSi0 = 0*H0;
         M0 = 0*zi;
+
     else
+
         % melting in boxes
         ints = [0;cumsum(H0)];
         zj = 0.5*(ints(1:end-1)+ints(2:end)); % mean depth of box
         Tf = p.l1*S0 + p.l2 + p.l3*zj; % local freezing point
+
         % get vector of iceberg concentration that resolves box boundaries
         zi0 = unique(sort([zi,-cumsum(H0)']));
         Ii0 = interp1(zi,I0,zi0,'pchip','extrap');
+        
         % do numerical integral to get melt fluxes
         for k=1:length(ints)-1,
             inds = find(zi0<=ints(k) & zi0>=ints(k+1));

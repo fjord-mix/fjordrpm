@@ -2,11 +2,23 @@
 function [] = animate_v4(outputfile,fname,nframes)
 
 clearvars -except outputfile fname nframes; close all;
-load(outputfile,'fjord_model');
+% load(outputfile,'fjord_model');
+load(outputfile);
 
-names = fieldnames(fjord_model);
-for i=1:length(names)
-    eval([names{i} '=fjord_model.' names{i} ]);
+% names = fieldnames(fjord_model);
+% for i=1:length(names)
+%     eval([names{i} '=fjord_model.' names{i} ]);
+% end
+
+% change default plot line width to 1
+set(0,'DefaultLineLineWidth',1);
+
+% change all default interpreters to latex
+list_factory = fieldnames(get(groot,'factory'));
+index_interpreter = find(contains(list_factory,'Interpreter'));
+for i = 1:length(index_interpreter)
+    default_name = strrep(list_factory{index_interpreter(i)},'factory','default');
+    set(groot, default_name,'latex');
 end
 
 orig_dir = pwd;
@@ -36,27 +48,28 @@ vspace = 0.05;
 ph = 1-bspace-tspace;
 ph2 = (1-bspace-tspace-vspace)/2;
 fs2 = 6;
+legstr = {}; for i=1:size(s.H,1), legstr=[legstr,num2str(i)]; end
 
-for i=1:round((length(s.t)-1)/nframes):length(s.t)-1,
+for i=1:max(1,round((length(s.t)-1)/nframes)):length(s.t)-1,
 
     figure(); set(gcf,'Visible','off');
 
     ints = [0;cumsum(s.H(:,i))];
     y = -0.5*(ints(1:end-1)+ints(2:end));
-    y2 = cumsum(s.H(1:3,i));
+    y2 = cumsum(s.H(1:end-1,i));
 
     a3 = axes('position',[lspace+pw2+hspace1+hspace2+pw1,bspace+ph2+vspace,pw3,ph2]); hold on;
     plot(s.t,s.H,'linewidth',1);
     plot(s.t(i),s.H(:,i),'k.');
     ylabel('H (m)','fontsize',fs2);
     set(gca,'box','on','fontsize',fs2);
-    legend({'1','2','3','4'},'location','north','orientation','horizontal','fontsize',4);
+    legend(legstr,'location','north','orientation','horizontal','fontsize',4);
 
     a4 = axes('position',[lspace+pw2+hspace1+hspace2+pw1,bspace,pw3,ph2]); hold on;
     plot(s.t,s.phi,'linewidth',1);
     plot(s.t(i),s.phi(:,i),'k.');
     xlabel('t (days)','fontsize',fs2);
-    ylabel('\phi (shelf-fjord pressure difference)','fontsize',fs2);
+    ylabel('$\phi$ (shelf-fjord pressure difference)','fontsize',fs2);
     set(gca,'box','on','fontsize',fs2);
 
     a2 = axes('position',[lspace+pw2+hspace1,bspace,pw1,ph]);
@@ -73,9 +86,9 @@ for i=1:round((length(s.t)-1)/nframes):length(s.t)-1,
     set(q1,'color','k','linewidth',2);
     q2 = quiver(0*y,y,sf*s.QVg(:,i),0*s.QVg(:,i),'autoscale','off');
     set(q2,'color','k','linewidth',2);
-    q3 = quiver(0*y2+x0/2,-y2,0*y2,sf*[s.QVk(1,i),s.QVk(1,i)+s.QVk(2,i),0]','autoscale','off');
+    q3 = quiver(0*y2+x0/2,-y2,0*y2,sf*cumsum(s.QVk(1:end-1,i)),'autoscale','off');
     set(q3,'color','k','linewidth',2);
-    q4 = quiver(0*y2+x0/3,-y2,0*y2,sf*[s.QVb(1,i),s.QVb(1,i)+s.QVb(2,i),s.QVb(1,i)+s.QVb(2,i)+s.QVb(3,i)]','autoscale','off');
+    q4 = quiver(0*y2+x0/3,-y2,0*y2,sf*cumsum(s.QVb(1:end-1,i)),'autoscale','off');
     set(q4,'color','r','linewidth',2);
 
     h = colorbar('southoutside');
@@ -103,7 +116,7 @@ end
 video = VideoWriter([fname,'.mp4'],'MPEG-4');
 video.FrameRate = 10;
 open(video);
-for i=1:round((length(s.t)-1)/nframes):length(s.t)-1,
+for i=1:max(1,round((length(s.t)-1)/nframes)):length(s.t)-1,
 
     if i<10, savenum = ['00',num2str(i)];
     elseif i<100, savenum = ['0',num2str(i)];

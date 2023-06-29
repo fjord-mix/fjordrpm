@@ -1,15 +1,25 @@
 %% function to calculate "artificial" fluxes
 function [QVb0,QTb0,QSb0] = artificial_fluxes(QT0,H0,V0,T0,S0,zs,Ts,Ss,p)
 
-    % maintain volume of box 4
-    QV43 = QT0(4);
-    QT43 = (QV43>0)*QV43*T0(4) + (QV43<0)*QV43*T0(3);
-    QS43 = (QV43>0)*QV43*S0(4) + (QV43<0)*QV43*S0(3);
+    % maintain volume of below-sill box
+    if p.sill==1,
 
-    % resulting box-to-box vectors
-    QVb0 = [0;0;QV43;-QV43];
-    QTb0 = [0;0;QT43;-QT43];
-    QSb0 = [0;0;QS43;-QS43];
+        QVsill = QT0(p.N+p.sill);
+        QTsill = (QVsill>0)*QVsill*T0(p.N+p.sill) + (QVsill<0)*QVsill*T0(p.N);
+        QSsill = (QVsill>0)*QVsill*S0(p.N+p.sill) + (QVsill<0)*QVsill*S0(p.N);
+    
+        % resulting box-to-box vectors
+        QVb0 = [zeros(p.N-p.sill,1);QVsill;-QVsill];
+        QTb0 = [zeros(p.N-p.sill,1);QTsill;-QTsill];
+        QSb0 = [zeros(p.N-p.sill,1);QSsill;-QSsill];
+
+    else
+
+        QVb0 = 0*H0;
+        QTb0 = 0*H0;
+        QSb0 = 0*H0;
+
+    end
 
     % do layer nudging followed by minimum thickness
     if ~isnan(p.trelax) % if layer nudging active
