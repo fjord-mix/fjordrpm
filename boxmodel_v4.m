@@ -40,6 +40,14 @@ if abs(sum(H(:,1))-p.H)>1e-10,
     return
 end
 
+% if layer nudging active, check we have the required nudging inputs
+if ~isnan(p.trelax) & length(p.Snudge)~=p.N-1,
+    disp('Error: incorrect number of nudging values');
+    s.status=1; % status == 1 means there was an error
+    return
+end
+
+
 if p.plot_runtime
     % hf_track = monitor_boxmodel([],1,H,T,S,f);
     hf_track = show_box_model([],1,t,H,T,S,[],[],[],[],f);
@@ -87,6 +95,13 @@ for i=1:length(t)-1
     if p.plot_runtime
         % hf_track = monitor_boxmodel(hf_track,i,H,T,S,f);
         hf_track = show_box_model(hf_track,i,t,H,T,S,QVs,QVg,QVk,QVb,f);
+    end
+
+    % break from loop if any layer thickness goes below p.Hmin
+    if ~isempty(find(H(:,i+1)<p.Hmin)),
+        disp('Error: layer thickness dropped below p.Hmin');
+        s.status=1; % status == 1 means there was an error
+        break
     end
     
     % check for possible blow up

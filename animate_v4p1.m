@@ -2,43 +2,57 @@
 function [] = animate_v4p1(outputfile,fname,nframes)
 
 clearvars -except outputfile fname nframes; close all;
-load(outputfile,'fjord_model');
+% load(outputfile,'fjord_model');
+load(outputfile);
 
-names = fieldnames(fjord_model);
-for i=1:length(names)
-    eval([names{i} '=fjord_model.' names{i},';']);
+% names = fieldnames(fjord_model);
+% for i=1:length(names)
+%     eval([names{i} '=fjord_model.' names{i},';']);
+% end
+
+% change default plot line width to 1
+set(0,'DefaultLineLineWidth',1);
+
+% change all default interpreters to latex
+list_factory = fieldnames(get(groot,'factory'));
+index_interpreter = find(contains(list_factory,'Interpreter'));
+for i = 1:length(index_interpreter)
+    default_name = strrep(list_factory{index_interpreter(i)},'factory','default');
+    set(groot, default_name,'latex');
 end
 
+% change to plots folder
 orig_dir = pwd;
 folder = dir(outputfile);
 eval(['cd ',folder.folder,'/plots/']);
 
+% axis limits, legend, subglacial discharge
 Slims = [min([min(s.S(:)),min(f.Ss(:))]), max([max(s.S(:)),max(f.Ss(:))])];
 Tlims = [min([min(s.T(:)),min(f.Ts(:))]), max([max(s.T(:)),max(f.Ts(:))])];
 zlims = [-p.H,0];
 x0 = 1500;
-sf = x0*0.2/max([max(abs(s.QVs(:))),max(abs(s.QVg(:)))]);
+sf = x0*0.2/max([max(abs(s.QVs(:))),max(abs(s.QVg(:))),max(abs(s.QVb(:)))]);
+legstr = {}; for i=1:size(s.H,1), legstr=[legstr,num2str(i)]; end
+f_qsg = interp1(linspace(0,max(s.t),length(f.Qsg)),f.Qsg,s.t,'linear');
 
+% plot positions and parameters
 fs = 10;
-lspace = 0.08;
+fs2 = 6;
+lspace = 0.06;
 hspace1 = 0.03;
 hspace2 = 0.08;
 rspace = 0.02;
-cby = 0.075;
-cbh = 0.02;
-cbw = 0.2;
-pw1 = 0.05;
-pw3 = 0.25;
-pw2 = 1-lspace-rspace-hspace1-hspace2-8*pw1-pw3; %0.15;
-pw2b = 1-lspace-rspace-hspace1-hspace2-8*pw1-pw3;
+pw1 = 0.14;
+pw2 = pw1/2;
+pw3 = 1-lspace-rspace-2*pw1-2*pw2-3*hspace1-hspace2;
 bspace = 0.12;
 tspace = 0.06;
 vspace = 0.05;
 ph = 1-bspace-tspace;
-ph3 = (1-bspace-tspace-vspace)/3;
-fs2 = 6;
-
-f_qsg = interp1(linspace(0,max(s.t),length(f.Qsg)),f.Qsg,s.t,'linear');
+ph3 = (1-bspace-tspace-2*vspace)/3;
+cby = 0.075;
+cbh = 0.02;
+cbw = 0.2;
 
 for i=1:round((length(s.t)-1)/nframes):length(s.t)-1
 
@@ -46,97 +60,88 @@ for i=1:round((length(s.t)-1)/nframes):length(s.t)-1
 
     ints = [0;cumsum(s.H(:,i))];
     y = -0.5*(ints(1:end-1)+ints(2:end));
-    y2 = cumsum(s.H(1:3,i));
+    y2 = cumsum(s.H(1:end-1,i));
 
-    %% Time series
-    a3 = axes('position',[lspace+2*pw2+2*hspace1+hspace2+2*pw1,bspace,pw3,ph3]); hold on;
-    plot(s.t,s.phi,'linewidth',1);
-    plot(s.t(i),s.phi(:,i),'k.');
-    xlabel('t (days)','fontsize',fs2);
-    ylabel('\phi (shelf-fjord pressure difference)','fontsize',fs2);
-    set(gca,'box','on','fontsize',fs2);
-    
-    a4 = axes('position',[lspace+2*pw2+2*hspace1+hspace2+2*pw1,bspace+ph3+vspace,pw3,ph3]); hold on;
-    plot(s.t,s.H,'linewidth',1);
-    plot(s.t(i),s.H(:,i),'k.');
-    ylabel('H (m)','fontsize',fs2);
-    set(gca,'box','on','fontsize',fs2);
-    legend({'1','2','3','4'},'location','north','orientation','horizontal','fontsize',4,'NumColumns',2);
-    
-    a5 = axes('position',[lspace+2*pw2+2*hspace1+hspace2+2*pw1,bspace+2.2*ph3+vspace,pw3,ph3]); hold on;
-    plot(s.t,f_qsg,'linewidth',1);
-    plot(s.t(i),f_qsg(i),'k.');    
-    ylabel('Subgl. discharge (m^3s^{-1})','fontsize',fs2);
-    set(gca,'box','on','fontsize',fs2);
-
-
-    %% box model plots
-
-    a1 = axes('position',[lspace,bspace,pw2,ph]); hold on;
-    text(0.01*x0,-800,['t = ',num2str(0.01*round(100*s.t(i))),' days'],...
-        'fontsize',fs,'VerticalAlignment','bottom');
-    
-    title('Salinity: fjord','fontsize',fs);
+    % box model plots
+    a1 = axes('position',[lspace,bspace,pw1,ph]); hold on;    
     pcolor([0,x0],-[0;cumsum(s.H(:,i))],[[s.S(:,i);0],[s.S(:,i);0]]);
     set(gca,'xtick',[],'xticklabel',{});
     q1 = quiver(0*y+x0,y,sf*s.QVs(:,i),0*s.QVs(:,i),'autoscale','off');
     set(q1,'color','k','linewidth',2);
     q2 = quiver(0*y,y,sf*s.QVg(:,i),0*s.QVg(:,i),'autoscale','off');
     set(q2,'color','k','linewidth',2);
-    q3 = quiver(0*y2+x0/2,-y2,0*y2,sf*[s.QVk(1,i),s.QVk(1,i)+s.QVk(2,i),0]','autoscale','off');
+    q3 = quiver(0*y2+x0/2,-y2,0*y2,sf*cumsum(s.QVk(1:end-1,i)),'autoscale','off');
     set(q3,'color','k','linewidth',2);
-    q4 = quiver(0*y2+x0/3,-y2,0*y2,sf*[s.QVb(1,i),s.QVb(1,i)+s.QVb(2,i),s.QVb(1,i)+s.QVb(2,i)+s.QVb(3,i)]','autoscale','off');
+    q4 = quiver(0*y2+x0/3,-y2,0*y2,sf*cumsum(s.QVb(1:end-1,i)),'autoscale','off');
     set(q4,'color','r','linewidth',2);
-    set(a1,'clipping','off','box','on','fontsize',fs);
-    clim(a1,Slims);
-    xlim([0,x0]); ylim(zlims);
+    set(gca,'clipping','off','box','on','fontsize',fs);
+    caxis(a1,Slims); xlim([0,x0]); ylim(zlims);
+    text(0.02*x0,-800,['t = ',num2str(0.01*round(100*s.t(i))),' days'],...
+        'fontsize',fs,'VerticalAlignment','bottom');
+    title('Salinity: fjord','fontsize',fs);
+    ylabel('depth (m)','fontsize',fs);
 
-    a2 = axes('position',[lspace+pw2+hspace1,bspace,pw1,ph]);    
+    a2 = axes('position',[lspace+pw1+hspace1,bspace,pw2,ph]);    
     pcolor([0,x0],f.zs,[f.Ss(:,i),f.Ss(:,i)]); shading flat;    
     xlim([0,x0]); ylim(zlims);
-    set(gca,'box','on','fontsize',fs);
-    set(gca,'xtick',[],'ytick',zlims,'yticklabel',{});    
+    set(gca,'box','on','fontsize',fs,'xtick',[],'ytick',[],'yticklabel',{},'clipping','off');  
     title('shelf','fontsize',fs);
-    clim(a2,Slims);
-    
-    h = colorbar('southoutside');
-    set(h,'position',[0.2-cbw/2,cby,cbw,cbh],'fontsize',fs);
-    % xlabel(h,'salinity','fontsize',fs);
-    clim(Slims);    
-    xlim([0,x0]); ylim(zlims);    
-    set(gca,'xtick',[],'ytick',zlims);    
+    h = colorbar(a2,'southoutside','position',[lspace+0.5*(pw1+hspace1+pw2)-cbw/2,cby,cbw,cbh],'fontsize',fs);
+    caxis(a2,Slims);
 
-
-    a1b = axes('position',[lspace+pw1+pw2+2*hspace1,bspace,pw2b,ph]); hold on;
-    title('Temp.: fjord','fontsize',fs);
+    a3 = axes('position',[lspace+pw1+2*hspace1+pw2,bspace,pw1,ph]); hold on;    
     pcolor([0,x0],-[0;cumsum(s.H(:,i))],[[s.T(:,i);0],[s.T(:,i);0]]);
-    set(gca,'xtick',[],'ytick',zlims,'yticklabel',{});
+    set(gca,'xtick',[],'xticklabel',{});
     q1 = quiver(0*y+x0,y,sf*s.QVs(:,i),0*s.QVs(:,i),'autoscale','off');
     set(q1,'color','k','linewidth',2);
     q2 = quiver(0*y,y,sf*s.QVg(:,i),0*s.QVg(:,i),'autoscale','off');
     set(q2,'color','k','linewidth',2);
-    q3 = quiver(0*y2+x0/2,-y2,0*y2,sf*[s.QVk(1,i),s.QVk(1,i)+s.QVk(2,i),0]','autoscale','off');
+    q3 = quiver(0*y2+x0/2,-y2,0*y2,sf*cumsum(s.QVk(1:end-1,i)),'autoscale','off');
     set(q3,'color','k','linewidth',2);
-    q4 = quiver(0*y2+x0/3,-y2,0*y2,sf*[s.QVb(1,i),s.QVb(1,i)+s.QVb(2,i),s.QVb(1,i)+s.QVb(2,i)+s.QVb(3,i)]','autoscale','off');
+    q4 = quiver(0*y2+x0/3,-y2,0*y2,sf*cumsum(s.QVb(1:end-1,i)),'autoscale','off');
     set(q4,'color','r','linewidth',2);
-    set(a1b,'clipping','off','box','on','fontsize',fs);
-    clim(a1b,Tlims);
-    xlim([0,x0]); ylim(zlims);
+    set(gca,'clipping','off','box','on','fontsize',fs,'xtick',[],'ytick',[]);
+    caxis(gca,Tlims); xlim([0,x0]); ylim(zlims);
+    title('Temperature: fjord','fontsize',fs);
+    colormap(a3,jet);
 
-    a2b = axes('position',[lspace+pw1+pw2+2*hspace1+pw2+hspace1,bspace,pw1,ph]);    
+    a4 = axes('position',[lspace+2*pw1+pw2+3*hspace1,bspace,pw2,ph]);    
     pcolor([0,x0],f.zs,[f.Ts(:,i),f.Ts(:,i)]); shading flat;    
     xlim([0,x0]); ylim(zlims);
-    set(gca,'box','on','fontsize',fs);
-    set(gca,'xtick',[],'ytick',zlims,'yticklabel',{});        
+    set(gca,'box','on','fontsize',fs,'xtick',[],'ytick',[],'yticklabel',{},'clipping','off');  
     title('shelf','fontsize',fs);
-    clim(a2b,Tlims);
+    h = colorbar(a4,'southoutside','position',...
+        [lspace+pw1+2*hspace1+pw2+0.5*(pw1+hspace1+pw2)-cbw/2,cby,cbw,cbh],'fontsize',fs);
+    colormap(a4,jet); caxis(a4,Tlims); 
 
-    h2 = colorbar('southoutside');
-    set(h2,'position',[0.46-cbw/2,cby,cbw,cbh],'fontsize',fs);
-    % xlabel(h2,'Temperature (^oC)','fontsize',fs);
-    clim(Tlims);    
-    xlim([0,x0]); ylim(zlims);    
-    set(gca,'xtick',[],'ytick',zlims);            
+    % illustration of sill
+    if p.sill==1,
+        annotation('line',(lspace+pw1+hspace1/2)*[1,1],bspace+[0,ph*(1-p.silldepth/p.H)],...
+            'color','k','linewidth',2);
+        annotation('line',(lspace+2*pw1+pw2+2.5*hspace1)*[1,1],bspace+[0,ph*(1-p.silldepth/p.H)],...
+            'color','k','linewidth',2);
+    end
+
+    % time series
+    a5 = axes('position',[lspace+2*pw1+2*pw2+3*hspace1+hspace2,bspace+2*(vspace+ph3),pw3,ph3]); hold on;
+    plot(s.t,f_qsg,'linewidth',1);
+    plot(s.t(i),f_qsg(i),'k.');    
+    ylabel('subglacial discharge (m$^3$/s)','fontsize',fs2);
+    set(gca,'box','on','fontsize',fs2);
+
+    a6 = axes('position',[lspace+2*pw1+2*pw2+3*hspace1+hspace2,bspace+1*(vspace+ph3),pw3,ph3]); hold on;
+    plot(s.t,s.H,'linewidth',1);
+    plot(s.t(i),s.H(:,i),'k.');
+    ylabel('$H$ (m)','fontsize',fs2);
+    set(gca,'box','on','fontsize',fs2);
+    legend(legstr,'location','north','orientation','horizontal','fontsize',4,'NumColumns',2);
+
+    a7 = axes('position',[lspace+2*pw1+2*pw2+3*hspace1+hspace2,bspace+0*(vspace+ph3),pw3,ph3]); hold on;
+    plot(s.t,s.phi,'linewidth',1);
+    plot(s.t(i),s.phi(:,i),'k.');
+    xlabel('$t$ (days)','fontsize',fs2);
+    ylabel('$\phi$ (shelf-fjord pressure difference)','fontsize',fs2);
+    set(gca,'box','on','fontsize',fs2);
 
     if i<10, savenum = ['00',num2str(i)];
     elseif i<100, savenum = ['0',num2str(i)];
