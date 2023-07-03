@@ -1,5 +1,5 @@
 % function to animate box model results - updated to show more variables as well
-function [] = animate_v4p1(outputfile,fname,nframes)
+function [] = animate_v4p1(fjord_model,outputdir,outputfile,nframes)
 
 clearvars -except outputfile fname nframes; close all;
 % load(outputfile,'fjord_model');
@@ -23,8 +23,7 @@ end
 
 % change to plots folder
 orig_dir = pwd;
-folder = dir(outputfile);
-eval(['cd ',folder.folder,'/plots/']);
+eval(['cd ',outputdir,'/plots/']);
 
 % axis limits, legend, subglacial discharge
 Slims = [min([min(s.S(:)),min(f.Ss(:))]), max([max(s.S(:)),max(f.Ss(:))])];
@@ -149,13 +148,13 @@ for i=1:round((length(s.t)-1)/nframes):length(s.t)-1
         savenum = num2str(i);
     end
 
-    saveplot(25,10,300,[fname,'_',savenum,'.png']);
+    saveplot(25,10,300,[outputfile,'_',savenum,'.png']);
     close all;
 
 end
 
 % write video
-video = VideoWriter([fname,'.mp4'],'MPEG-4');
+video = VideoWriter([outputfile,'.mp4'],'MPEG-4');
 video.FrameRate = 10;
 open(video);
 for i=1:round((length(s.t)-1)/nframes):length(s.t)-1
@@ -166,12 +165,12 @@ for i=1:round((length(s.t)-1)/nframes):length(s.t)-1
         savenum = num2str(i);
     end
 
-    I = imread([fname,'_',savenum,'.png']);
+    I = imread([outputfile,'_',savenum,'.png']);
     writeVideo(video,I);
 
 end
 close(video);
-delete([fname,'*.png'])
+delete([outputfile,'*.png'])
 eval(['cd ',orig_dir]); 
 
 end

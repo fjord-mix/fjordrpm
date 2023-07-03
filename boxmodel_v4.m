@@ -19,6 +19,7 @@ V(:,1) = H(:,1).*double(p.W).*double(p.L); % volume
 VT(:,1) = V(:,1).*T(:,1); % heat
 VS(:,1) = V(:,1).*S(:,1); % salt
 
+
 % check initialisation is consistent with specified number of layers
 if any([length(H)~=p.N+p.sill,length(T)~=p.N+p.sill,length(S)~=p.N+p.sill]),
     disp('Error: Initial conditions not consistent with number of layers');
@@ -46,6 +47,17 @@ if ~isnan(p.trelax) & length(p.Snudge)~=p.N-1,
     s.status=1; % status == 1 means there was an error
     return
 end
+
+
+% increases the profile resolution for better accuracy when integrating
+nz_orig=1:length(f.zs);
+nz_hr=linspace(1,length(f.zs),100*length(f.zs));
+zs_hr=interp1(nz_orig,f.zs,nz_hr);
+Ts_hr=interp1(f.zs,f.Ts,zs_hr);
+Ss_hr=interp1(f.zs,f.Ss,zs_hr);
+f.zs   = zs_hr;
+f.Ts = Ts_hr;
+f.Ss = Ss_hr;
 
 
 if p.plot_runtime

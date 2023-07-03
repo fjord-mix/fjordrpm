@@ -28,6 +28,7 @@ function [QpV0,QpT0,QpS0] = plume_fluxes(H0,T0,S0,Qsg0,p,i)
         Tp(k) = (Qp(k+1)*Tp(k+1)+(Qp(k)-Qp(k+1))*T0(k+1))/Qp(k);
         Sp(k) = (Qp(k+1)*Sp(k+1)+(Qp(k)-Qp(k+1))*S0(k+1))/Qp(k);
         gp(k) = p.g*(p.betaS*(S0(k)-Sp(k))-p.betaT*(T0(k)-Tp(k)));
+
         % apply to successive interfaces higher provided plume is still rising
         while gp(k)>0 & k>1
             k = k-1;
