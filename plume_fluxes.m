@@ -8,16 +8,10 @@ function [QpV0,QpT0,QpS0] = plume_fluxes(H0,T0,S0,Qsg0,p,i)
         QpS0 = 0*H0;    
     
     else
-        % [!] initialise variables
-        % Qp(1:4) = 0;
-        % Sp(1:4) = 0;
-        % Tp(1:4) = 0;
-        % gp(1:4) = 0;
     
         % find box model layer containing grounding line
         ints = cumsum(H0);
         kgl = min(find(ints>=abs(p.zgl)-1e-6));
-        if isempty(kgl), kgl = 4; end % in case the gl is at the bottom of the fjord
     
         % plume properties at grounding line
         k = kgl;
@@ -26,19 +20,15 @@ function [QpV0,QpT0,QpS0] = plume_fluxes(H0,T0,S0,Qsg0,p,i)
         Tp(k) = 0;
         gp(k) = p.g*(p.betaS*(S0(k)-Sp(k))-p.betaT*(T0(k)-Tp(k)));
     
-        % properties at first interface about grounding line
+        % properties at first interface above grounding line
         % need special treatment because box might be partial if
         % grounding line does not coincide with box boundaries
-        k = k-1;
-        % if k < 1, k=1; end %[!] provisory fix to avoid the "interface" being at a box that does not exist        
-        try
+        k = k-1;      
         Qp(k) = Qp(k+1) + p.P0^(2/3)*Qp(k+1)^(1/3)*gp(k+1)^(1/3)*(abs(p.zgl)-ints(k));
         Tp(k) = (Qp(k+1)*Tp(k+1)+(Qp(k)-Qp(k+1))*T0(k+1))/Qp(k);
         Sp(k) = (Qp(k+1)*Sp(k+1)+(Qp(k)-Qp(k+1))*S0(k+1))/Qp(k);
         gp(k) = p.g*(p.betaS*(S0(k)-Sp(k))-p.betaT*(T0(k)-Tp(k)));
-        catch ME
-            disp(['there is a problem here: ',ME.message])
-        end
+
         % apply to successive interfaces higher provided plume is still rising
         while gp(k)>0 & k>1
             k = k-1;
@@ -54,8 +44,7 @@ function [QpV0,QpT0,QpS0] = plume_fluxes(H0,T0,S0,Qsg0,p,i)
         inds = find([1:length(H0)]>kgl | [1:length(H0)]<knb);        
         QpV0(inds) = 0;
         QpT0(inds) = 0;
-        QpS0(inds) = 0;
-        
+        QpS0(inds) = 0;       
         % flux in boxes from grounding line to below neutral buoyancy
         for k=kgl:-1:knb+1
             QpV0(k) = Qp(k)-Qp(k-1);
