@@ -8,7 +8,7 @@ function a = get_initial_conditions(p, f)
 if p.sill
     a.H0 = [(p.silldepth/p.N)*ones(1,p.N),p.H-p.silldepth];
 else
-    a.H0 = [(p.H/p.N)*ones(1,p.N)];
+    a.H0 = (p.H/p.N)*ones(1,p.N);
 end
 
 % initial icebergs
