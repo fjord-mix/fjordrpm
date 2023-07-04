@@ -7,7 +7,7 @@ function f = get_forcing(p, t)
 %% Shelf forcing
 f.zs = -p.H:0; % will this break if p.H is not an integer?
 
-if p.zd = 0
+if p.zd == 0
     f.zi = p.z0; % no oscillation
 else
     f.zi = p.z0+(p.zd/2)*sin(2*pi*t/p.tw); 
