@@ -10,6 +10,7 @@ addpath('examples/');
 % 3. example_subglacial_discharge 
 [p, a, f, t] = example_intermediate_circulation;
 % 4. example_data_driven
+% addpath('input_data_folder');
 % my_nice_data = process_data(input_data);
 % [p, a, ,f t] = example_data_driven(my_nice_data);
 
