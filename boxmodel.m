@@ -1,4 +1,4 @@
-function [s,f] = boxmodel(p,f,a,t, name, INDEX)
+function [s,f] = boxmodel(p,f,a,t, name)
 
 % BOXMODEL Box model simulation.
 %   [S, F] = BOXMODEL(P, F, A, T) runs the box model simulation for constant parameters structure P, 
@@ -195,8 +195,6 @@ f.Qsg = f.Qsg(1:int:end-1);
 f.D = f.D(1:int:end-1);
 
 %% save output
-% %% save the input parameters
-save(['./output_',name,'/out_boxmodel_',num2str(INDEX),'.mat'],'s');
+save(['./output_',name,'/out_boxmodel', '.mat'],'s', 'f');
 
-end
 

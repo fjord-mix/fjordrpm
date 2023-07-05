@@ -23,12 +23,8 @@ f = get_forcing(p, t);
 a = get_initial_conditions(p, f);
 
 % Save the input parameters
-save(['./output_',name,'/run_params.mat'], 'p', 'f', 't')
+save(['./output_',name,'/run_params.mat'], 'p', 'a', 't')
 
 %% Run the model (output is saved automatically).
 p.plot_runtime = 0;
-% Loop through INDEX to allow multiple box model runs (i.e. to study
-% parameter space). Can be a parfor loop.
-for INDEX = 0:0
-    boxmodel(p, f, a, t, name, INDEX);
-end
+boxmodel(p, f, a, t, name);

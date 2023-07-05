@@ -1,5 +1,5 @@
 % function to animate box model results - updated to show more variables as well
-function [] = animate_v4p1(fjord_model,outputdir,outputfile,nframes)
+function [] = animatep1(fjord_model,outputdir,outputfile,nframes)
 
 clearvars -except outputfile fname nframes; close all;
 % load(outputfile,'fjord_model');
