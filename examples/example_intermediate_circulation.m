@@ -1,8 +1,8 @@
 function p = example_intermediate_circulation
 
 % EXAMPLE_INTERMEDIATE_CIRCULATION  Example to run the box model with intermediate circulation.
-%   p = EXAMPLE_INTERMEDIATE_CIRCULATION sets the user-defined box model parameters
-%   p for the intermediate circulation example.
+%   P = EXAMPLE_INTERMEDIATE_CIRCULATION sets the user-defined box model parameters
+%   P for the intermediate circulation example.
 
 %% Physical constants (these should not be changed in general)
 p.g = 9.81; % gravity
@@ -47,6 +47,7 @@ p.K0 = 0.05; % vertical mixing effiency
 p.wmax = 4e-5; % sets an upper bound on vertical mixing
 p.Hmin = NaN; % minimum box thickness, NaN = no min thickness
 p.trelax = NaN; % controls layer nudging, NaN = no nudging
+p.Snudge = 0.*ones(1, p.N-1); % controls layer thickness for nudging, 0 if no nudging
 
 %% Time step
 p.dt = 0.1; % time stepping (units are days)

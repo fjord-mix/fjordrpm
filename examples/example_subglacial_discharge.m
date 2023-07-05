@@ -2,8 +2,8 @@ function p = example_subglacial_discharge
 
 % EXAMPLE_SUBGLACIAL_DISCHARGE  Example to run the box model with
 % subglacial discharge.
-%   p = EXAMPLE_SUBGLACIAL_DISCHARGE sets the user-defined box model parameters
-%   p for the subglacial discharge example.
+%   P = EXAMPLE_SUBGLACIAL_DISCHARGE sets the user-defined box model parameters
+%   P for the subglacial discharge example.
 
 %% Physical constants (these should not be changed in general)
 p.g = 9.81; % gravity
@@ -48,6 +48,7 @@ p.K0 = 0.05; % vertical mixing effiency
 p.wmax = 4e-5; % sets an upper bound on vertical mixing
 p.Hmin = NaN; % minimum box thickness, NaN = no min thickness
 p.trelax = NaN; % controls layer nudging, NaN = no nudging
+p.Snudge = 0.*ones(1, p.N-1); % controls layer thickness for nudging, 0 if no nudging
 
 %% Time step
 p.dt = 0.1; % time stepping (units are days)
