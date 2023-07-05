@@ -2,29 +2,25 @@
 clearvars
 close all
 
-%% Setup for the model run.
-% Load the user-defined run parameters. 
+% Setup for the model run. Load the user-defined run parameters. 
 % Examples:
 addpath('examples/');
 % 1. example_intermediate_circulation
 % 2. example_nudging
 % 3. example_subglacial_discharge 
-p = example_subglacial_discharge;
+[p, a, f, t] = example_intermediate_circulation;
+% 4. example_data_driven
+% my_nice_data = process_data(input_data);
+% [p, a, ,f t] = example_data_driven(my_nice_data);
 
 % Name the experiment and create a directory to store input parameters and
 % outputs.
-name = 'EX_QSG';
+name = 'EX_INT';
 mkdir(['./output_',name]);
 
-% Get the time variable, forcing structure and initial conditions
-% structure.
-t = 0:p.dt:p.t_end;
-f = get_forcing(p, t);
-a = get_initial_conditions(p, f);
+% Save the input parameters and initial conditions
+save(['./output_',name,'/run_params.mat'], 'p', 'a')
 
-% Save the input parameters
-save(['./output_',name,'/run_params.mat'], 'p', 'a', 't')
-
-%% Run the model (output is saved automatically).
+% Run the model (output is saved automatically).
 p.plot_runtime = 0;
 boxmodel(p, f, a, t, name);
