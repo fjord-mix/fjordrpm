@@ -51,10 +51,12 @@ p.Tbottom = 3; % shelf temperature at the ocean floor
 % Glacier forcing parameters
 p.Qv0 = 100; % volumetric flow rate of subglacial discharge
 p.P0 = 25; % plume entrainment width, 0 = no plume
+p.gf = @(T, Q) Q*ones(size(T)); % functional form of subglacial discharge rate depending on time
 % Iceberg forcing parameters
 p.M0 = 0; % iceberg melt efficiency, 0 = no icebergs
 p.nu0 = 25; % iceberg volume profile coefficient
 p.E0 = 1e-7; % iceberg export efficiency
+p.if = @(NU, H, Z) (NU/H)*exp(NU*Z/H)/(1-exp(-NU)); % functional form of iceberg depth profile    
 % forcing structure
 f = get_idealised_forcing(p, t);
 
