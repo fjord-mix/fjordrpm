@@ -2,7 +2,7 @@ function p = intermediate_circulation
 
 % INTERMEDIATE_CIRCULATION  Example to run the box model with intermediate circulation.
 %   p = INTERMEDIATE_CIRCULATION sets the user-defined box model parameters
-%   for the intermediate circulation example.
+%   p for the intermediate circulation example.
 
 %% Physical constants (these should not be changed in general)
 p.g = 9.81; % gravity
@@ -30,7 +30,7 @@ p.Sbottom = 35; % shelf salinity at the ocean floor
 p.z0 = 50; % sets strength of shelf stratification
 p.zd = 30; % sets strength of shelf oscillation, zero if no oscillation in shelf
 p.tw = 10; % oscillation period of shelf forcing (days)
-p.sf = @(S1, S2, Z, Z0) S1 - (S1 - S2)*exp(Z/Z0); % functional form of the shelf stratification
+p.sf = @(S1, S2, Z, Z0) S1 - (S1 - S2)*exp(Z./Z0); % functional form of the shelf stratification
 
 %% Glacier parameters
 p.Qv0 = 0; % volumetric flow rate of subglacial discharge
@@ -50,6 +50,6 @@ p.trelax = NaN; % controls layer nudging, NaN = no nudging
 
 %% Time step
 p.dt = 0.1; % time stepping (units are days)
-p.t_end = 1000; % time to end the simulation
+p.t_end = 10; % time to end the simulation
 
 end
