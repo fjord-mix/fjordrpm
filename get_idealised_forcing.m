@@ -1,4 +1,4 @@
-function f = get_forcing(p, t)
+function f = get_idealised_forcing(p, t)
 
 % GET_FORCING  Obtain the forcing structure.
 %   F = GET_FORCING(P, T) gets the forcing structure F for the shelf, icebergs and
@@ -18,9 +18,9 @@ f.Ts = p.sf(p.Tbottom, p.Ttop, ZS, ZI);
 %% Iceberg forcing
 f.zi = f.zs'; 
 f.D = zeros(1,length(t));
-f.xi = (p.nu0/p.H)*exp(p.nu0*f.zi/p.H)/(1-exp(-p.nu0));
+f.xi = p.if(p.nu0, p.H, f.zi);
 
 %% Subglacial discharge forcing
-f.Qsg = p.Qv0*ones(1,length(t));
+f.Qsg = p.gf(t, p.Qv0);
 
 end
