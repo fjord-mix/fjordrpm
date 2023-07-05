@@ -6,17 +6,14 @@ function f = get_forcing(p, t)
 
 %% Shelf forcing
 f.zs = -p.H:0; % will this break if p.H is not an integer?
-
 if p.zd == 0
     f.zi = p.z0; % no oscillation
 else
-    f.zi = p.z0+(p.zd/2)*sin(2*pi*t/p.tw); 
+    f.zi = p.z0+(p.zd/2)*sin(2*pi*t/p.tw); % oscillation
 end
-
-for j=1:length(t)
-    f.Ss(:,j) = p.sf(p.Sbottom, p.Stop, f.zs, f.zi(j));
-    f.Ts(:,j) = 0*f.zs+3; % 3 should be a user set parameter?
-end
+[ZI, ZS] = meshgrid(f.zi, f.zs);
+f.Ss = p.sf(p.Sbottom, p.Stop, ZS, ZI);
+f.Ts1 = 0*ZS + 3; % 3 should be a user-set parameter? 
 
 %% Iceberg forcing
 f.zi = (-p.H:10:0)'; % 10 should be a user set parameter?
@@ -25,6 +22,6 @@ f.xi = (p.nu0/p.H)*exp(p.nu0*f.zi/p.H)/(1-exp(-p.nu0));
 
 %% Subglacial discharge forcing
 f.Qsg = zeros(1,length(t));
-f.Qsg(find(t>5)) = p.Qv0;
+f.Qsg(find(t>5)) = p.Qv0; % 5 should be a user-set parameter? 
 
 end
