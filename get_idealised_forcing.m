@@ -1,7 +1,7 @@
 function f = get_idealised_forcing(p, t)
 
-% GET_FORCING  Obtain the forcing structure.
-%   F = GET_FORCING(P, T) gets the forcing structure F for the shelf, icebergs and
+% GET_IDEALISED_FORCING  Obtain the forcing structure for an idealised input of functional form.
+%   F = GET_IDEALISED_FORCING(P, T) gets the forcing structure F for the shelf, icebergs and
 % subglacial discharge for the given box model parameters P and T.
 
 %% Shelf forcing
