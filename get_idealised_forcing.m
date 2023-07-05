@@ -5,7 +5,7 @@ function f = get_forcing(p, t)
 % subglacial discharge for the given box model parameters P and T.
 
 %% Shelf forcing
-f.zs = -p.H:0; % will this break if p.H is not an integer?
+f.zs = linspace(-p.H, 0, abs(p.H)+1); 
 if p.zd == 0
     f.zi = p.z0*ones(size(t)); % no oscillation
 else
@@ -13,15 +13,14 @@ else
 end
 [ZI, ZS] = meshgrid(f.zi, f.zs);
 f.Ss = p.sf(p.Sbottom, p.Stop, ZS, ZI);
-f.Ts = 0*ZS + 3; % 3 should be a user-set parameter? 
+f.Ts = p.sf(p.Tbottom, p.Ttop, ZS, ZI); 
 
 %% Iceberg forcing
-f.zi = (-p.H:10:0)'; % 10 should be a user set parameter?
+f.zi = f.zs'; 
 f.D = zeros(1,length(t));
 f.xi = (p.nu0/p.H)*exp(p.nu0*f.zi/p.H)/(1-exp(-p.nu0));
 
 %% Subglacial discharge forcing
-f.Qsg = zeros(1,length(t));
-f.Qsg(t>5) = p.Qv0; % 5 should be a user-set parameter? 
+f.Qsg = p.Qv0*ones(1,length(t));
 
 end
