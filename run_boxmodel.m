@@ -1,5 +1,5 @@
 %% run_boxmodel.m
-% Description here 
+% Description here
 
 %%
 clearvars
@@ -20,6 +20,17 @@ t = 0:p.dt:p.t_end;
 f = get_forcing(p, t);
 a = get_initial_conditions(p, f);
 
-%% Run the model 
+%% Run the model
+%     % run model
+% p.plot_runtime = 0;
+% s = boxmodel_v4(p,f,a,t);
 % 
-%% and save the output 
+% 
+% % animate
+% 
+% %% and save the output
+% save INT.mat s p f
+% 
+% %% visualisations
+% 
+% animate_v4p1('INT.mat','INT_N6_withsill',50);
