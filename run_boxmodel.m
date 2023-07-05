@@ -2,7 +2,8 @@
 clearvars
 close all
 
-%% Get the run parameters
+%% Setup for the model run.
+% Load the user-defined run parameters. 
 % Examples:
 addpath('examples/');
 % 1. example_intermediate_circulation
@@ -11,11 +12,12 @@ addpath('examples/');
 p = example_subglacial_discharge;
 
 % Name the experiment and create a directory to store input parameters and
-% outputs
+% outputs.
 name = 'EX_QSG';
 mkdir(['./output_',name]);
 
-% Get the time variable, forcing structure and initial conditions structure
+% Get the time variable, forcing structure and initial conditions
+% structure.
 t = 0:p.dt:p.t_end;
 f = get_forcing(p, t);
 a = get_initial_conditions(p, f);
@@ -23,10 +25,10 @@ a = get_initial_conditions(p, f);
 % Save the input parameters
 save(['./output_',name,'/run_params.mat'], 'p', 'f', 't')
 
-%% Run the model (output is saved automatically)
+%% Run the model (output is saved automatically).
 p.plot_runtime = 0;
-% loop through INDEX to allow multiple box model runs (i.e. to study parameter space)
-% can be a parfor loop
-for INDEX = 1:1 
+% Loop through INDEX to allow multiple box model runs (i.e. to study
+% parameter space). Can be a parfor loop.
+for INDEX = 0:0
     boxmodel(p, f, a, t, name, INDEX);
 end
