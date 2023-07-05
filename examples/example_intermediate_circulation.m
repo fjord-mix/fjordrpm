@@ -58,10 +58,6 @@ p.if = @(NU, H, Z) (NU/H)*exp(NU*Z/H)/(1-exp(-NU)); % functional form of iceberg
 % forcing structure
 f = get_idealised_forcing(p, t);
 
-%% Forcing parameters: data-driven forcing
-% p.forcing_data = my_data;
-% f = get_data_forcing(p, t);
-
 %% Initial conditions
 a = get_initial_conditions(p, f);
 
