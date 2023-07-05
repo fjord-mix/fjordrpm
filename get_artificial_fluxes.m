@@ -1,5 +1,5 @@
 %% function to calculate "artificial" fluxes
-function [QVb0,QTb0,QSb0] = artificial_fluxes(QT0,H0,V0,T0,S0,zs,Ts,Ss,p)
+function [QVb0,QTb0,QSb0] = get_artificial_fluxes(QT0,H0,V0,T0,S0,zs,Ts,Ss,p)
 
     % maintain volume of below-sill box
     if p.sill==1,

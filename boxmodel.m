@@ -1,16 +1,13 @@
-function [s,f] = boxmodel_v4(p,f,a,t)
+function [s,f] = boxmodel(p,f,a,t, name, INDEX)
 
-% INPUTS
-% p - constant parameters structure
-% f - forcings structure
-% a - initial conditions structure
-% t - time variable
+% BOXMODEL Box model simulation.
+%   [S, F] = BOXMODEL(P, F, A, T) runs the box model simulation for constant parameters structure P, 
+%   forcings structure F, initial conditions structure I and time variable
+%   T and returns solution structure S and forcing structure F.
 
-% OUTPUTS
-% s - solution stucture, contents below
 s.status=0; % initial assumption that the model ran successfully
 
-% initialise variables
+%% initialise variables
 H(:,1) = a.H0; % thickness
 T(:,1) = a.T0; % temperature
 S(:,1) = a.S0; % salinity
@@ -20,36 +17,43 @@ VT(:,1) = V(:,1).*T(:,1); % heat
 VS(:,1) = V(:,1).*S(:,1); % salt
 
 
+%% Error checks
+% check shelf oscillation parameters have been set up correctly
+if p.zd > 0 && p.tw <= 0 
+    disp('Error: must have positive oscillation period if oscillation strength is set.')
+    s.status = 1;
+    return
+end
+
 % check initialisation is consistent with specified number of layers
-if any([length(H)~=p.N+p.sill,length(T)~=p.N+p.sill,length(S)~=p.N+p.sill]),
+if any([length(H)~=p.N+p.sill,length(T)~=p.N+p.sill,length(S)~=p.N+p.sill])
     disp('Error: Initial conditions not consistent with number of layers');
     s.status=1; % status == 1 means there was an error
     return
 end
 
 % check bottom box is consistent with sill depth
-if p.sill==1 & H(end,1)~=p.H-p.silldepth,
+if p.sill==1 & H(end,1)~=p.H-p.silldepth
     disp('Error: when p.sill=1, bottom box must have thickness p.H-p.silldepth');
     s.status=1; % status == 1 means there was an error
     return
 end
 
 % check sum of layer thicknesses is equal to fjord depth
-if abs(sum(H(:,1))-p.H)>1e-10,
+if abs(sum(H(:,1))-p.H)>1e-10
     disp('Error: box thicknesses must sum to fjord depth');
     s.status=1; % status == 1 means there was an error
     return
 end
 
 % if layer nudging active, check we have the required nudging inputs
-if ~isnan(p.trelax) & length(p.Snudge)~=p.N-1,
+if ~isnan(p.trelax) & length(p.Snudge)~=p.N-1
     disp('Error: incorrect number of nudging values');
     s.status=1; % status == 1 means there was an error
     return
 end
 
-
-% increases the profile resolution for better accuracy when integrating
+%% increases the profile resolution for better accuracy when integrating
 nz_orig=1:length(f.zs);
 nz_hr=linspace(1,length(f.zs),100*length(f.zs));
 zs_hr=interp1(nz_orig,f.zs,nz_hr);
@@ -60,33 +64,34 @@ f.Ts = Ts_hr;
 f.Ss = Ss_hr;
 
 
+%%
 if p.plot_runtime
     % hf_track = monitor_boxmodel([],1,H,T,S,f);
     hf_track = show_box_model([],1,t,H,T,S,[],[],[],[],f);
 end
 
-% the main loop
+%% the main loop
 for i=1:length(t)-1
 
     % calculate plume fluxes
     [QVg(:,i),QTg(:,i),QSg(:,i)] = ...
-        plume_fluxes(H(:,i),T(:,i),S(:,i),f.Qsg(i),p,i);
+        get_plume_fluxes(H(:,i),T(:,i),S(:,i),f.Qsg(i),p,i);
     
     % calculate shelf fluxes
     [QVs(:,i),QTs(:,i),QSs(:,i),Se(:,i),Te(:,i),phi(:,i)] = ...
-        shelf_fluxes(H(:,i),T(:,i),S(:,i),f.zs,f.Ts(:,i),f.Ss(:,i),f.Qsg(i),p);
+        get_shelf_fluxes(H(:,i),T(:,i),S(:,i),f.zs,f.Ts(:,i),f.Ss(:,i),f.Qsg(i),p);
 
     % calculate vertical mixing fluxes
     [QVk(:,i),QTk(:,i),QSk(:,i)] = ...
-        mixing_fluxes(H(:,i),T(:,i),S(:,i),QVg(:,i),QVs(:,i),p);
+        get_mixing_fluxes(H(:,i),T(:,i),S(:,i),QVg(:,i),QVs(:,i),p);
     
     % calculate "artificial" fluxes
     [QVb(:,i),QTb(:,i),QSb(:,i)] = ...
-        artificial_fluxes(QVg(:,i)-QVs(:,i)+QVk(:,i),H(:,i),V(:,i),T(:,i),S(:,i),f.zs,f.Ts(:,i),f.Ss(:,i),p);
+        get_artificial_fluxes(QVg(:,i)-QVs(:,i)+QVk(:,i),H(:,i),V(:,i),T(:,i),S(:,i),f.zs,f.Ts(:,i),f.Ss(:,i),p);
 
     % calculate iceberg fluxes
     [QIi(:,i),QTi(:,i),QSi(:,i),M(:,i)] = ...
-        iceberg_fluxes(H(:,i),T(:,i),S(:,i),I(:,i),f.zi,p);
+        get_iceberg_fluxes(H(:,i),T(:,i),S(:,i),I(:,i),f.zi,p);
     
 
     % step fjord forwards
@@ -110,7 +115,7 @@ for i=1:length(t)-1
     end
 
     % break from loop if any layer thickness goes below p.Hmin
-    if ~isempty(find(H(:,i+1)<p.Hmin)),
+    if ~isempty(find(H(:,i+1)<p.Hmin))
         disp('Error: layer thickness dropped below p.Hmin');
         s.status=1; % status == 1 means there was an error
         break
@@ -126,7 +131,7 @@ for i=1:length(t)-1
 
 end
 
-% put solution into output structure
+%% put solution into output structure
 % but just save ~daily values
 % as otherwise high time resolution results in large output files
 dtdaily = 1;
@@ -188,6 +193,10 @@ f.Ss = f.Ss(:,1:int:end-1);
 f.Ts = f.Ts(:,1:int:end-1);
 f.Qsg = f.Qsg(1:int:end-1);
 f.D = f.D(1:int:end-1);
+
+%% save output
+% %% save the input parameters
+save(['./output_',name,'/out_boxmodel_',num2str(INDEX),'.mat'],'s');
 
 end
 
