@@ -1,7 +1,7 @@
-function p = intermediate_circulation
+function p = example_intermediate_circulation
 
-% INTERMEDIATE_CIRCULATION  Example to run the box model with intermediate circulation.
-%   p = INTERMEDIATE_CIRCULATION sets the user-defined box model parameters
+% EXAMPLE_INTERMEDIATE_CIRCULATION  Example to run the box model with intermediate circulation.
+%   p = EXAMPLE_INTERMEDIATE_CIRCULATION sets the user-defined box model parameters
 %   p for the intermediate circulation example.
 
 %% Physical constants (these should not be changed in general)
