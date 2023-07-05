@@ -1,8 +1,9 @@
 function p = example_subglacial_discharge
 
-% INTERMEDIATE_CIRCULATION  Example to run the box model with intermediate circulation.
-%   p = INTERMEDIATE_CIRCULATION sets the user-defined box model parameters
-%   p for the intermediate circulation example.
+% EXAMPLE_SUBGLACIAL_DISCHARGE  Example to run the box model with
+% subglacial discharge.
+%   p = EXAMPLE_SUBGLACIAL_DISCHARGE sets the user-defined box model parameters
+%   p for the subglacial discharge example.
 
 %% Physical constants (these should not be changed in general)
 p.g = 9.81; % gravity
