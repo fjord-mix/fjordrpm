@@ -33,8 +33,8 @@ zlims = [-p.H, 0];
 x0 = 1500;
 sf = x0*0.2/max([max(abs(s.QVs(:))), max(abs(s.QVg(:))), max(abs(s.QVb(:)))]);
 legstr = cell(1, size(s.H, 1)); 
-for i = 1:size(s.H, 1)
-    legstr{i} = [legstr, num2str(i)];
+for i = 1:size(s.H, 1) 
+    legstr{i} = num2str(i); 
 end
 f_qsg = interp1(linspace(0, max(s.t), length(f.Qsg)), f.Qsg, s.t, 'linear');
 
@@ -160,7 +160,6 @@ for i = 1:round((length(s.t)-1)/nframes):length(s.t)-1
         savenum = num2str(i);
     end
     saveplot(25, 10, 300, [outputfile, '_', savenum, '.png']);
-    pause
     close all;
 
 end
