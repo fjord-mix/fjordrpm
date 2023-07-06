@@ -1,5 +1,5 @@
 %% function to calculate iceberg fluxes
-function [QIi0,QTi0,QSi0,M0] = iceberg_fluxes(H0,T0,S0,I0,zi,p)
+function [QIi0,QTi0,QSi0,M0] = get_iceberg_fluxes(H0,T0,S0,I0,zi,p)
 
     if p.M0==0, % if no icebergs
 

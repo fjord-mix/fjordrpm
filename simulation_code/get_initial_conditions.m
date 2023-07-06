@@ -4,15 +4,15 @@ function a = get_initial_conditions(p, f)
 %   A = GET_FORCING(P, F) gets the initial conditions A for the fjord for
 %   the given box model parameters P and forcing F.
 
-%% Initial thicknesses
+%% Initial fjord layer thicknesses
 if p.sill
     a.H0 = [(p.silldepth/p.N)*ones(1,p.N),p.H-p.silldepth];
 else
     a.H0 = (p.H/p.N)*ones(1,p.N);
 end
 
-%% Initial icebergs
-a.I0 = 0*f.zi; % why is this zero?
+%% No icebergs in the fjord initially. 
+a.I0 = 0*f.zi; % 
 
 %% Set initial fjord T/S to be in equilibrium with shelf
 ints = [0;-cumsum(a.H0')];

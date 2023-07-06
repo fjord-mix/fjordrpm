@@ -1,5 +1,5 @@
 %% function to calculate vertical mixing fluxes
-function [QVk0,QTk0,QSk0] = mixing_fluxes(H0,T0,S0,QVg0,QVs0,p)
+function [QVk0,QTk0,QSk0] = get_mixing_fluxes(H0,T0,S0,QVg0,QVs0,p)
 
     if p.K0==0
 

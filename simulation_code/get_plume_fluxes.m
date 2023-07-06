@@ -1,5 +1,5 @@
 %% function to calculate plume fluxes
-function [QpV0,QpT0,QpS0] = plume_fluxes(H0,T0,S0,Qsg0,p,i)
+function [QpV0,QpT0,QpS0] = get_plume_fluxes(H0,T0,S0,Qsg0,p,i)
 
     if Qsg0==0 | p.P0==0 % i.e. if no plume
     
