@@ -2,7 +2,7 @@
 %% Setup for the plots
 addpath('plotting_code/');
 % Select the box model simulation.
-name = 'EX_QSG';
+name = 'EX_SGD';
 
 %% 1. Box model animation
 % Create a video of the box model simulation showing temperature and salinity
