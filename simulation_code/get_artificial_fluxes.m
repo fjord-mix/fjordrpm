@@ -1,10 +1,8 @@
 function [QVb0,QTb0,QSb0] = get_artificial_fluxes(QT0,H0,V0,T0,S0,zs,Ts,Ss,p)
 
 % GET_ARTIFICIAL_FLUXES Compute artificial fluxes.
-%   [S,F] = BOXMODEL(P,F,A,T) runs the box model simulation for constant parameters structure P,
-%   forcings structure F, initial conditions structure I and time variable
-%   T and returns solution structure S and forcing structure F.
-% maintain volume of below-sill box
+%   [QVB0,QTB0,QSB0] = GET_ARTIFICIAL_FLUXES(QT0,H0,V0,T0,S0,ZS,TS,SS,P)
+%   computes the artifcial fluxes for the given parameters. 
 
 if p.sill == 1
     QVsill = QT0(p.N+p.sill);
