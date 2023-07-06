@@ -1,4 +1,4 @@
-function [s,f] = boxmodel(p,f,a,t, name)
+function [s,f] = boxmodel(p,f,a,t,name)
 
 % BOXMODEL Box model simulation.
 %   [S,F] = BOXMODEL(P,F,A,T) runs the box model simulation for constant parameters structure P,
@@ -17,9 +17,10 @@ VT(:,1) = V(:,1).*T(:,1); % heat
 VS(:,1) = V(:,1).*S(:,1); % salt
 
 % Preallocate variables
-[QVg,QTg,QSg,QVs,QTs,QSs,Se,Te,phi,QVk,QTk,QSk,QVb,QTb,QSb,QIi,QTi,QSi] = deal(zeros(size(H,1),length(t)-1));
+[QVg,QTg,QSg,QVs,QTs,QSs,QVk,QTk,QSk,QVb,QTb,QSb,QIi,QTi,QSi,Te,Se] = deal(zeros(size(H,1),length(t)-1));
+phi = zeros(size(H,1)-p.sill,length(t)-1);
 M = zeros(size(f.zi,1),length(t)-1);
- 
+
 %% Error checks
 % Check shelf oscillation parameters have been set up correctly.
 if p.zd > 0 && p.tw  <= 0
