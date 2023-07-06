@@ -1,6 +1,7 @@
 % RUN_BOXMODEL Driver to run the box model simulation.
 clearvars
 close all
+addpath('simulation_code/')
 
 % Setup for the model run. Load the user-defined run parameters. 
 % Examples:
@@ -17,10 +18,10 @@ addpath('examples/');
 % Name the experiment and create a directory to store input parameters and
 % outputs.
 name = 'EX_INT';
-mkdir(['./output_',name]);
+mkdir(['./output_', name]);
 
 % Save the input parameters and initial conditions
-save(['./output_',name,'/run_params.mat'], 'p', 'a')
+save(['./output_', name, '/run_params.mat'], 'p', 'a')
 
 % Run the model (output is saved automatically).
 p.plot_runtime = 0;
