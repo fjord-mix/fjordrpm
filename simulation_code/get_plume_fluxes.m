@@ -1,7 +1,7 @@
 function [QpV0,QpT0,QpS0] = get_plume_fluxes(H0,T0,S0,Qsg0,p)
 
 % GET_PLUME_FLUXES Compute plume fluxes.
-%   [QPV0,QPT0,QPS0] = GET_PLUME_FLUXES(H0,T0,S0,QSG0,P,I)
+%   [QPV0,QPT0,QPS0] = GET_PLUME_FLUXES(H0,T0,S0,QSG0,P)
 %   computes the plume fluxes for the given parameters.
 
 if Qsg0==0 || p.P0==0 % i.e. if no plume
