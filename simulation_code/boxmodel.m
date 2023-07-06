@@ -77,7 +77,7 @@ for i = 1:length(t)-1
 
     % Calculate plume fluxes.
     [QVg(:,i),QTg(:,i),QSg(:,i)] = ...
-        get_plume_fluxes(H(:,i),T(:,i),S(:,i),f.Qsg(i),p,i);
+        get_plume_fluxes(H(:,i),T(:,i),S(:,i),f.Qsg(i),p);
 
     % Calculate shelf fluxes.
     [QVs(:,i),QTs(:,i),QSs(:,i),Se(:,i),Te(:,i),phi(:,i)] = ...

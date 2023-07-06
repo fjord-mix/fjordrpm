@@ -24,7 +24,6 @@ else
 
     % figure; hold on; % this is to monitor the integration if debugging is nedded
     for k=1:p.N
-
         inds = find(zs0<=ints(k) & zs0>=ints(k+1));
         if length(inds) == 1 % if there is only one data point, no need to average it
             Se0(k) = Ss0(inds);
@@ -73,7 +72,6 @@ else
     % resulting heat/salt fluxes
     QTs0 = (QVs0>0).*QVs0.*T0 + (QVs0<0).*QVs0.*Te0;
     QSs0 = (QVs0>0).*QVs0.*S0 + (QVs0<0).*QVs0.*Se0;
-
 end
 
 end
