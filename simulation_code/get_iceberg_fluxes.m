@@ -16,8 +16,8 @@ else
     zj = 0.5*(ints(1:end-1)+ints(2:end)); % mean depth of box
     Tf = p.l1*S0 + p.l2 + p.l3*zj; % local freezing point
 
-    % get vector of iceberg concentration that resolves box boundaries
-    zi0 = unique(sort([zi,-cumsum(H0)']));
+    % get vector of iceberg concentration that resolves box boundaries 
+    zi0 = unique(sort([zi',-cumsum(H0)']));
     Ii0 = interp1(zi,I0,zi0,'pchip','extrap');
 
     % Preallocate variables
