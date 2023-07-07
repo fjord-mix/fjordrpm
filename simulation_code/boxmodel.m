@@ -1,4 +1,4 @@
-function [s,f] = boxmodel(p,f,a,t,name)
+function [s,f] = boxmodel(p,f,a,t)
 
 % BOXMODEL Box model simulation.
 %   [S,F] = BOXMODEL(P,F,A,T) runs the box model simulation for constant parameters structure P,
