@@ -113,6 +113,12 @@ for i = 1:length(t)-1
     % Step icebergs forwards.
     I(:,i+1) = I(:,i)+dt*p.sid*((f.D(i)/(p.W*p.L))*f.xi-M(:,i).*I(:,i)-p.E0*I(:,i));
 
+    % real-time nudging, i.e., nudging values are updated to mimic the
+    % current shelf conditions
+    if ~isnan(p.trelax) && p.real_time_nudge
+        p.Snudge = get_interface_salinities(f.zs,f.Ts(:,i),f.Ss(:,i),H(:,i),p);
+    end
+    
     % Plot model evolution (mainly debugging).
     if p.plot_runtime
         % hf_track = monitor_boxmodel(hf_track,i,H,T,S,f);
