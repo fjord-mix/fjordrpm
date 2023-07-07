@@ -37,7 +37,7 @@ if any([length(H) ~= p.N+p.sill,length(T) ~= p.N+p.sill,length(S) ~= p.N+p.sill]
 end
 
 % Check bottom box is consistent with sill depth.
-if p.sill == 1 && H(end,1) ~= p.H-p.silldepth
+if p.sill == 1 && H(end,1) ~= p.H-abs(p.silldepth)
     disp('Error: when p.sill=1, bottom box must have thickness p.H-p.silldepth');
     s.status = 1; % status == 1 means there was an error
     return

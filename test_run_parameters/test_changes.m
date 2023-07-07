@@ -22,7 +22,7 @@ p.H = 800; % fjord depth
 p.zgl = -800; % grounding line depth
 p.N = 3; % number of above-sill model layers
 p.sill = 1; % flag for sill (0 = no sill, 1 = sill)
-p.silldepth = 500; % only used if p.sill=1
+p.silldepth = -500; % only used if p.sill=1
 
 %% Tuning/artificial parameters
 p.C0 = 1e4; % shelf exchange effiency

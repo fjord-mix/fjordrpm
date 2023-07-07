@@ -6,7 +6,7 @@ function a = get_initial_conditions(p, f)
 
 %% Initial fjord layer thicknesses
 if p.sill
-    a.H0 = [(p.silldepth/p.N)*ones(1,p.N),p.H-p.silldepth];
+    a.H0 = [(abs(p.silldepth)/p.N)*ones(1,p.N),p.H-abs(p.silldepth)];
 else
     a.H0 = (p.H/p.N)*ones(1,p.N);
 end
