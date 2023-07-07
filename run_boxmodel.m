@@ -8,14 +8,14 @@ close all
 % 1. example_intermediate_circulation
 % 2. example_nudging
 % 3. example_subglacial_discharge 
-%[p, a, f, t] = example_subglacial_discharge;
+% run_subglacial_discharge = example_subglacial_discharge;
 % 4. example_data_driven
 % addpath('input_data_folder');
-% my_nice_data = process_data(input_data);
-% [p, a, ,f t] = example_data_driven(my_nice_data);
+% kangerlussuaq_example = load('./example_input_data/KF_ctrl.mat').fjord_ctrl;
+% kangerlussuaq_example.s = boxmodel(kangerlussuaq_example.p,kangerlussuaq_example.f,kangerlussuaq_example.a,kangerlussuaq_example.t);
 
 % Tests:
-[p, a, f, t] = test_changes;
+test_fjord_run = test_changes;
 % Name the experiment and create a directory to store input parameters and
 % outputs.
 name = 'TEST_CHANGES';
