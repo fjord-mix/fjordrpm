@@ -1,11 +1,11 @@
-function [QVb0,QTb0,QSb0] = get_artificial_fluxes(QT0,H0,V0,T0,S0,zs,Ts,Ss,p)
+function [QVb0,QTb0,QSb0] = get_artificial_fluxes(QV0,H0,V0,T0,S0,zs,Ts,Ss,p)
 
 % GET_ARTIFICIAL_FLUXES Compute artificial fluxes.
-%   [QVB0,QTB0,QSB0] = GET_ARTIFICIAL_FLUXES(QT0,H0,V0,T0,S0,ZS,TS,SS,P)
+%   [QVB0,QTB0,QSB0] = GET_ARTIFICIAL_FLUXES(QV0,H0,V0,T0,S0,ZS,TS,SS,P)
 %   computes the artifcial fluxes for the given parameters. 
 
 if p.sill == 1
-    QVsill = QT0(p.N+p.sill);
+    QVsill = QV0(p.N+p.sill);
     QTsill = (QVsill>0)*QVsill*T0(p.N+p.sill)+(QVsill<0)*QVsill*T0(p.N);
     QSsill = (QVsill>0)*QVsill*S0(p.N+p.sill)+(QVsill<0)*QVsill*S0(p.N);
     % resulting box-to-box vectors
@@ -51,7 +51,7 @@ end
 if ~isnan(p.Hmin) % if minimum thickness active
 
     % update the total fluxes vector for possible nudging
-    QV0 = QT0 + QVb0;
+    QV0 = QV0 + QVb0;
 
     % routine to avoid going below minimum thickness
     Vtend = p.dt*p.sid*QV0;
