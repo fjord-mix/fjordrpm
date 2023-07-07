@@ -19,7 +19,7 @@ VS(:,1) = V(:,1).*S(:,1); % salt
 % Preallocate variables
 [QVg,QTg,QSg,QVs,QTs,QSs,QVk,QTk,QSk,QVb,QTb,QSb,QIi,QTi,QSi,Te,Se] = deal(zeros(size(H,1),length(t)-1));
 phi = zeros(size(H,1)-p.sill,length(t)-1);
-M = zeros(size(f.zi,1),length(t)-1);
+M = zeros(length(f.zi),length(t)-1);
 
 %% Error checks
 % Check shelf oscillation parameters have been set up correctly.
