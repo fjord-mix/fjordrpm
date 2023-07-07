@@ -51,7 +51,7 @@ if abs(sum(H(:,1))-p.H) > 1e-10
 end
 
 % If layer nudging active, check we have the required nudging inputs.
-if ~isnan(p.trelax) && length(p.Snudge) ~= p.N-1
+if ~isnan(p.trelax) && length(p.Snudge) < p.N-1
     disp('Error: incorrect number of nudging values');
     s.status = 1; % status == 1 means there was an error
     return
