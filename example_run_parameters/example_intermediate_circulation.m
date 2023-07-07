@@ -1,4 +1,4 @@
-function [p, a, f, t] = example_intermediate_circulation
+function run_output = example_intermediate_circulation
 
 % EXAMPLE_INTERMEDIATE_CIRCULATION  Example to run the box model with intermediate circulation.
 %   P = EXAMPLE_INTERMEDIATE_CIRCULATION sets the user-defined box model parameters
@@ -40,9 +40,13 @@ p.E0 = 1e-7; % iceberg export efficiency
 p.if = @(NU, H, Z) (NU/H)*exp(NU*Z/H)/(1-exp(-NU)); % functional form of iceberg depth profile    
 
 % forcing structure
-f = get_idealised_forcing(p, t);
+run_output.f = get_idealised_forcing(p, t);
 
 %% Initial conditions
-a = get_initial_conditions(p, f);
+run_output.a = get_initial_conditions(p, run_output.f);
+
+%% adding the other structures to output structure
+run_output.p = p;
+run_output.t = t;
 
 end

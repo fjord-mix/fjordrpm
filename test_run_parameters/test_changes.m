@@ -1,4 +1,4 @@
-function [p, a, f, t] = test_changes
+function run_output = test_changes
 
 % TEST_CHANGES Example to test changes to the box model code.
 %   [P, A, F, T] = TEST_CHANGES runs the box model simulation and hits
@@ -57,9 +57,13 @@ p.nu0 = 25; % iceberg volume profile coefficient
 p.E0 = 1e-7; % iceberg export efficiency
 p.if = @(NU, H, Z) (NU/H)*exp(NU*Z/H)/(1-exp(-NU)); % functional form of iceberg depth profile    
 % forcing structure
-f = get_idealised_forcing(p, t);
+run_output.f = get_idealised_forcing(p, t);
 
 %% Initial conditions
-a = get_initial_conditions(p, f);
+run_output.a = get_initial_conditions(p, run_output.f);
+
+%% adding the other structures to output structure
+run_output.p = p;
+run_output.t = t;
 
 end
