@@ -16,7 +16,7 @@ else
     % Preallocate variables
     [Q, QT, QS] =  deal(zeros(1, p.N+p.sill-1));
     % loop over interfaces
-    for k=1:p.N+p.sill-1
+    for k=1:p.N-1
         % velocity in lower box
         ul = (QVg0(k+1)+(QVs0(k+1)-QVg0(k+1))*x/p.L)/(p.W*H0(k+1));
         % velocity in higher box
@@ -45,6 +45,11 @@ else
     QVk0 = [Q,0]'-[0,Q]';
     QTk0 = [QT,0]'-[0,QT]';
     QSk0 = [QS,0]'-[0,QS]';
+    if p.sill % ensures there is no mixing at the sill layer interface
+        QVk0(p.N+p.sill) = 0;
+        QTk0(p.N+p.sill) = 0;
+        QSk0(p.N+p.sill) = 0;
+    end        
 
 end
 
