@@ -23,7 +23,7 @@ M = zeros(size(f.zi,1),length(t)-1);
 
 %% Error checks
 % Check shelf oscillation parameters have been set up correctly.
-if p.zd > 0 && p.tw  <= 0
+if (isfield(p,'zd') && p.zd > 0) && (isfield(p,'tw') && p.tw  <= 0)
     disp('Error: must have positive oscillation period if oscillation strength is set.')
     s.status = 1;
     return
@@ -118,7 +118,7 @@ for i = 1:length(t)-1
     if ~isnan(p.trelax) && p.real_time_nudge
         p.Snudge = get_interface_salinities(f.zs,f.Ts(:,i),f.Ss(:,i),H(:,i),p);
     end
-    
+
     % Plot model evolution (mainly debugging).
     if p.plot_runtime
         % hf_track = monitor_boxmodel(hf_track,i,H,T,S,f);
