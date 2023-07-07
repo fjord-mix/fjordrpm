@@ -18,7 +18,7 @@ f.Ts = p.sf(p.Tbottom, p.Ttop, ZS, ZI);
 %% Iceberg forcing
 f.zi = f.zs; 
 f.D = zeros(1,length(t));
-f.xi = p.if(p.nu0, p.H, f.zi);
+f.xi = p.if(p.nu0, p.H, f.zi)';
 
 %% Subglacial discharge forcing
 f.Qsg = p.gf(t, p.Qv0);
