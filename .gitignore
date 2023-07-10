@@ -1,6 +1,9 @@
 # ignore file that sets the personal names of folder paths
 load_local_paths.m
 
+# Ignore output files folder
+outputs/
+
 # ignore old backup folders
 z_bkp*/
 

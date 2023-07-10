@@ -190,5 +190,4 @@ f.Ts = f.Ts(:,1:int:end-1);
 f.Qsg = f.Qsg(1:int:end-1);
 f.D = f.D(1:int:end-1);
 
-%% Save output
-% save(['./output_',name,'/out_boxmodel.mat'],'s','f');
+end
