@@ -1,4 +1,7 @@
 function [T0, S0] = bin_ocean_profiles(Tz,Sz,z,H0,p)
+% BIN_OCEAN_PROFILES Bins temperature (Tz) and salinity (Sz) profiles to boxmodel layers (H0)
+%   BIN_OCEAN_PROFILES(Tz,Sz,Z,H0,p) returns a "box profile" for
+%   temperature (T0) and salinity (S0) for the boxes given by H0
 
 % calculate mean shelf T/S over box model layers;
 ints=[0 -cumsum(H0)];
