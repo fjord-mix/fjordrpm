@@ -1,4 +1,4 @@
-function [QVb0,QTb0,QSb0] = get_artificial_fluxes(QV0,H0,V0,T0,S0,zs,Ts,Ss,p)
+function [QVb0,QTb0,QSb0] = get_artificial_fluxes(QV0,H0,V0,T0,S0,zs,~,Ss,p)
 
 % GET_ARTIFICIAL_FLUXES Compute artificial fluxes.
 %   [QVB0,QTB0,QSB0] = GET_ARTIFICIAL_FLUXES(QV0,H0,V0,T0,S0,ZS,TS,SS,P)
@@ -60,8 +60,9 @@ if ~isnan(p.Hmin) % if minimum thickness active
 
     % for each box about to go below min thickness, find the nearest
     % (and thickest) box that is not about to go below min thickness 
-    % and take volume from that        
-    while ~isempty(mininds)
+    % and take volume from that    
+    iter_count=1; % we add this counter to prevent an infinite loop
+    while ~isempty(mininds) && iter_count < 100
         Has = H0(1:p.N); % thicknesses of layers above the sill
         i_from_box = zeros(size(QVmin)); % we will need to keep track of which box we take the water from for nudging
         for i=1:length(mininds)
@@ -84,6 +85,7 @@ if ~isnan(p.Hmin) % if minimum thickness active
         end
         Vtend = p.dt*p.sid*(QV0+QVb0+QVmin);
         mininds = find(V0+Vtend<p.W*p.L*p.Hmin);
+        iter_count = iter_count+1;
     end
 
     if exist('i_from_box','Var') && ~isempty(find(QVmin ~=0,1))
