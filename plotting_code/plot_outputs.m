@@ -6,11 +6,13 @@ if isfield(fjord_model1.m,'time_axis')
     runtime_axis = fjord_model1.m.time_axis;
     t0 = convertTo(runtime_axis(1),'datenum');
     taxis1 = NaT([size(fjord_model1.s.H,2),1]);
+    isdays='';
     for i_time=1:length(taxis1)
         taxis1(i_time) = datetime(t0+model_runtime1(i_time),'ConvertFrom','datenum');
     end
 else
     taxis1=fjord_model1.s.t;
+    isdays = ' (days)';
 end
 
 layer_lbls =cell(size(fjord_model1.a.H0));
@@ -31,7 +33,7 @@ ylabel('Thickness (m)');
 subplot(m,n,2); plot(taxis1,fjord_model1.s.T,'linewidth',1.5); hold on; ylim(Tlims)
 ylabel('Temperature ($^o$C)'); 
 subplot(m,n,3); plot(taxis1,fjord_model1.s.S,'linewidth',1.5); hold on; ylim(Slims)
-ylabel('Salinity'); xlabel('Model time (days)')
+ylabel('Salinity'); xlabel(['Model time',isdays])
 hl = legend(layer_lbls,'Location','southeast'); title(hl,'Layer'); hl.NumColumns=2;
 if nargin > 1
     model_runtime2 = fjord_model2.s.t(1:size(fjord_model1.s.H,2));
