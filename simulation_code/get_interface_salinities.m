@@ -1,4 +1,4 @@
-function Sint =  get_interface_salinities(zi,Ti,Si,Hi,p)
+function Sint =  get_interface_salinities(zi,Ti,Si,p)
     % getting current "shelf box profile" for nudging  
     % z_interfaces=-cumsum(Hi(1:end-1-has_sill));    
     % Sint = interp1(zi,Si,z_interfaces,"linear");    

@@ -113,7 +113,7 @@ for i = 1:length(t)-1
 
     % real-time nudging, i.e., nudging values are updated to mimic the current shelf conditions
     if ~isnan(p.trelax) && p.real_time_nudge
-        p.Snudge = get_interface_salinities(f.zs,f.Ts(:,i),f.Ss(:,i),H(:,i),p);
+        p.Snudge = get_interface_salinities(f.zs,f.Ts(:,i),f.Ss(:,i),p);
     end
 
     % Plot model evolution (mainly debugging).
