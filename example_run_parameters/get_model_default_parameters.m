@@ -49,5 +49,4 @@ function [p,a] = get_model_default_parameters()
     a.H0   = [50,100,350,300]; % thicknesses of all 4 layers
 
     p.plot_runtime=0;
-    p.debug=0;
 end

@@ -25,8 +25,7 @@ mkdir(['./output_', name]);
 % Save the input parameters and initial conditions
 save(['./output_', name, '/run_params.mat'], 'p', 'a')
 
-% Run the model (output is saved automatically).
+% Run the model (output is no longer saved automatically).
 example_run.m.name=name;
-p.plot_runtime = 0;
-p.debug = 1;
-example_run.s = boxmodel(example_run.p, example_run.f, example_run.a, example_run.t);
+p.plot_runtime = 1;
+[example_run.s,example_run.f] = boxmodel(example_run.p, example_run.f, example_run.a, example_run.t);
