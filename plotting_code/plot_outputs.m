@@ -31,7 +31,7 @@ figure('Position',[20 20 800 600],'Name',fjord_model1.m.name);
 subplot(m,n,1); plot(taxis1,fjord_model1.s.H,'linewidth',1.5); hold on; ylim(Hlims)
 ylabel('Thickness (m)'); 
 subplot(m,n,2); plot(taxis1,fjord_model1.s.T,'linewidth',1.5); hold on; ylim(Tlims)
-ylabel('Temperature ($^o$C)'); 
+ylabel('Temperature ($^o$C)','interpreter','latex'); 
 subplot(m,n,3); plot(taxis1,fjord_model1.s.S,'linewidth',1.5); hold on; ylim(Slims)
 ylabel('Salinity'); xlabel(['Model time',isdays])
 hl = legend(layer_lbls,'Location','southeast'); title(hl,'Layer'); hl.NumColumns=2;
