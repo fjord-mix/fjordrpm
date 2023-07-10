@@ -111,8 +111,7 @@ for i = 1:length(t)-1
     % Step icebergs forwards.
     I(:,i+1) = I(:,i)+dt*p.sid*((f.D(i)/(p.W*p.L))*f.xi-M(:,i).*I(:,i)-p.E0*I(:,i));
 
-    % real-time nudging, i.e., nudging values are updated to mimic the
-    % current shelf conditions
+    % real-time nudging, i.e., nudging values are updated to mimic the current shelf conditions
     if ~isnan(p.trelax) && p.real_time_nudge
         p.Snudge = get_interface_salinities(f.zs,f.Ts(:,i),f.Ss(:,i),H(:,i),p);
     end
@@ -130,14 +129,6 @@ for i = 1:length(t)-1
         s.status = 1; % status == 1 means there was an error
         break
     end
-
-    % check for possible blow up
-    %     catch ME
-    %         fprintf('Model error at timestep %d: %s\n',i,ME.message)
-    %         disp('Breaking out of loop and returning outputs until the previous time step')
-    %         s.status = 1; % status == 1 means there was an error
-    %         break
-    %     end
 
 end
 
@@ -176,16 +167,11 @@ s.phi = phi(:,1:int:end);
 s.QVk = QVk(:,1:int:end);
 s.QTk = QTk(:,1:int:end);
 s.QSk = QSk(:,1:int:end);
-% derive 21 and 32 fluxes from these
-% s.QV21 = s.QVk(1,:);
-% s.QV32 = s.QVk(1,:)+s.QVk(2,:);
 
 % artificial fluxes
 s.QVb = QVb(:,1:int:end);
 s.QTb = QTb(:,1:int:end);
 s.QSb = QSb(:,1:int:end);
-% 43 flux
-% s.QV43 =-s.QVb(4,:);
 
 % iceberg fluxes
 s.QIi = QIi(:,1:int:end);
