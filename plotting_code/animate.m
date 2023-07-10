@@ -1,18 +1,19 @@
-function animate(name, nframes)
+function animate(input_path,output_path,output_name,nframes)
 
 % ANIMATE Animate the results of a box model simulation.
-%   ANIMATE(NAME, NFRAMES) creates a video mp4 file of a box model
+%   ANIMATE(INPUT_PATH,OUTPUT_PATH,OUTPUT_NAME, NFRAMES) creates a video mp4 file of a box model
 %   simulation showing the temperature and salinity in each layer, the
 %   potential and the subglacial discharge.
 
 %% File setup
 % Load the results of the required box model simulation.
-load(['./output_', name, '/run_params.mat'], 'p');
-load(['./output_', name, '/out_boxmodel.mat'], 's', 'f');
+close all
+input = load(input_path).fjord_run;
 
-% Set location for animation files.
-addpath(['output_', name])
-outputfile = ['output_', name, '/output_animation'];
+names = fieldnames(input);
+for i=1:length(names)
+    eval([names{i} '=input.' names{i},';']);
+end
 
 %% Plotting features
 % Change default plot line width to 1.
@@ -58,7 +59,9 @@ cbh = 0.02;
 cbw = 0.2;
 
 %% Create animation files
-for i = 1:round((length(s.t)-1)/nframes):length(s.t)-1
+dt = round((length(s.t)-1)/nframes);
+if dt < 1, dt=1; end
+for i = 1:dt:length(s.t)-1
     figure(); 
     set(gcf, 'Visible', 'off');
 
@@ -90,7 +93,7 @@ for i = 1:round((length(s.t)-1)/nframes):length(s.t)-1
     pcolor([0, x0], f.zs, [f.Ss(:, i), f.Ss(:, i)]); 
     shading flat;
     xlim([0, x0]); ylim(zlims);
-    set(gca, 'box', 'on', 'fontsize', fs, 'xtick', [], 'ytick', [], 'yticklabel', {}, 'clipping', 'off');
+    set(gca, 'box', 'on', 'fontsize', fs, 'xtick', [], 'ytick', [], 'yticklabel', {});%, 'clipping', 'off');
     title('shelf', 'fontsize', fs);
     colorbar(a2, 'southoutside', 'position', [lspace+0.5*(pw1+hspace1+pw2)-cbw/2, cby, cbw, cbh], 'fontsize', fs);
     clim(a2, Slims);
@@ -116,7 +119,7 @@ for i = 1:round((length(s.t)-1)/nframes):length(s.t)-1
     pcolor([0, x0], f.zs, [f.Ts(:, i), f.Ts(:, i)]); 
     shading flat;
     xlim([0, x0]); ylim(zlims);
-    set(gca, 'box', 'on', 'fontsize', fs, 'xtick', [], 'ytick', [], 'yticklabel', {}, 'clipping', 'off');
+    set(gca, 'box', 'on', 'fontsize', fs, 'xtick', [], 'ytick', [], 'yticklabel', {});%, 'clipping', 'off');
     title('shelf', 'fontsize', fs);
     colorbar(a4, 'southoutside', 'position', [lspace+pw1+2*hspace1+pw2+0.5*(pw1+hspace1+pw2)-cbw/2, cby, cbw, cbh], 'fontsize', fs);
     colormap(a4, jet); 
@@ -159,16 +162,16 @@ for i = 1:round((length(s.t)-1)/nframes):length(s.t)-1
     else
         savenum = num2str(i);
     end
-    saveplot(25, 10, 300, [outputfile, '_', savenum, '.png']);
+    saveplot(25, 10, 300, [output_path, output_name, '_', savenum, '.png']);
     close all;
 
 end
 
 %% Write video
-video = VideoWriter(['output_', name, '/animation_', name, '.mp4'], 'MPEG-4');
+video = VideoWriter([output_path, output_name, '.mp4'], 'MPEG-4');
 video.FrameRate = 10;
 open(video);
-for i = 1:round((length(s.t)-1)/nframes):length(s.t)-1
+for i = 1:dt:length(s.t)-1
 
     if i < 10
         savenum = ['00', num2str(i)];
@@ -178,11 +181,11 @@ for i = 1:round((length(s.t)-1)/nframes):length(s.t)-1
         savenum = num2str(i);
     end
 
-    I = imread([outputfile, '_', savenum, '.png']);
+    I = imread([output_path, output_name, '_', savenum, '.png']);
     writeVideo(video, I);
 
 end
 close(video);
-delete([outputfile, '*.png'])
+delete([output_path, output_name ,'*.png'])
 
 end
