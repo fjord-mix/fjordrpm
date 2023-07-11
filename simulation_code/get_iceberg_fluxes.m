@@ -12,7 +12,7 @@ if p.M0==0 % if no icebergs
 
 else
     % melting in boxes
-    ints = [0;cumsum(H0)];
+    ints = [0;-cumsum(H0)];
     zj = 0.5*(ints(1:end-1)+ints(2:end)); % mean depth of box
     Tf = p.l1*S0 + p.l2 + p.l3*zj; % local freezing point
 
@@ -25,10 +25,10 @@ else
     % do numerical integral to get melt fluxes
     for k=1:length(ints)-1
         inds = find(zi0<=ints(k) & zi0>=ints(k+1));
-        QIi0(k) = p.W*p.L*p.M0*(T0(k)-Tf(k))*trapz(zi0(inds),Ii0(inds)); % modified Tf0 -> Tf
+        QIi0(k) = p.W*p.L*p.M0*(T0(k)-Tf(k))*trapz(zi0(inds),Ii0(inds));
     end
     QTi0 = -QIi0*p.l/p.cw;
-    QSi0 = -QIi0.*S0'; % modified S0 -> S0'
+    QSi0 = -QIi0.*S0';
 
     % melt profile defined on zi reference depths
     M0 = 0*zi;
