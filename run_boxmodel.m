@@ -15,7 +15,7 @@ output_folder='./outputs'; % choose where to save your model outputs here
 % 3. Subglacial discharge
 % 4. Data-driven example: Kangerlussuaq during 2010-2018
 
-example_run = 3;
+example_run = 0;
 
 switch example_run
     case 1
