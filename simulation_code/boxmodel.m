@@ -1,4 +1,4 @@
-function [s,f] = boxmodel(p,f,a,t,name)
+function [s,f] = boxmodel(p,f,a,t)
 
 % BOXMODEL Box model simulation.
 %   [S,F] = BOXMODEL(P,F,A,T) runs the box model simulation for constant parameters structure P,
@@ -19,11 +19,11 @@ VS(:,1) = V(:,1).*S(:,1); % salt
 % Preallocate variables
 [QVg,QTg,QSg,QVs,QTs,QSs,QVk,QTk,QSk,QVb,QTb,QSb,QIi,QTi,QSi,Te,Se] = deal(zeros(size(H,1),length(t)-1));
 phi = zeros(size(H,1)-p.sill,length(t)-1);
-M = zeros(size(f.zi,1),length(t)-1);
+M = zeros(length(f.zi),length(t)-1);
 
 %% Error checks
 % Check shelf oscillation parameters have been set up correctly.
-if p.zd > 0 && p.tw  <= 0
+if (isfield(p,'zd') && p.zd > 0) && (isfield(p,'tw') && p.tw  <= 0)
     disp('Error: must have positive oscillation period if oscillation strength is set.')
     s.status = 1;
     return
@@ -37,7 +37,7 @@ if any([length(H) ~= p.N+p.sill,length(T) ~= p.N+p.sill,length(S) ~= p.N+p.sill]
 end
 
 % Check bottom box is consistent with sill depth.
-if p.sill == 1 && H(end,1) ~= p.H-p.silldepth
+if p.sill == 1 && (H(end,1) - (p.H-abs(p.silldepth))) > 1e-4
     disp('Error: when p.sill=1, bottom box must have thickness p.H-p.silldepth');
     s.status = 1; % status == 1 means there was an error
     return
@@ -51,7 +51,7 @@ if abs(sum(H(:,1))-p.H) > 1e-10
 end
 
 % If layer nudging active, check we have the required nudging inputs.
-if ~isnan(p.trelax) && length(p.Snudge) ~= p.N-1
+if ~isnan(p.trelax) && length(p.Snudge) < p.N-1
     disp('Error: incorrect number of nudging values');
     s.status = 1; % status == 1 means there was an error
     return
@@ -70,7 +70,8 @@ f.Ss = Ss_hr;
 %%
 if p.plot_runtime
     % hf_track = monitor_boxmodel([],1,H,T,S,f);
-    hf_track = show_box_model([],1,t,H,T,S,[],[],[],[],f);
+    % hf_track = show_boxmodel([],1,t,H,T,S,[],[],[],[],f);
+    s_bnds = [min(f.Ss(:)) max(f.Ss(:))+0.1];
 end
 
 %% The main loop
@@ -110,10 +111,16 @@ for i = 1:length(t)-1
     % Step icebergs forwards.
     I(:,i+1) = I(:,i)+dt*p.sid*((f.D(i)/(p.W*p.L))*f.xi-M(:,i).*I(:,i)-p.E0*I(:,i));
 
+    % real-time nudging, i.e., nudging values are updated to mimic the current shelf conditions
+    if ~isnan(p.trelax) && p.real_time_nudge
+        p.Snudge = get_interface_salinities(f.zs,f.Ts(:,i),f.Ss(:,i),p);
+    end
+
     % Plot model evolution (mainly debugging).
     if p.plot_runtime
         % hf_track = monitor_boxmodel(hf_track,i,H,T,S,f);
-        hf_track = show_box_model(hf_track,i,t,H,T,S,QVs,QVg,QVk,QVb,f);
+        % hf_track = show_box_model(hf_track,i,t,H,T,S,QVs,QVg,QVk,QVb,f);
+        plot_debug_profile(i,t,f,p,H,S,s_bnds);
     end
 
     % Break from loop if any layer thickness goes below p.Hmin.
@@ -122,14 +129,6 @@ for i = 1:length(t)-1
         s.status = 1; % status == 1 means there was an error
         break
     end
-
-    % check for possible blow up
-    %     catch ME
-    %         fprintf('Model error at timestep %d: %s\n',i,ME.message)
-    %         disp('Breaking out of loop and returning outputs until the previous time step')
-    %         s.status = 1; % status == 1 means there was an error
-    %         break
-    %     end
 
 end
 
@@ -168,16 +167,11 @@ s.phi = phi(:,1:int:end);
 s.QVk = QVk(:,1:int:end);
 s.QTk = QTk(:,1:int:end);
 s.QSk = QSk(:,1:int:end);
-% derive 21 and 32 fluxes from these
-% s.QV21 = s.QVk(1,:);
-% s.QV32 = s.QVk(1,:)+s.QVk(2,:);
 
 % artificial fluxes
 s.QVb = QVb(:,1:int:end);
 s.QTb = QTb(:,1:int:end);
 s.QSb = QSb(:,1:int:end);
-% 43 flux
-% s.QV43 =-s.QVb(4,:);
 
 % iceberg fluxes
 s.QIi = QIi(:,1:int:end);
@@ -187,7 +181,7 @@ s.M = M(:,1:int:end);
 
 % for iceberg fluxes also calculate and save fjord-integrated values
 s.IT = p.W*p.L*trapz(f.zi,s.I); % fjord iceberg volume
-s.MT = p.W*p.L*trapz(f.zi,s.M.*s.I); % total iceberg melt flux
+s.MT = p.W*p.L*trapz(f.zi,s.M(1:int:size(s.I,2)).*s.I); % total iceberg melt flux
 s.ET = p.W*p.L*trapz(f.zi,p.E0*s.I); % total iceberg export flux
 
 % return forcing on same timestepping
@@ -196,5 +190,4 @@ f.Ts = f.Ts(:,1:int:end-1);
 f.Qsg = f.Qsg(1:int:end-1);
 f.D = f.D(1:int:end-1);
 
-%% Save output
-save(['./output_',name,'/out_boxmodel.mat'],'s','f');
+end
