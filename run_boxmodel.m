@@ -41,10 +41,10 @@ switch example_run
         fjord_run = load('./example_input_data/KF_ctrl.mat').fjord_ctrl;
         name = 'example_Kangerlussuaq_2010_2018';
     case 5
-        fjord_run = load('./example_input_data/example_benchmark_fjords_3layers.mat').fjord_model(which_fjord);
+        fjord_run = load('./input_data_examples/example_benchmark_fjords_3layers.mat').fjord_model(which_fjord);
         name = fjord_run.m.name;
     case 6        
-        fjord_run = load('./example_input_data/example_benchmark_fjords_2layers.mat').fjord_model(which_fjord);
+        fjord_run = load('./input_data_examples/example_benchmark_fjords_2layers.mat').fjord_model(which_fjord);
         name = fjord_run.m.name;
     otherwise
         fjord_run = test_changes;
