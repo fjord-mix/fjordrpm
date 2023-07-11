@@ -181,7 +181,7 @@ s.M = M(:,1:int:end);
 
 % for iceberg fluxes also calculate and save fjord-integrated values
 s.IT = p.W*p.L*trapz(f.zi,s.I); % fjord iceberg volume
-s.MT = p.W*p.L*trapz(f.zi,s.M(1:int:size(s.I,2)).*s.I); % total iceberg melt flux
+s.MT = p.W*p.L*trapz(f.zi,s.M(:,1:size(s.I,2)).*s.I); % total iceberg melt flux
 s.ET = p.W*p.L*trapz(f.zi,p.E0*s.I); % total iceberg export flux
 
 % return forcing on same timestepping
