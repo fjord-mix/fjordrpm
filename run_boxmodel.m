@@ -14,8 +14,18 @@ output_folder='./outputs'; % choose where to save your model outputs here
 % 2. Nudging based on target layers based on layer salinity
 % 3. Subglacial discharge
 % 4. Data-driven example: Kangerlussuaq during 2010-2018
+% 5. Data-driven example: Benchmark fjords during 2010-2018 using 3 layers
+%    above the sill (if exists).
+% 6. Data-driven example: Benchmark fjords during 2010-2018 using 2 layers
+%    above the sill (if exists).
+%
+%    The last two examples have 4 fjords ready to be run: 
+%    (1) Kangerlussuaq, (2) Sermilik, (3) Kangersuneq, (4) Ilulissat
+%    Be mindful that these are not 100% "plug and play". The user
+%    needs to choose which fjord from the fjord_model array to run
 
-example_run = 0;
+example_run = 5;
+which_fjord = 1; % used for example_run 5 and 6
 
 switch example_run
     case 1
@@ -30,6 +40,12 @@ switch example_run
     case 4
         fjord_run = load('./example_input_data/KF_ctrl.mat').fjord_ctrl;
         name = 'example_Kangerlussuaq_2010_2018';
+    case 5
+        fjord_run = load('./example_input_data/example_benchmark_fjords_3layers.mat').fjord_model(which_fjord);
+        name = fjord_run.m.name;
+    case 6        
+        fjord_run = load('./example_input_data/example_benchmark_fjords_2layers.mat').fjord_model(which_fjord);
+        name = fjord_run.m.name;
     otherwise
         fjord_run = test_changes;
         name = 'test_fjord_model';
