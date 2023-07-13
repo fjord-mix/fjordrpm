@@ -8,8 +8,11 @@ function animate(input_path,output_path,output_name,nframes)
 %% File setup
 % Load the results of the required box model simulation.
 close all
-input = load(input_path).fjord_run;
-
+if isstruct(input_path)
+    input = input_path;
+else
+    input = load(input_path).fjord_run;
+end
 names = fieldnames(input);
 for i=1:length(names)
     eval([names{i} '=input.' names{i},';']);
