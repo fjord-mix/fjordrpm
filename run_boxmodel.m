@@ -24,7 +24,7 @@ output_folder='./outputs'; % choose where to save your model outputs here
 %    Be mindful that these are not 100% "plug and play". The user
 %    needs to choose which fjord from the fjord_model array to run
 
-example_run = 5;
+example_run = 1;
 which_fjord = 1; % used for example_run 5 and 6
 
 switch example_run

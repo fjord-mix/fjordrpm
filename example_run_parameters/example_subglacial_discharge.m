@@ -18,7 +18,7 @@ p.Snudge = 0.*ones(1, p.N-1); % controls layer thickness for nudging, 0 if no nu
 
 %% Time step
 p.dt    = 0.1; % time stepping (units are days)
-p.t_end = 100; % time to end the simulation
+p.t_end = 1000; % time to end the simulation
 t       = 0:p.dt:p.t_end;
 
 %% Forcing parameters: idealised forcing

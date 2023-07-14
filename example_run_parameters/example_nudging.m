@@ -17,7 +17,7 @@ p.Snudge = [32,33,34,34.5,34.8].*ones(1, p.N-1); % controls layer thickness for 
 
 %% Time step
 p.dt    = 0.1; % time stepping (units are days)
-p.t_end = 10; % time to end the simulation
+p.t_end = 100; % time to end the simulation
 t       = 0:p.dt:p.t_end;
 
 %% Forcing parameters: idealised forcing
