@@ -30,7 +30,7 @@ else
             % richardson number
             R = 0.5*(H0(k+1)+H0(k))*B./(ul-uu).^2;
             % vertical entrainment velocity
-            % capped at 4e-5
+            % capped at p.wmax
             w = min(p.K0*abs(ul-uu).*R.^(-0.75),p.wmax);
         else
             w = 1.*ones(size(x)).*p.wmax; % so if unstable, we use the min mixing velocity
