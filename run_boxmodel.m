@@ -18,14 +18,17 @@ output_folder='./outputs'; % choose where to save your model outputs here
 %    above the sill (if exists).
 % 6. Data-driven example: Benchmark fjords during 2010-2018 using 2 layers
 %    above the sill (if exists).
+% 7. Data-driven example: same as 5, but not taking care of some model
+%    parametres (e.g., number of layers), which eventually causes the model
+%    to crash. Not everything is perfect!
 %
-%    The last two examples have 4 fjords ready to be run: 
+%    The last three examples have 4 fjords ready to be run: 
 %    (1) Kangerlussuaq, (2) Sermilik, (3) Kangersuneq, (4) Ilulissat
 %    Be mindful that these are not 100% "plug and play". The user
 %    needs to choose which fjord from the fjord_model array to run
 
-example_run = 1;
-which_fjord = 1; % used for example_run 5 and 6
+example_run = 7;
+which_fjord = 3; % used for example_run 5 to 7
 
 switch example_run
     case 1
@@ -38,24 +41,27 @@ switch example_run
         fjord_run = example_subglacial_discharge;
         name = 'example_subglacial_discharge';
     case 4
-        fjord_run = load('./example_input_data/KF_ctrl.mat').fjord_ctrl;
-        name = 'example_Kangerlussuaq_2010_2018';
+        fjord_run = load('./input_data_examples/KF_ctrl.mat').fjord_ctrl;
+        name = 'example_Kangerlussuaq_2010_2018_3layers';
     case 5
         fjord_run = load('./input_data_examples/example_benchmark_fjords_3layers.mat').fjord_model(which_fjord);
-        name = fjord_run.m.name;
+        name = ['example_',fjord_run.m.name,'_2010_2018_3layers'];
     case 6        
         fjord_run = load('./input_data_examples/example_benchmark_fjords_2layers.mat').fjord_model(which_fjord);
-        name = fjord_run.m.name;
+        name = ['example_',fjord_run.m.name,'_2010_2018_2layers'];
+    case 7
+        fjord_run = load('./input_data_examples/example_benchmark_fjords_bad_3layers.mat').fjords_bad(which_fjord);
+        name = ['bad_',fjord_run.m.name];
     otherwise
         fjord_run = test_changes;
         name = 'test_fjord_model';
 end
 
 % use the plot runtime at your discretion. It substantially slows down the simulation, because it spends most of the time plotting!
-fjord_run.p.plot_runtime = 0; 
+fjord_run.p.plot_runtime = 1; 
 
 fjord_run.m.name = name;
-[fjord_run.s,fjord_run.f] = boxmodel(fjord_run.p, fjord_run.f, fjord_run.a, fjord_run.t);
+[fjord_run.s,fjord_run.f] = boxmodel(fjord_run.p, fjord_run.t, fjord_run.f, fjord_run.a);
 
 %% Saving results
 mkdir(output_folder);
@@ -72,3 +78,6 @@ animate([output_folder,'/model_results/', name, '.mat'],[output_folder,'/animati
 % Example plot that can be generated from the model outputs
 plot_outputs(fjord_run);
 exportgraphics(gcf,[output_folder,'/figures/',name,'.pdf'],'ContentType','vector','BackgroundColor','none')
+
+plot_TS_boxmodel(fjord_run);
+exportgraphics(gcf,[output_folder,'/figures/TS_',name,'.pdf'],'ContentType','vector','BackgroundColor','none')
