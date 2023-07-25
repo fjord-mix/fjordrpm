@@ -1,4 +1,4 @@
-function plot_outputs(fjord_model1,fjord_model2)
+function plot_outputs(fjord_model1,plot_forcing)
 
 if ~isfield(fjord_model1.m,'name'), fjord_model1.m.name='Unamed'; end
 model_runtime1 = fjord_model1.s.t(1:size(fjord_model1.s.H,2));
@@ -35,18 +35,14 @@ ylabel('Temperature ($^o$C)','interpreter','latex');
 subplot(m,n,3); plot(taxis1,fjord_model1.s.S,'linewidth',1.5); hold on; ylim(Slims)
 ylabel('Salinity'); xlabel(['Model time',isdays])
 hl = legend(layer_lbls,'Location','southeast'); title(hl,'Layer'); hl.NumColumns=2;
-if nargin > 1
-    model_runtime2 = fjord_model2.s.t(1:size(fjord_model1.s.H,2));
-    runtime_axis = fjord_model2.m.time_axis;
-    t0 = convertTo(runtime_axis(1),'datenum');
-    taxis2 = NaT([size(fjord_model2.s.H,2),1]);
-    for i_time=1:length(taxis2)
-        taxis2(i_time) = datetime(t0+model_runtime2(i_time),'ConvertFrom','datenum');
+if nargin > 1 && plot_forcing
+    fjord_temp=NaN(size(fjord_model1.s.T));
+    fjord_salt=NaN(size(fjord_model1.s.S));
+    for i_time=1:length(taxis1)
+        [fjord_temp(:,i_time), fjord_salt(:,i_time)] = bin_ocean_profiles(fjord_model1.f.Ts(:,i_time),fjord_model1.f.Ss(:,i_time),-fjord_model1.f.zs,fjord_model1.s.H(:,i_time)',fjord_model1.p);
     end
-
-    subplot(m,n,1); plot(taxis2,fjord_model2.s.H,'linewidth',1.5,'LineStyle','--'); 
-    subplot(m,n,2); plot(taxis2,fjord_model2.s.T,'linewidth',1.5,'LineStyle','--');
-    subplot(m,n,3); plot(taxis2,fjord_model2.s.S,'linewidth',1.5,'LineStyle','--');
+    subplot(m,n,2); plot(taxis1,fjord_temp,'linewidth',1.5,'linestyle',':')
+    subplot(m,n,3); plot(taxis1,fjord_salt,'linewidth',1.5,'linestyle',':')
 end
 
 end
