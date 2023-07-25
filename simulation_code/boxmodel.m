@@ -1,13 +1,22 @@
-function [s,f] = boxmodel(p,f,a,t)
+function [s,f] = boxmodel(p,t,f,a,path_out)
 
 % BOXMODEL Box model simulation.
-%   [S,F] = BOXMODEL(P,F,A,T) runs the box model simulation for constant parameters structure P,
-%   forcings structure F, initial conditions structure I and time variable
-%   T and returns solution structure S and forcing structure F.
+%   [S,F] = BOXMODEL(P,T,F,A,PATH_OUT) runs the box model simulation for parameters structure P,
+%   time T, forcings structure F, initial conditions structure A. Returns solution structure
+%   S and forcing structure F in the same time steps as S. If PATH_OUT is
+%   specified, will save a file.
+%   If F and/or A are not specified, default idealised values will be used.
 
 s.status = 0; % initial assumption that the model ran successfully
 
 %% Initialise variables
+if nargin < 3, f = get_idealised_forcing(p, t); end
+if isempty(f), f = get_idealised_forcing(p, t); end % we cannot use an OR statement here
+
+if nargin < 4, a = get_initial_conditions(p, f); end
+if isempty(a), a = get_initial_conditions(p, f); end % we cannot use an OR statement here
+dt = p.dt;
+
 H(:,1) = a.H0; % thickness
 T(:,1) = a.T0; % temperature
 S(:,1) = a.S0; % salinity
@@ -98,7 +107,7 @@ for i = 1:length(t)-1
         get_iceberg_fluxes(H(:,i),T(:,i),S(:,i),I(:,i),f.zi,p);
 
     % Step fjord forwards.
-    dt = t(i+1)-t(i);
+    % dt = t(i+1)-t(i); % replaced by pre-defined dt because of problems when running in parallel
     V(:,i+1)  = V(:,i)+dt*p.sid*(QVg(:,i)-QVs(:,i)+QVk(:,i)+QVb(:,i));
     VT(:,i+1) = VT(:,i)+dt*p.sid*(QTg(:,i)-QTs(:,i)+QTk(:,i)+QTb(:,i)+QTi(:,i));
     VS(:,i+1) = VS(:,i)+dt*p.sid*(QSg(:,i)-QSs(:,i)+QSk(:,i)+QSb(:,i)+QSi(:,i));
@@ -189,5 +198,14 @@ f.Ss = f.Ss(:,1:int:end-1);
 f.Ts = f.Ts(:,1:int:end-1);
 f.Qsg = f.Qsg(1:int:end-1);
 f.D = f.D(1:int:end-1);
+
+%% Save output if a path+file name are provided
+if nargin > 4
+    fjord_output.s = s;
+    fjord_output.f = s;
+    fjord_output.t = s;
+    fjord_output.p = p;
+    save(path_out,'fjord_output','-v7.3'); % v7.3 allows files > 2GB
+end
 
 end
