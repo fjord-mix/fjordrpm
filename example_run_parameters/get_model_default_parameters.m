@@ -3,6 +3,7 @@ function [p,a] = get_model_default_parameters()
 % GET_MODEL_DEFAULT_PARAMETERS  Loads default parameters for boxmodel
 %   [p,a] = GET_MODEL_DEFAULT_PARAMETERS sets the default box model parameters
 %   for most examples. The values can be modified afterwards for specific runs
+    
 
     %% Physical constants - these should not me changed in general
     p.g = 9.81;        % gravity (ms^-2)
@@ -25,7 +26,7 @@ function [p,a] = get_model_default_parameters()
     p.nu0 = 25;        % iceberg volume profile coefficient (-)
     p.E0 = 1e-7;       % iceberg export efficiency (s^-1)
 
-    % artificial parameters
+    %% artificial parameters
     p.wmax = 4e-5;         % maximum vertical mixing velocity    
     p.trelax = NaN;        % nudging relaxation time in days
     p.real_time_nudge = 0; % set to 1 to update nudging values from current shelf conditions
@@ -35,7 +36,7 @@ function [p,a] = get_model_default_parameters()
     p.sigma_bnds = [26.6, 27.3, 27.5, 27.6]; % adds dummy values in case of extra layers
     
 
-    % idealised fjord geometry
+    %% idealised fjord geometry
     p.W = 6e3;          % fjord width
     p.L = 80e3;         % fjord length
     p.H = 800;          % fjord depth
@@ -43,10 +44,31 @@ function [p,a] = get_model_default_parameters()
     p.zgl = -800;       % grounding line depth
     p.Hmin = 25;        % min box thickness
 
-    % initial thicknesses    
+    %% Idealised-forcing parameters
+    %  these should not be used except for when no forcing is provided to the model
+
+    % Shelf forcing parameters
+    p.z0 = 50; % sets strength of shelf stratification
+    p.zd = 30; % sets strength of shelf oscillation, zero if no oscillation in shelf
+    p.tw = 10; % oscillation period of shelf forcing (days)
+    p.sf = @(S1, S2, Z, Z0) S1 - (S1 - S2)*exp(Z./Z0); % functional form of the shelf stratification
+    p.Stop = 30; % shelf salinity at the ocean surface
+    p.Sbottom = 35; % shelf salinity at the ocean floor
+    p.Ttop = 3; % shelf temperature at the ocean surface
+    p.Tbottom = 3; % shelf temperature at the ocean floor
+
+    % Glacier forcing parameters    
+    p.Qv0 = 0; % volumetric flow rate of subglacial discharge
+    p.gf = @(T, Q) Q*ones(size(T)); % functional form of subglacial discharge rate depending on time
+
+    % Iceberg forcing parameters
+    p.if = @(NU, H, Z) (NU/H)*exp(NU*Z/H)/(1-exp(-NU)); % functional form of iceberg depth profile    
+
+    %% initial thicknesses    
     p.N    = 3;    % 3 layers above the sill
     p.sill = 1;    % and sill exists, totalling 4 layers
     a.H0   = [50,100,350,300]; % thicknesses of all 4 layers
 
+    p.dt=1;
     p.plot_runtime=0;
 end
