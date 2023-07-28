@@ -21,9 +21,9 @@ end
 
 %% Run the model (output is saved automatically).
 % starts parallel pool
-if ~exist('poolobj','var')
-    poolobj =  parpool(num_workers); 
-    addAttachedFiles(gcp,regexp(genpath(model_path), ':', 'split'));
+checkPool = gcp('nocreate'); % If no pool, do not create one
+if isempty(checkPool) % if there is no pool
+    parpool(num_workers);
 end
 
 parfor INDEX = 1:length(parameter_space)            
