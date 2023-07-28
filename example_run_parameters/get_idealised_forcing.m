@@ -7,11 +7,11 @@ function f = get_idealised_forcing(p, t)
 %% Shelf forcing
 f.zs = linspace(-p.H, 0, abs(p.H)+1); 
 if p.zd == 0
-    f.zi = p.z0*ones(size(t)); % no oscillation
+    f.zo = p.z0*ones(size(t)); % no oscillation
 else
-    f.zi = p.z0+(p.zd/2)*sin(2*pi*t/p.tw); % oscillation
+    f.zo = p.z0+(p.zd/2)*sin(2*pi*t/p.tw); % oscillation
 end
-[ZI, ZS] = meshgrid(f.zi, f.zs);
+[ZI, ZS] = meshgrid(f.zo, f.zs);
 f.Ss = p.sf(p.Sbottom, p.Stop, ZS, ZI);
 f.Ts = p.sf(p.Tbottom, p.Ttop, ZS, ZI); 
 
