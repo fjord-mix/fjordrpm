@@ -50,18 +50,19 @@ function [p,a] = get_model_default_parameters()
     % Shelf forcing parameters
     p.z0 = 50; % sets strength of shelf stratification
     p.zd = 30; % sets strength of shelf oscillation, zero if no oscillation in shelf
-    p.tw = 10; % oscillation period of shelf forcing (days)
-    p.sf = @(S1, S2, Z, Z0) S1 - (S1 - S2)*exp(Z./Z0); % functional form of the shelf stratification
+    p.tw = 10; % oscillation period of shelf forcing (days)    
     p.Stop = 30; % shelf salinity at the ocean surface
     p.Sbottom = 35; % shelf salinity at the ocean floor
     p.Ttop = 3; % shelf temperature at the ocean surface
     p.Tbottom = 3; % shelf temperature at the ocean floor
+    p.sf = @(S1, S2, Z, Z0) S1 - (S1 - S2)*exp(Z./Z0); % functional form of the shelf stratification
 
     % Glacier forcing parameters    
     p.Qv0 = 0; % volumetric flow rate of subglacial discharge
     p.gf = @(T, Q) Q*ones(size(T)); % functional form of subglacial discharge rate depending on time
 
     % Iceberg forcing parameters
+    p.D0 = 0; % volumetric iceberg discharge from glacier(s) into the fjord
     p.if = @(NU, H, Z) (NU/H)*exp(NU*Z/H)/(1-exp(-NU)); % functional form of iceberg depth profile    
 
     %% initial thicknesses    
