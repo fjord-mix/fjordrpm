@@ -76,7 +76,7 @@ if ~isnan(p.Hmin) % if minimum thickness active
                 i_thickest = i_thin+1;
             else
                 thick_layer = max(Has(i_thin-1),Has(i_thin+1));
-                i_thickest = find(Has == thick_layer);
+                i_thickest = find(Has == thick_layer);                
             end
             i_from_box(i_thin) = i_thickest; % recording from which box the water was taken
             
