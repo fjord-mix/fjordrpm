@@ -28,15 +28,15 @@ else
         if length(inds) == 1 % if there is only one data point, no need to average it
             Se0(k) = Ss0(inds);
             Te0(k) = Ts0(inds);
-        elseif H0(k) < 1*p.Hmin
+        else %H0(k) < 1*p.Hmin
             % sometimes a very thin layer with sharp gradients will
             % not yield satisfactory results. even with a high-res profile
             % so we use a simple average instead of numerical integration
             Se0(k) = mean(Ss0(inds));
             Te0(k) = mean(Ts0(inds));
-        else
-            Se0(k) = trapz(zs0(inds),Ss0(inds))/H0(k);
-            Te0(k) = trapz(zs0(inds),Ts0(inds))/H0(k);
+        % else
+        %     Se0(k) = trapz(zs0(inds),Ss0(inds))/H0(k);
+        %     Te0(k) = trapz(zs0(inds),Ts0(inds))/H0(k);
         end
         % plot(Ss0(inds),zs0(inds)); % to monitor interpolation results
     end
