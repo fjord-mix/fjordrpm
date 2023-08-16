@@ -66,10 +66,10 @@ if ~isnan(p.trelax) && length(p.Snudge) < p.N-1
     return
 end
 
-%% Increase the profile resolution for better accuracy when integrating
+%% Make the vertical profiles at regular depth intervals (1m)
 nz_orig = 1:length(f.zs);
-nz_hr = linspace(1,length(f.zs),100*length(f.zs));
-zs_hr = interp1(nz_orig,f.zs,nz_hr);
+zs_hr = min(f.zs):1:-0.5; % former nz_hr
+% zs_hr = interp1(nz_orig,f.zs,nz_hr);
 Ts_hr = interp1(f.zs,f.Ts,zs_hr);
 Ss_hr = interp1(f.zs,f.Ss,zs_hr);
 f.zs = zs_hr;
@@ -81,6 +81,7 @@ if p.plot_runtime
     % hf_track = monitor_boxmodel([],1,H,T,S,f);
     % hf_track = show_boxmodel([],1,t,H,T,S,[],[],[],[],f);
     s_bnds = [min(f.Ss(:)) max(f.Ss(:))+0.1];
+    plot_debug_profile(0,t,f,p,H,S,s_bnds);
 end
 
 %% The main loop
@@ -128,13 +129,13 @@ for i = 1:length(t)-1
     % Plot model evolution (mainly debugging).
     if p.plot_runtime
         % hf_track = monitor_boxmodel(hf_track,i,H,T,S,f);
-        % hf_track = show_box_model(hf_track,i,t,H,T,S,QVs,QVg,QVk,QVb,f);
+        % hf_track = show_boxmodel([],i,t,H,T,S,QVs,QVg,QVk,QVb,f);
         plot_debug_profile(i,t,f,p,H,S,s_bnds);
     end
 
     % Break from loop if any layer thickness goes below p.Hmin.
     if ~isempty(find(H(:,i+1) < p.Hmin,1))
-        disp('Error: layer thickness dropped below p.Hmin');
+        fprintf('Error: layer thickness dropped below p.Hmin at time step %d\n',i);
         s.status = 1; % status == 1 means there was an error
         break
     end
