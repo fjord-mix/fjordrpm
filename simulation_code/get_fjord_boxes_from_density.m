@@ -71,9 +71,9 @@ for k=2:length(H)-1               % goes down the boxes
         % display a warning
         if H(k+1) < 0
             H(k+1) = p.Hmin;
-            disp(['WARNING: bottom box was too thin and was artificially set to ',num2str(p.Hmin),'m!'])
-            disp(["This only happens if the sill is only ",num2str(p.Hmin),"m above the fjord's max depth."])
-            disp('This means that the fjord is was made slightly deeper than in reality')
+            % disp(['WARNING: bottom box was too thin and was artificially set to ',num2str(p.Hmin),'m!'])
+            % disp(["This only happens if the sill is only ",num2str(p.Hmin),"m above the fjord's max depth."])
+            % disp('This means that the fjord is was made slightly deeper than in reality')
         end
     end                            
 end    
