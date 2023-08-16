@@ -23,7 +23,9 @@ else
     % properties at first interface above grounding line
     % need special treatment because box might be partial if
     % grounding line does not coincide with box boundaries
-    k = k-1;
+    if k > 1 % treatment in case the grounding line is at the first box
+        k = k-1;
+    end
     Qp(k) = Qp(k+1) + p.P0^(2/3)*Qp(k+1)^(1/3)*gp(k+1)^(1/3)*(abs(p.zgl)-ints(k));
     Tp(k) = (Qp(k+1)*Tp(k+1)+(Qp(k)-Qp(k+1))*T0(k+1))/Qp(k);
     Sp(k) = (Qp(k+1)*Sp(k+1)+(Qp(k)-Qp(k+1))*S0(k+1))/Qp(k);
