@@ -45,8 +45,9 @@ else
     if isempty(knb)
         knb=1; 
     end % find neutral buoyancy box
-    % flux in boxes below grounding line and above neutral buoyancy are 0
+    % flux in boxes below grounding line and above neutral buoyancy are 0    
     inds = find((1:length(H0))>kgl | (1:length(H0))<knb);
+    
     QpV0(inds) = 0;
     QpT0(inds) = 0;
     QpS0(inds) = 0;
