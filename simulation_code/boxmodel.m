@@ -135,7 +135,22 @@ for i = 1:length(t)-1
 
     % Break from loop if any layer thickness goes below p.Hmin.
     if ~isempty(find(H(:,i+1) < p.Hmin,1))
-        fprintf('Error: layer thickness dropped below p.Hmin at time step %d\n',i);
+        thinnest_layer=find(H(:,i+1) < p.Hmin,1);
+        fprintf('Error: layer %d thickness dropped below p.Hmin at time step %d\n',thinnest_layer,i);
+        s.status = 1; % status == 1 means there was an error
+        break
+    end
+
+    % Break from loop if the sill layer is not acting as it was supposed to
+    % Check bottom box is consistent with sill depth.
+    if p.sill == 1 && (H(end,i+1) - (p.H-abs(p.silldepth))) > 1e-4
+        disp('Error: when p.sill=1, bottom box must have thickness p.H-p.silldepth');
+        s.status = 1; % status == 1 means there was an error
+        break
+    end
+    % Check sum of layer thicknesses is equal to fjord depth.
+    if abs(sum(H(:,i+1))-p.H) > 1e-10
+        disp('Error: box thicknesses must sum to fjord depth');
         s.status = 1; % status == 1 means there was an error
         break
     end
