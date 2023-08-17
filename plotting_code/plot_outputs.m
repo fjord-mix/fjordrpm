@@ -1,5 +1,6 @@
 function plot_outputs(fjord_model1,plot_forcing)
 
+if ~isfield(fjord_model1,'m'), fjord_model1.m.name='Unamed'; end
 if ~isfield(fjord_model1.m,'name'), fjord_model1.m.name='Unamed'; end
 model_runtime1 = fjord_model1.s.t(1:size(fjord_model1.s.H,2));
 if isfield(fjord_model1.m,'time_axis')
