@@ -3,6 +3,7 @@ function plot_outputs(fjord_model1,plot_forcing)
 if ~isfield(fjord_model1,'m'), fjord_model1.m.name='Unamed'; end
 if ~isfield(fjord_model1.m,'name'), fjord_model1.m.name='Unamed'; end
 model_runtime1 = fjord_model1.s.t(1:size(fjord_model1.s.H,2));
+
 if isfield(fjord_model1.m,'time_axis')
     runtime_axis = fjord_model1.m.time_axis;
     t0 = convertTo(runtime_axis(1),'datenum');
@@ -12,7 +13,7 @@ if isfield(fjord_model1.m,'time_axis')
         taxis1(i_time) = datetime(t0+model_runtime1(i_time),'ConvertFrom','datenum');
     end
 else
-    taxis1=fjord_model1.s.t;
+    taxis1=model_runtime1;
     isdays = ' (days)';
 end
 
