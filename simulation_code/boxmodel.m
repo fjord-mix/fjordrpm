@@ -86,6 +86,9 @@ end
 
 %% The main loop
 for i = 1:length(t)-1
+    % if t(i)>=198.6
+    %     disp('beginning of the end')
+    % end
 
     % Calculate plume fluxes.
     [QVg(:,i),QTg(:,i),QSg(:,i)] = ...
@@ -108,6 +111,7 @@ for i = 1:length(t)-1
         get_iceberg_fluxes(H(:,i),T(:,i),S(:,i),I(:,i),f.zi,p);
 
     % Step fjord forwards.
+    
     % dt = t(i+1)-t(i); % replaced by pre-defined dt because of problems when running in parallel
     V(:,i+1)  = V(:,i)+dt*p.sid*(QVg(:,i)-QVs(:,i)+QVk(:,i)+QVb(:,i));
     VT(:,i+1) = VT(:,i)+dt*p.sid*(QTg(:,i)-QTs(:,i)+QTk(:,i)+QTb(:,i)+QTi(:,i));
@@ -117,6 +121,9 @@ for i = 1:length(t)-1
     H(:,i+1) = V(:,i+1)/(p.W*p.L);
     T(:,i+1) = VT(:,i+1)./V(:,i+1);
     S(:,i+1) = VS(:,i+1)./V(:,i+1);
+    % if ~isempty(find(S(:,end) > 35,1))
+    %     disp('started becoming untable')
+    % end
 
     % Step icebergs forwards.
     I(:,i+1) = I(:,i)+dt*p.sid*((f.D(i)/(p.W*p.L))*f.xi-M(:,i).*I(:,i)-p.E0*I(:,i));
@@ -130,10 +137,9 @@ for i = 1:length(t)-1
     if p.plot_runtime
         % hf_track = monitor_boxmodel(hf_track,i,H,T,S,f);
         % hf_track = show_boxmodel([],i,t,H,T,S,QVs,QVg,QVk,QVb,f);
-        plot_debug_profile(i,t,f,p,H,S,s_bnds);
+        plot_debug_profile(i,t,f,p,H,S,[]);
     end
 
-    % Break from loop if any layer thickness goes below p.Hmin.
     if ~isempty(find(H(:,i+1) < p.Hmin,1))
         thinnest_layer=find(H(:,i+1) < p.Hmin,1);
         fprintf('Error: layer %d thickness dropped below p.Hmin at time step %d\n',thinnest_layer,i);
@@ -154,6 +160,15 @@ for i = 1:length(t)-1
         s.status = 1; % status == 1 means there was an error
         break
     end
+    % Sanity check if something starts to become unstable
+    % if ~isempty(find(S(:,i+1) > 38,1))
+    %     [sind,~]=find(S(:,i+1) > 38);
+    %     fprintf('Salinity went above 38 in layer %d at time step %d\n',sind,i)
+    % end
+    % if ~isempty(find(S(:,i+1) <0,1))
+    %     [sind,~]=find(S(:,i+1) <0,1);
+    %     fprintf('Salinity went negative in layer %d\n',sind)
+    % end
 
 end
 
