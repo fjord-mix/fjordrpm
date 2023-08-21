@@ -40,7 +40,7 @@ else
         end
         % plot(Ss0(inds),zs0(inds)); % to monitor interpolation results
     end
-    % scatter(Se0,-cumsum(H0)); yline(ints,':k','linewidth',0.5);  % to monitor interpolation results
+    % scatter(Se0,-cumsum(H0(1:end-1)); yline(ints,':k','linewidth',0.5);  % to monitor interpolation results
     Se0 = Se0';
     Te0 = Te0';
 
