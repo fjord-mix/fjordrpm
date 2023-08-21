@@ -16,6 +16,7 @@ function [QVb0, QTb0, QSb0] = get_hmin_fluxes(QV0,QVb0,QTb0,QSb0,V0,H0,T0,S0,p)
         Has = H0(1:p.N); % thicknesses of layers above the sill
         i_from_box = zeros(size(QVmin)); % we will need to keep track of which box we take the water from for nudging
         for i=1:length(mininds)
+        % for i=length(mininds):-1:1
             i_thin = mininds(i);
 
             % will take water from the thickest adjacent layer, unless
@@ -36,6 +37,9 @@ function [QVb0, QTb0, QSb0] = get_hmin_fluxes(QV0,QVb0,QTb0,QSb0,V0,H0,T0,S0,p)
         Vtend = p.dt*p.sid*(QV0+QVb0+QVmin);
         mininds = find(V0+Vtend<p.W*p.L*p.Hmin);
         iter_count = iter_count+1;
+    end
+    if iter_count==100
+        disp('did not nudge')
     end
 
     if exist('i_from_box','Var') && ~isempty(find(QVmin ~=0,1))
