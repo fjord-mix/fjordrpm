@@ -38,9 +38,9 @@ function [QVb0, QTb0, QSb0] = get_hmin_fluxes(QV0,QVb0,QTb0,QSb0,V0,H0,T0,S0,p)
         mininds = find(V0+Vtend<p.W*p.L*p.Hmin);
         iter_count = iter_count+1;
     end
-    if iter_count==100
-        disp('did not nudge')
-    end
+    % if iter_count==100
+    %     disp('did not nudge')
+    % end
 
     if exist('i_from_box','Var') && ~isempty(find(QVmin ~=0,1))
         QVb0 = QVb0 + QVmin;
