@@ -176,11 +176,12 @@ end
 % but just save ~daily values
 % as otherwise high time resolution results in large output files
 dtdaily = 1;
-if s.status == 0
-    int = round(dtdaily/dt);
-else
-    int = 1; % if something went wrong, we want all time steps to properly understand what happened
-end
+% if s.status == 0
+%     int = round(dtdaily/dt);
+% else
+%     int = 1; % if something went wrong, we want all time steps to properly understand what happened
+% end
+int = round(dtdaily/dt);
 s.t = t(1:int:end-1);
 
 % box variables
