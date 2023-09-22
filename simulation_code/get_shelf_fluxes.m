@@ -61,7 +61,11 @@ else
     % fluxes before barotropic compensation
     Q = p.C0*p.W*H0(1:p.N).*phi0'/p.L;
 
-    % fluxes after ensuring depth mean = QSg0
+    % fluxes after ensuring depth mean = QSg0 when plume is turned on,
+    % and 0 when plume is turned off
+    if p.P0==0
+        Qsg0 = 0;
+    end
     QVs0 = Q + H0(1:p.N)*(Qsg0-sum(Q))/sum(H0(1:p.N));
     if p.sill==1
         QVs0(p.N+p.sill) = 0;
