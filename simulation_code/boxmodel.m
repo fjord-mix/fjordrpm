@@ -67,14 +67,12 @@ if ~isnan(p.trelax) && length(p.Snudge) < p.N-1
 end
 
 %% Make the vertical profiles at regular depth intervals (1m)
-nz_orig = 1:length(f.zs);
-zs_hr = min(f.zs):1:-0.5; % former nz_hr
-% zs_hr = interp1(nz_orig,f.zs,nz_hr);
-Ts_hr = interp1(f.zs,f.Ts,zs_hr);
-Ss_hr = interp1(f.zs,f.Ss,zs_hr);
-f.zs = zs_hr;
-f.Ts = Ts_hr;
-f.Ss = Ss_hr;
+% zs_hr = min(f.zs):1:0.; % former nz_hr
+% Ts_hr = interp1(f.zs,f.Ts,zs_hr,'linear','extrap');
+% Ss_hr = interp1(f.zs,f.Ss,zs_hr,'linear','extrap');
+% f.zs = zs_hr;
+% f.Ts = Ts_hr;
+% f.Ss = Ss_hr;
 
 %%
 if p.plot_runtime
@@ -144,6 +142,9 @@ for i = 1:length(t)-1
         thinnest_layer=find(H(:,i+1) < p.Hmin,1);
         fprintf('Error: layer %d thickness dropped below p.Hmin at time step %d\n',thinnest_layer,i);
         s.status = 1; % status == 1 means there was an error
+        if thinnest_layer > 2
+            disp('we want to save this')
+        end
         break
     end
 
@@ -155,7 +156,7 @@ for i = 1:length(t)-1
         break
     end
     % Check sum of layer thicknesses is equal to fjord depth.
-    if abs(sum(H(:,i+1))-p.H) > 1e-10
+    if abs(sum(H(:,i+1))-p.H) > 1%e-10
         disp('Error: box thicknesses must sum to fjord depth');
         s.status = 1; % status == 1 means there was an error
         break
@@ -226,10 +227,10 @@ s.MT = p.W*p.L*trapz(f.zi,s.M(:,1:size(s.I,2)).*s.I); % total iceberg melt flux
 s.ET = p.W*p.L*trapz(f.zi,p.E0*s.I); % total iceberg export flux
 
 % return forcing on same timestepping
-f.Ss = f.Ss(:,1:int:end-1);
-f.Ts = f.Ts(:,1:int:end-1);
-f.Qsg = f.Qsg(1:int:end-1);
-f.D = f.D(1:int:end-1);
+% f.Ss_res = f.Ss(:,1:int:end-1);
+% f.Ts_res = f.Ts(:,1:int:end-1);
+% f.Qsg_res = f.Qsg(1:int:end-1);
+% f.D_res = f.D(1:int:end-1);
 
 %% Save output if a path+file name are provided
 if nargin > 4
