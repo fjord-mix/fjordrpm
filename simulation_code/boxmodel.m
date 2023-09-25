@@ -156,12 +156,12 @@ for i = 1:length(t)-1
         break
     end
     % Check sum of layer thicknesses is equal to fjord depth.
-    if abs(sum(H(:,i+1))-p.H) > 1%e-10
+    if abs(sum(H(:,i+1))-p.H) > 1e-10
         disp('Error: box thicknesses must sum to fjord depth');
         s.status = 1; % status == 1 means there was an error
         break
     end
-    % Sanity check if something starts to become unstable
+    % check if something starts to become unstable
     % if ~isempty(find(S(:,i+1) > 38,1))
     %     [sind,~]=find(S(:,i+1) > 38);
     %     fprintf('Salinity went above 38 in layer %d at time step %d\n',sind,i)
@@ -238,7 +238,7 @@ if nargin > 4
     fjord_output.f = s;
     fjord_output.t = s;
     fjord_output.p = p;
-    save(path_out,'fjord_output','-v7.3'); % v7.3 allows files > 2GB
+    save(path_out,'fjord_output','-v7.3'); % v7.3 allows large files (> 2GB), which might happen in very long runs
 end
 
 end
