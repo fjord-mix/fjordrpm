@@ -25,10 +25,9 @@ for k=1:length(ints)-1
     if length(inds) == 1 % if there is only one data point, no need to average it
         Se0(k) = Ss0(inds);
         Te0(k) = Ts0(inds);
-    elseif H0(k) < 1.1*p.Hmin 
+    elseif H0(k) < 1.1*p.Hmin
         % sometimes a very thin layer with sharp gradients will
-        % not yield satisfactory results. even with a high-res profile
-        % so we use a simple average instead of numerical integration
+        % not yield satisfactory results, so we use a simple average instead of numerical integration
         Se0(k) = mean(Ss0(inds));
         Te0(k) = mean(Ts0(inds));
     else
@@ -40,21 +39,22 @@ S0 = Se0';
 T0 = Te0';        
 
 % Plot to check interpolation
-% figure;
-% subplot(1,2,1); hold on
+% figure(98);
+% subplot(1,2,1); hold on; box on
 % plot(Ts0,zs0);
-% scatter(T0,(ints(1:end-1)+ints(2:end))/2);
+% scatter(T0,(ints(1:end-1)+ints(2:end))/2,'filled');
 % for j=1:size(ints,2)
 %     yline(ints(j));
 % end
 % ylim([ints(end) ints(1)])
-% subplot(1,2,2); hold on
+% ylabel('Depth (m)'); xlabel('Temperature (^oC)')
+% subplot(1,2,2); hold on; box on
 % plot(Ss0,zs0);
-% scatter(S0,(ints(1:end-1)+ints(2:end))/2);
+% scatter(S0,(ints(1:end-1)+ints(2:end))/2,'filled');
 % for j=1:size(ints,2)
 %     yline(ints(j));
 % end
 % ylim([ints(end) ints(1)])
-
+% xlabel('Salinity (-)')
 
 end
