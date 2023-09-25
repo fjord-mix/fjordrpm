@@ -63,6 +63,6 @@ else
     QpS0(knb) = Qp(knb)*Sp(knb);
 end
 catch ME
-    disp('Something went wrong here')
+    disp('Something went wrong in the plume fluxes')
 end
 end
