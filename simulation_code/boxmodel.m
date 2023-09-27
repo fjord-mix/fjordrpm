@@ -66,14 +66,6 @@ if ~isnan(p.trelax) && length(p.Snudge) < p.N-1
     return
 end
 
-%% Make the vertical profiles at regular depth intervals (1m)
-% zs_hr = min(f.zs):1:0.; % former nz_hr
-% Ts_hr = interp1(f.zs,f.Ts,zs_hr,'linear','extrap');
-% Ss_hr = interp1(f.zs,f.Ss,zs_hr,'linear','extrap');
-% f.zs = zs_hr;
-% f.Ts = Ts_hr;
-% f.Ss = Ss_hr;
-
 %%
 if p.plot_runtime
     % hf_track = monitor_boxmodel([],1,H,T,S,f);
@@ -177,11 +169,11 @@ end
 % but just save ~daily values
 % as otherwise high time resolution results in large output files
 dtdaily = 1;
-% if s.status == 0
-%     int = round(dtdaily/dt);
-% else
-%     int = 1; % if something went wrong, we want all time steps to properly understand what happened
-% end
+if s.status == 0
+    int = round(dtdaily/dt);
+else
+    int = 1; % if something went wrong, we want all time steps to properly understand what happened
+end
 int = round(dtdaily/dt);
 s.t = t(1:int:end-1);
 
@@ -227,10 +219,10 @@ s.MT = p.W*p.L*trapz(f.zi,s.M(:,1:size(s.I,2)).*s.I); % total iceberg melt flux
 s.ET = p.W*p.L*trapz(f.zi,p.E0*s.I); % total iceberg export flux
 
 % return forcing on same timestepping
-% f.Ss_res = f.Ss(:,1:int:end-1);
-% f.Ts_res = f.Ts(:,1:int:end-1);
-% f.Qsg_res = f.Qsg(1:int:end-1);
-% f.D_res = f.D(1:int:end-1);
+% f.Ss = f.Ss(:,1:int:end-1);
+% f.Ts = f.Ts(:,1:int:end-1);
+% f.Qsg = f.Qsg(1:int:end-1);
+% f.D = f.D(1:int:end-1);
 
 %% Save output if a path+file name are provided
 if nargin > 4
