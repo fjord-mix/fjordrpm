@@ -1,4 +1,4 @@
-function [T0, S0] = bin_ocean_profiles(Tz,Sz,z,H0,p)
+function [T0, S0] = bin_ocean_profiles(Tz,Sz,z,H0,~)
 % BIN_OCEAN_PROFILES Bins temperature (Tz) and salinity (Sz) profiles to boxmodel layers (H0)
 %   BIN_OCEAN_PROFILES(Tz,Sz,Z,H0,p) returns a "box profile" for
 %   temperature (T0) and salinity (S0) for the boxes given by H0
@@ -13,7 +13,6 @@ z  =  z(~nan_entries);
 Ss = flip(Sz);
 Ts = flip(Tz);
 zs = flip(z);
-% zs0 = unique(sort([zs,-cumsum(H0)]));
 zs0 = unique(sort([0,zs,-cumsum(H0)]));
 
 Ss0 = interp1(zs,Ss,zs0,'pchip','extrap');
@@ -21,21 +20,6 @@ Ts0 = interp1(zs,Ts,zs0,'pchip','extrap');
 
 [Te0,Se0] = deal(zeros(size(H0)));
 
-% for k=1:length(ints)-1
-%     inds = find(zs0<=ints(k) & zs0>=ints(k+1));
-%     if length(inds) == 1 % if there is only one data point, no need to average it
-%         Se0(k) = Ss0(inds);
-%         Te0(k) = Ts0(inds);
-%     elseif H0(k) < 1.1*p.Hmin
-%         % sometimes a very thin layer with sharp gradients will
-%         % not yield satisfactory results, so we use a simple average instead of numerical integration
-%         Se0(k) = mean(Ss0(inds));
-%         Te0(k) = mean(Ts0(inds));
-%     else
-%         Se0(k) = trapz(zs0(inds),Ss0(inds))/H0(k);
-%         Te0(k) = trapz(zs0(inds),Ts0(inds))/H0(k);
-%     end
-% end
 for k=1:length(ints)-1
     inds = find(zs0<=ints(k) & zs0>=ints(k+1));
     Se0(k) = trapz(zs0(inds),Ss0(inds))/H0(k);
