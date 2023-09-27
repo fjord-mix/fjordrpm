@@ -66,25 +66,19 @@ if ~isnan(p.trelax) && length(p.Snudge) < p.N-1
     return
 end
 
-%% Increase the profile resolution for better accuracy when integrating
-nz_orig = 1:length(f.zs);
-nz_hr = linspace(1,length(f.zs),100*length(f.zs));
-zs_hr = interp1(nz_orig,f.zs,nz_hr);
-Ts_hr = interp1(f.zs,f.Ts,zs_hr);
-Ss_hr = interp1(f.zs,f.Ss,zs_hr);
-f.zs = zs_hr;
-f.Ts = Ts_hr;
-f.Ss = Ss_hr;
-
 %%
 if p.plot_runtime
     % hf_track = monitor_boxmodel([],1,H,T,S,f);
     % hf_track = show_boxmodel([],1,t,H,T,S,[],[],[],[],f);
     s_bnds = [min(f.Ss(:)) max(f.Ss(:))+0.1];
+    plot_debug_profile(0,t,f,p,H,S,s_bnds);
 end
 
 %% The main loop
 for i = 1:length(t)-1
+    % if t(i)>=198.6
+    %     disp('beginning of the end')
+    % end
 
     % Calculate plume fluxes.
     [QVg(:,i),QTg(:,i),QSg(:,i)] = ...
@@ -107,6 +101,7 @@ for i = 1:length(t)-1
         get_iceberg_fluxes(H(:,i),T(:,i),S(:,i),I(:,i),f.zi,p);
 
     % Step fjord forwards.
+    
     % dt = t(i+1)-t(i); % replaced by pre-defined dt because of problems when running in parallel
     V(:,i+1)  = V(:,i)+dt*p.sid*(QVg(:,i)-QVs(:,i)+QVk(:,i)+QVb(:,i));
     VT(:,i+1) = VT(:,i)+dt*p.sid*(QTg(:,i)-QTs(:,i)+QTk(:,i)+QTb(:,i)+QTi(:,i));
@@ -116,6 +111,9 @@ for i = 1:length(t)-1
     H(:,i+1) = V(:,i+1)/(p.W*p.L);
     T(:,i+1) = VT(:,i+1)./V(:,i+1);
     S(:,i+1) = VS(:,i+1)./V(:,i+1);
+    % if ~isempty(find(S(:,end) > 35,1))
+    %     disp('started becoming untable')
+    % end
 
     % Step icebergs forwards.
     I(:,i+1) = I(:,i)+dt*p.sid*((f.D(i)/(p.W*p.L))*f.xi-M(:,i).*I(:,i)-p.E0*I(:,i));
@@ -128,16 +126,42 @@ for i = 1:length(t)-1
     % Plot model evolution (mainly debugging).
     if p.plot_runtime
         % hf_track = monitor_boxmodel(hf_track,i,H,T,S,f);
-        % hf_track = show_box_model(hf_track,i,t,H,T,S,QVs,QVg,QVk,QVb,f);
-        plot_debug_profile(i,t,f,p,H,S,s_bnds);
+        % hf_track = show_boxmodel([],i,t,H,T,S,QVs,QVg,QVk,QVb,f);
+        plot_debug_profile(i,t,f,p,H,S,[]);
     end
 
-    % Break from loop if any layer thickness goes below p.Hmin.
     if ~isempty(find(H(:,i+1) < p.Hmin,1))
-        disp('Error: layer thickness dropped below p.Hmin');
+        thinnest_layer=find(H(:,i+1) < p.Hmin,1);
+        fprintf('Error: layer %d thickness dropped below p.Hmin at time step %d\n',thinnest_layer,i);
+        s.status = 1; % status == 1 means there was an error
+        if thinnest_layer > 2
+            disp('we want to save this')
+        end
+        break
+    end
+
+    % Break from loop if the sill layer is not acting as it was supposed to
+    % Check bottom box is consistent with sill depth.
+    if p.sill == 1 && (H(end,i+1) - (p.H-abs(p.silldepth))) > 1e-4
+        disp('Error: when p.sill=1, bottom box must have thickness p.H-p.silldepth');
         s.status = 1; % status == 1 means there was an error
         break
     end
+    % Check sum of layer thicknesses is equal to fjord depth.
+    if abs(sum(H(:,i+1))-p.H) > 1e-10
+        disp('Error: box thicknesses must sum to fjord depth');
+        s.status = 1; % status == 1 means there was an error
+        break
+    end
+    % check if something starts to become unstable
+    % if ~isempty(find(S(:,i+1) > 38,1))
+    %     [sind,~]=find(S(:,i+1) > 38);
+    %     fprintf('Salinity went above 38 in layer %d at time step %d\n',sind,i)
+    % end
+    % if ~isempty(find(S(:,i+1) <0,1))
+    %     [sind,~]=find(S(:,i+1) <0,1);
+    %     fprintf('Salinity went negative in layer %d\n',sind)
+    % end
 
 end
 
@@ -150,6 +174,7 @@ if s.status == 0
 else
     int = 1; % if something went wrong, we want all time steps to properly understand what happened
 end
+int = round(dtdaily/dt);
 s.t = t(1:int:end-1);
 
 % box variables
@@ -194,10 +219,10 @@ s.MT = p.W*p.L*trapz(f.zi,s.M(:,1:size(s.I,2)).*s.I); % total iceberg melt flux
 s.ET = p.W*p.L*trapz(f.zi,p.E0*s.I); % total iceberg export flux
 
 % return forcing on same timestepping
-f.Ss = f.Ss(:,1:int:end-1);
-f.Ts = f.Ts(:,1:int:end-1);
-f.Qsg = f.Qsg(1:int:end-1);
-f.D = f.D(1:int:end-1);
+% f.Ss = f.Ss(:,1:int:end-1);
+% f.Ts = f.Ts(:,1:int:end-1);
+% f.Qsg = f.Qsg(1:int:end-1);
+% f.D = f.D(1:int:end-1);
 
 %% Save output if a path+file name are provided
 if nargin > 4
@@ -205,7 +230,7 @@ if nargin > 4
     fjord_output.f = s;
     fjord_output.t = s;
     fjord_output.p = p;
-    save(path_out,'fjord_output','-v7.3'); % v7.3 allows files > 2GB
+    save(path_out,'fjord_output','-v7.3'); % v7.3 allows large files (> 2GB), which might happen in very long runs
 end
 
 end

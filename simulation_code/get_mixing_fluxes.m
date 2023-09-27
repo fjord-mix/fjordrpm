@@ -11,7 +11,7 @@ if p.K0==0
 
 else
     % vector for doing numerical integral
-    x = linspace(0,p.L,10);
+    x = linspace(0,p.L,100);
 
     % Preallocate variables
     [Q, QT, QS] =  deal(zeros(1, p.N+p.sill-1));
@@ -33,7 +33,7 @@ else
             % capped at p.wmax
             w = min(p.K0*abs(ul-uu).*R.^(-0.75),p.wmax);
         else
-            w = 1.*ones(size(x)).*p.wmax; % so if unstable, we use the min mixing velocity
+            w = 1.*ones(size(x)).*p.wmax; % so if unstable, we use the max mixing velocity
         end
         % fluxes
         Q(k) = sign(mean(abs(uu)-abs(ul)))*p.W*trapz(x,w);

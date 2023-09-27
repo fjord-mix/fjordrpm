@@ -53,9 +53,14 @@ end
 
 z_interfaces=search_Z_profile(inds_interfaces);
 
-% adds the sill depth if it exists
-if p.sill
+
+% Adds the sill depth if it exists, but also check whether the sill is shallower than the deepest isopycnal. 
+% In that case, we set equally spaced boxes between the sill and the first isopycnal
+if (z_interfaces(end) > p.silldepth) && p.sill
     z_interfaces(end+1) = p.silldepth; 
+elseif p.sill
+    spaced_interfaces = linspace(p.silldepth,z_interfaces(1),p.N);
+    z_interfaces = flip(spaced_interfaces);
 end
 
 H=z_interfaces(2:end)-z_interfaces(1:end-1);
@@ -71,9 +76,9 @@ for k=2:length(H)-1               % goes down the boxes
         % display a warning
         if H(k+1) < 0
             H(k+1) = p.Hmin;
-            disp(['WARNING: bottom box was too thin and was artificially set to ',num2str(p.Hmin),'m!'])
-            disp(["This only happens if the sill is only ",num2str(p.Hmin),"m above the fjord's max depth."])
-            disp('This means that the fjord is was made slightly deeper than in reality')
+            % disp(['WARNING: bottom box was too thin and was artificially set to ',num2str(p.Hmin),'m!'])
+            % disp(["This only happens if the sill is only ",num2str(p.Hmin),"m above the fjord's max depth."])
+            % disp('This means that the fjord is was made slightly deeper than in reality')
         end
     end                            
 end    
