@@ -33,7 +33,9 @@ else
             % capped at p.wmax
             w = min(p.K0*abs(ul-uu).*R.^(-0.75),p.wmax);
         else
-            w = 1.*ones(size(x)).*p.wmax; % so if unstable, we use the max mixing velocity
+            % if unstable, we use the max mixing velocity
+            % unlikely to happen as we deal with an unstable stratification before computing the fluxes
+            w = 1.*ones(size(x)).*p.wmax;
         end
         % fluxes
         Q(k) = sign(mean(abs(uu)-abs(ul)))*p.W*trapz(x,w);
