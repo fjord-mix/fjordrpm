@@ -76,9 +76,16 @@ end
 
 %% The main loop
 for i = 1:length(t)-1
-    % if t(i)>=198.6
-    %     disp('beginning of the end')
-    % end
+    
+    % check if the fjord stratification is unstable, and homogenise layer
+    % properties if it is
+    for k=1:p.N-1        
+        % buoyancy jump between boxes
+        B = p.g*(p.betaS*(S(k+1,i)-S(k,i))-p.betaT*(T(k+1,i)-T(k,i)));        
+        if B < 0
+            [T(:,i),S(:,i)] = homogenise_layers(V(:,i),T(:,i),S(:,i),[k,k+1]);
+        end
+    end
 
     % Calculate plume fluxes.
     [QVg(:,i),QTg(:,i),QSg(:,i)] = ...
