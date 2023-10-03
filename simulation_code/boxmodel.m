@@ -94,6 +94,18 @@ for i = 1:length(t)-1
         = compute_fluxes(H(:,i),T(:,i),S(:,i),f.Qsg(i),p, f.zs,...
         f.Ts(:,i),f.Ss(:,i),V(:,i), I(:,i),f.zi);
 
+
+    % check to see if any layer has collapsed and if so homogenise and
+    % recompute fluxes 
+    for k=1:p.N-1
+        % Check if any layer will collapse after stepping the fjord
+        % forwards
+
+        % If no, timestep forwards
+
+        % If yes, apply layer homogenisation
+    end
+
     % Step fjord forwards.
     
     % dt = t(i+1)-t(i); % replaced by pre-defined dt because of problems when running in parallel
