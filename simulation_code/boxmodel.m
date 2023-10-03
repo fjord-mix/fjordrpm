@@ -87,25 +87,12 @@ for i = 1:length(t)-1
         end
     end
 
-    % Calculate plume fluxes.
-    [QVg(:,i),QTg(:,i),QSg(:,i)] = ...
-        get_plume_fluxes(H(:,i),T(:,i),S(:,i),f.Qsg(i),p);
-
-    % Calculate shelf fluxes.
-    [QVs(:,i),QTs(:,i),QSs(:,i),Se(:,i),Te(:,i),phi(:,i)] = ...
-        get_shelf_fluxes(H(:,i),T(:,i),S(:,i),f.zs,f.Ts(:,i),f.Ss(:,i),f.Qsg(i),p);
-
-    % Calculate vertical mixing fluxes.
-    [QVk(:,i),QTk(:,i),QSk(:,i)] = ...
-        get_mixing_fluxes(H(:,i),T(:,i),S(:,i),QVg(:,i),QVs(:,i),p);
-
-    % Calculate "artificial" fluxes.
-    [QVb(:,i),QTb(:,i),QSb(:,i)] = ...
-        get_artificial_fluxes(QVg(:,i)-QVs(:,i)+QVk(:,i),H(:,i),V(:,i),T(:,i),S(:,i),f.zs,f.Ts(:,i),f.Ss(:,i),p);
-
-    % Calculate iceberg fluxes.
-    [QIi(:,i),QTi(:,i),QSi(:,i),M(:,i)] = ...
-        get_iceberg_fluxes(H(:,i),T(:,i),S(:,i),I(:,i),f.zi,p);
+    % Compute fluxes
+     [QVg(:,i),QTg(:,i),QSg(:,i), QVs(:,i),QTs(:,i),QSs(:,i),Se(:,i),...
+        Te(:,i),phi(:,i),QVk(:,i),QTk(:,i),QSk(:,i), QVb(:,i),QTb(:,i),...
+        QSb(:,i), QIi(:,i),QTi(:,i),QSi(:,i),M(:,i)] ...
+        = compute_fluxes(H(:,i),T(:,i),S(:,i),f.Qsg(i),p, f.zs,...
+        f.Ts(:,i),f.Ss(:,i),V(:,i), I(:,i),f.zi);
 
     % Step fjord forwards.
     
