@@ -95,31 +95,50 @@ for i = 1:length(t)-1
         f.Ts(:,i),f.Ss(:,i),V(:,i), I(:,i),f.zi);
 
 
-    % check to see if any layer has collapsed and if so homogenise and
-    % recompute fluxes 
-    for k=1:p.N-1
-        % Check if any layer will collapse after stepping the fjord
-        % forwards
-
-        % If no, timestep forwards
-
-        % If yes, apply layer homogenisation for each layer j that is a
-        % problem
-            % If j+1 exists 
-                % If j+1 is not a problem, homogenise j and j+1 
-
-                % If j+1 is also a problem, error because we have 2 adjacent
-                % collapsing layers
-
-            % If j+1 does not exist,
-                % If j-1 does not exist, error because we are in the
-                % one-layer scenario
-             
-                % If j-1 exists and is not a problem, homogenise j and j-1 
-
-                % If j-1 is also a problem, error because we have 2 adjacent
-                % collapsing layers 
-    end
+     % Check to see if any layer has collapsed, and if so homogenise and
+     % recompute fluxes.
+     % Compute the thickness of each layer at the next timestep.
+     V_tp1  = V(:,i)+dt*p.sid*(QVg(:,i)-QVs(:,i)+QVk(:,i)+QVb(:,i));
+     H_tp1 = V_tp1/(p.W*p.L);
+     for k=1:p.N-1 % only check up to the layer above the bottom
+         %Check if any layer will collapse after stepping the fjord
+         % forwards.
+         % If no, timestep forwards
+         if H_tp1(k) > 0
+             continue
+         end
+         % If yes, apply layer homogenisation for each layer j that is a
+         % problem
+         % If j+1 exists
+         if ~isempty(H_tp1(k+1))
+             % If j+1 is not a problem, homogenise j and j+1 and recompute fluxes
+             if H_tp1(k+1) > 0
+             end
+             % If j+1 is also a problem, error because we have 2 adjacent
+             % collapsing layers
+             if H_tp1(k+1)
+                 error("Error: two adjacent collapsing layers")
+             end
+             % If j+1 does not exist,
+         else
+             % If j-1 does not exist, error because we are in the
+             % one-layer scenario
+             if isempty(H_tp1(k-1))
+                 error("Error: model only has one layer")
+                 % If j-1 exists and is not a problem, homogenise j and j-1 and recompute fluxes
+             elseif H_tp1(k-1) >0
+                 % If j-1 is also a problem, error because we have 2 adjacent
+                 % collapsing layers
+             else
+                 error("Error: two adjacent collapsing layers")
+             end
+         end
+     end
+    % Check through new configuration to check no new layers collapses
+    % after homogenisation? Flag if any homogenisation has been done, if
+    % so, run through the previous check again to see if any layers will
+    % now collapse. If so, error for instability (for now) 
+    % Also output a vector of timesteps to show when this has been applied 
 
     % Step fjord forwards.
     
@@ -133,7 +152,7 @@ for i = 1:length(t)-1
     T(:,i+1) = VT(:,i+1)./V(:,i+1);
     S(:,i+1) = VS(:,i+1)./V(:,i+1);
     % if ~isempty(find(S(:,end) > 35,1))
-    %     disp('started becoming untable')
+    %     disp('started becoming unstable')
     % end
 
     % Step icebergs forwards.
