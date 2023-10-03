@@ -103,7 +103,22 @@ for i = 1:length(t)-1
 
         % If no, timestep forwards
 
-        % If yes, apply layer homogenisation
+        % If yes, apply layer homogenisation for each layer j that is a
+        % problem
+            % If j+1 exists 
+                % If j+1 is not a problem, homogenise j and j+1 
+
+                % If j+1 is also a problem, error because we have 2 adjacent
+                % collapsing layers
+
+            % If j+1 does not exist,
+                % If j-1 does not exist, error because we are in the
+                % one-layer scenario
+             
+                % If j-1 exists and is not a problem, homogenise j and j-1 
+
+                % If j-1 is also a problem, error because we have 2 adjacent
+                % collapsing layers 
     end
 
     % Step fjord forwards.
