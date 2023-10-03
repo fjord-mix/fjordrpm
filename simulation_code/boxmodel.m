@@ -98,6 +98,7 @@ for i = 1:length(t)-1
      % Check to see if any layer has collapsed, and if so homogenise and
      % recompute fluxes.
      % Compute the thickness of each layer at the next timestep.
+     homogenisation_flag = false;
      V_tp1  = V(:,i)+dt*p.sid*(QVg(:,i)-QVs(:,i)+QVk(:,i)+QVb(:,i));
      H_tp1 = V_tp1/(p.W*p.L);
      for k=1:p.N-1
@@ -147,7 +148,7 @@ for i = 1:length(t)-1
                      = compute_fluxes(H(:,i),T(:,i),S(:,i),f.Qsg(i),p, f.zs,...
                      f.Ts(:,i),f.Ss(:,i),V(:,i), I(:,i),f.zi);
                  % flag timestep at which this has occured
-                 fprintf("Homogenisation occured at iteration %d", i)
+                 fprintf("Homogenisation occured at iteration %d \n", i)
                  % Flag that homogenisation has occured
                  homogenisation_flag = true;
              else
@@ -203,15 +204,15 @@ for i = 1:length(t)-1
         plot_debug_profile(i,t,f,p,H,S,[]);
     end
 
-    if ~isempty(find(H(:,i+1) < p.Hmin,1))
-        thinnest_layer=find(H(:,i+1) < p.Hmin,1);
-        fprintf('Error: layer %d thickness dropped below p.Hmin at time step %d\n',thinnest_layer,i);
-        s.status = 1; % status == 1 means there was an error
-        if thinnest_layer > 2
-            disp('we want to save this')
-        end
-        break
-    end
+    % if ~isempty(find(H(:,i+1) < p.Hmin,1))
+    %     thinnest_layer=find(H(:,i+1) < p.Hmin,1);
+    %     fprintf('Error: layer %d thickness dropped below p.Hmin at time step %d\n',thinnest_layer,i);
+    %     s.status = 1; % status == 1 means there was an error
+    %     if thinnest_layer > 2
+    %         disp('we want to save this')
+    %     end
+    %     break
+    % end
 
     % Break from loop if the sill layer is not acting as it was supposed to
     % Check bottom box is consistent with sill depth.
