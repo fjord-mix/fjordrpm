@@ -99,8 +99,10 @@ for i = 1:length(t)-1
      % recompute fluxes.
      % Compute the thickness of each layer at the next timestep.
      homogenisation_flag = false;
+     counter = 0;
      V_tp1  = V(:,i)+dt*p.sid*(QVg(:,i)-QVs(:,i)+QVk(:,i)+QVb(:,i));
-     H_tp1 = V_tp1/(p.W*p.L);
+     H_tp1 = V_tp1/(p.W*p.L)
+     while counter <= p.N
      for k=1:p.N-1
          % Only check up to the layer above the bottom.
          % Check if any layer will collapse after stepping the fjord
@@ -109,6 +111,8 @@ for i = 1:length(t)-1
              % If no, timestep forwards
              continue
          end
+         QVg(:,i)
+         QVs(:,i)
          % If yes, apply layer homogenisation for each layer j that is a
          % problem
          if ~isempty(H_tp1(k+1))
@@ -116,16 +120,20 @@ for i = 1:length(t)-1
              if H_tp1(k+1) > 0
                  % If j+1 is not a problem, homogenise j and j+1 and recompute fluxes
                  H([k, k+1], i) = (H(k, i) + H(k+1, i))/2;
+                 H(:,i)
                  [T(:,i),S(:,i)] = homogenise_layers(V(:,i),T(:,i),S(:,i),[k,k+1]);
                  [QVg(:,i),QTg(:,i),QSg(:,i), QVs(:,i),QTs(:,i),QSs(:,i),Se(:,i),...
                      Te(:,i),phi(:,i),QVk(:,i),QTk(:,i),QSk(:,i), QVb(:,i),QTb(:,i),...
                      QSb(:,i), QIi(:,i),QTi(:,i),QSi(:,i),M(:,i)] ...
                      = compute_fluxes(H(:,i),T(:,i),S(:,i),f.Qsg(i),p, f.zs,...
                      f.Ts(:,i),f.Ss(:,i),V(:,i), I(:,i),f.zi);
+                 QVg(:,i)
+                 QVs(:,i)
                  % flag timestep at which this has occured
-                 fprintf("Homogenisation occured at iteration %d", i)
+                 fprintf("Downwards homogenisation for layer %d occured at iteration %d", k, i)
                  % Flag that homogenisation has occured
                  homogenisation_flag = true;
+                 H(:,i)
              end
              if H_tp1(k+1) < 0
                  % If j+1 is also a problem, error because we have 2 adjacent
@@ -140,7 +148,7 @@ for i = 1:length(t)-1
                  error("Error: model only has one layer")
              elseif H_tp1(k-1) > 0
                  % If j-1 exists and is not a problem, homogenise j and j-1 and recompute fluxes
-                 H([k-1, k], i) = (H(k-1, i) + H(k, i))/2;
+                 H([k-1, k], i) = (H(k-1, i) + H(k, i))/2
                  [T(:,i),S(:,i)] = homogenise_layers(V(:,i),T(:,i),S(:,i),[k-1,k]);
                  [QVg(:,i),QTg(:,i),QSg(:,i), QVs(:,i),QTs(:,i),QSs(:,i),Se(:,i),...
                      Te(:,i),phi(:,i),QVk(:,i),QTk(:,i),QSk(:,i), QVb(:,i),QTb(:,i),...
@@ -148,7 +156,7 @@ for i = 1:length(t)-1
                      = compute_fluxes(H(:,i),T(:,i),S(:,i),f.Qsg(i),p, f.zs,...
                      f.Ts(:,i),f.Ss(:,i),V(:,i), I(:,i),f.zi);
                  % flag timestep at which this has occured
-                 fprintf("Homogenisation occured at iteration %d \n", i)
+                 fprintf("Upwards homogenisation for layer %d occured at iteration %d \n", k, i)
                  % Flag that homogenisation has occured
                  homogenisation_flag = true;
              else
@@ -158,21 +166,34 @@ for i = 1:length(t)-1
              end
          end
      end
-     % If homogenisation has occured, do another check to see if the new
-     % configuration still leads to layer collapse, and error if it does.
-     if homogenisation_flag == true
-         % Compute the thickness of each layer at the next timestep.
-         V_tp1  = V(:,i)+dt*p.sid*(QVg(:,i)-QVs(:,i)+QVk(:,i)+QVb(:,i));
-         H_tp1 = V_tp1/(p.W*p.L);
-         for k=1:p.N-1
-             % Only check up to the layer above the bottom.
-             % Check if any layer will collapse after stepping the fjord
-             % forwards.
-             if H_tp1(k) > 0
-                 error("Error: collapsing layers still exist after homogenisation, model is unstable")
-             end
-         end
+
+     if homogenisation_flag == false
+         break
      end
+    
+     counter = counter +1;
+     end
+
+     if counter == p.N
+
+                 error("Error: collapsing layers still exist after homogenisation, model is unstable")
+     end
+
+     % % If homogenisation has occured, do another check to see if the new
+     % % configuration still leads to layer collapse, and error if it does.
+     % if homogenisation_flag == true
+     %     % Compute the thickness of each layer at the next timestep.
+     %     V_tp1  = V(:,i)+dt*p.sid*(QVg(:,i)-QVs(:,i)+QVk(:,i)+QVb(:,i));
+     %     H_tp1 = V_tp1/(p.W*p.L)
+     %     for k=1:p.N-1
+     %         % Only check up to the layer above the bottom.
+     %         % Check if any layer will collapse after stepping the fjord
+     %         % forwards.
+     %         if H_tp1(k) < 0
+     %             error("Error: collapsing layers still exist after homogenisation, model is unstable")
+     %         end
+     %     end
+     % end
 
     % Step fjord forwards.
     
