@@ -1,4 +1,4 @@
-function [Th,Sh,Vh] = homogenise_layers(V0,T0,S0,inds)
+function [Th,Sh,Vh,Hh] = homogenise_layers(V0,T0,S0,inds)
 
 Th = T0;
 Sh = S0;
@@ -9,5 +9,6 @@ Vh = V0;
 Th(inds) = sum(T0(inds).*V0(inds))./sum(V0(inds));
 Sh(inds) = sum(S0(inds).*V0(inds))./sum(V0(inds));
 Vh(inds) = sum(V0(inds))./2;
+Hh(inds) = Vh(inds)./(p.L.*p.W);
 
 end
