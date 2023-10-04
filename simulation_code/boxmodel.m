@@ -191,7 +191,7 @@ end
 %% Put solution into output structure
 % but just save ~daily values
 % as otherwise high time resolution results in large output files
-dtdaily = 1;
+dtdaily = max(1, p.dt);
 if s.status == 0
     int = round(dtdaily/dt);
 else
