@@ -8,7 +8,7 @@ H_tp1 = V_tp1/(W*L);
 
 for k=1:N
     % Only check up to the layer above the bottom.
-    if k < N && H_tp1(k) > 0 
+    if H_tp1(k) > 0 
         % If the layer will not collapse at the next timestep, timestep
         % forwards.
         continue
