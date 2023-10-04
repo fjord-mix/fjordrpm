@@ -24,16 +24,14 @@ for k=1:N
         % If layer k+1 is also going to collapse, error because we have
         % 2 adjacent collapsing layers
         error("Error: two adjacent collapsing layers")
-    elseif H_tp1(k-1) > 0
+    elseif H_tp1(k-1) > 0 && k == N
+        % in the case that the collapsing layer is adjacent to the
+        % bottom/sill
         homogenisation_flag = true;
         % If layer k-1 is not going to collapse, homogenise k and k-1
         Ht([k-1, k]) = (Ht(k-1) + Ht(k))/2;
         [Tt,St,Vt] = homogenise_layers(Vt, Tt, St,[k-1,k]);
         continue
-    else
-        % If layer k+1 is also going to collapse, error because we have
-        % 2 adjacent collapsing layers
-        error("Error: two adjacent collapsing layers")
     end
 end
 end
