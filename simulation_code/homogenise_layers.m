@@ -8,7 +8,7 @@ Vh = V0;
 
 Th(inds) = sum(T0(inds).*V0(inds))./sum(V0(inds));
 Sh(inds) = sum(S0(inds).*V0(inds))./sum(V0(inds));
-Vh(inds) = sum(V0(inds))./2;
+Vh(inds) = sum(V0(inds))./length(inds);
 Hh(inds) = Vh(inds)./(p.L.*p.W);
 
 end
