@@ -29,7 +29,7 @@ VS(:,1) = V(:,1).*S(:,1); % salt
 [QVg,QTg,QSg,QVs,QTs,QSs,QVk,QTk,QSk,QVb,QTb,QSb,QIi,QTi,QSi,Te,Se] = deal(zeros(size(H,1),length(t)-1));
 phi = zeros(size(H,1)-p.sill,length(t)-1);
 M = zeros(length(f.zi),length(t)-1);
-ht = zeros(1, length(t)-1);
+homogenisation_timestep = zeros(1, length(t)-1);
 
 %% Error checks
 % Check shelf oscillation parameters have been set up correctly.
@@ -89,7 +89,6 @@ for i = 1:length(t)-1
     end
 
     counter = 0;
-    homogenisation_flag = false;
     while counter <= p.N
         % Compute fluxes. Check to see if any layer has collapsed, and if so homogenise and
         % recompute fluxes.
@@ -101,47 +100,9 @@ for i = 1:length(t)-1
             = compute_fluxes(H(:,i),T(:,i),S(:,i),f.Qsg(i),p, f.zs,...
             f.Ts(:,i),f.Ss(:,i),V(:,i), I(:,i),f.zi);
 
-        % Compute the thickness of each layer at the next timestep.
-        V_tp1  = V(:,i)+dt*p.sid*(QVg(:,i)-QVs(:,i)+QVk(:,i)+QVb(:,i));
-        H_tp1 = V_tp1/(p.W*p.L);
-
-        for k=1:p.N-1
-            % Only check up to the layer above the bottom.
-            if H_tp1(k) > 0
-                % If the layer will not collapse at the next timestep, timestep
-                % forwards.
-                continue
-            elseif H_tp1(k+1) > 0
-                % Else, apply layer homogenisation for each layer k that is a
-                % problem.
-                homogenisation_flag = true;
-                % If layer k+1 is not going to collapse, homogenise k and k+1
-                H([k, k+1], i) = (H(k, i) + H(k+1, i))/2;
-                [T(:,i),S(:,i)] = homogenise_layers(V(:,i),T(:,i),S(:,i),[k,k+1]);
-                % Store timestep at which this has occured
-                fprintf("Downwards homogenisation for layer %d occured at iteration %d \n", k, i)
-                ht(i) = ht(i)+1;
-                continue
-            elseif H_tp1(k+1) < 0
-                % If layer k+1 is also going to collapse, error because we have
-                % 2 adjacent collapsing layers
-                error("Error: two adjacent collapsing layers")
-            elseif H_tp1(k-1) > 0
-                homogenisation_flag = true;
-                % If layer k-1 is not going to collapse, homogenise k and k-1
-                H([k-1, k], i) = (H(k-1, i) + H(k, i))/2
-                [T(:,i),S(:,i)] = homogenise_layers(V(:,i),T(:,i),S(:,i),[k-1,k]);
-                % Store timestep at which this has occured
-                fprintf("Upwards homogenisation for layer %d occured at iteration %d \n", k, i)
-                % Flag that homogenisation has occured and how many iterations
-                ht(i) = ht(i)+1;
-                continue
-            else
-                % If layer k+1 is also going to collapse, error because we have
-                % 2 adjacent collapsing layers
-                error("Error: two adjacent collapsing layers")
-            end
-        end
+        [homogenisation_flag, H(:,i),T(:,i),S(:,i)] = ...
+            homogenise_thin_layers(V(:,i),T(:,i),S(:,i),H(:,i), dt, p.sid, QVg(:,i), ...
+            QVs(:,i), QVk(:,i), QVb(:,i), p.W, p.L, p.N, homogenisation_timestep);
 
         if homogenisation_flag == false
             % If no homogenisation has occurred, timestep forwards
@@ -157,6 +118,10 @@ for i = 1:length(t)-1
         % still collapsing, break because the model is unstable
         error("Error: collapsing layers still exist after homogenisation, model is unstable")
     end
+
+    % Store timestep at which this has occured and how many iterations were
+    % needed
+    s.homogenisation_timestep(i) = counter;
 
     % Step fjord forwards.
     
