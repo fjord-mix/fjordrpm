@@ -84,7 +84,7 @@ for i = 1:length(t)-1
         % buoyancy jump between boxes
         B = p.g*(p.betaS*(S(k+1,i)-S(k,i))-p.betaT*(T(k+1,i)-T(k,i)));        
         if B < 0
-            [T(:,i),S(:,i),V(:,i)] = homogenise_layers(V(:,i),T(:,i),S(:,i),[k,k+1]);
+            [T(:,i),S(:,i),V(:,i),H(:,i)] = homogenise_layers(V(:,i),T(:,i),S(:,i),[k,k+1]);
         end
     end
 
