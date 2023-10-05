@@ -15,7 +15,7 @@ for k=1:N
             homogenisation_flag = true;
             % If layer k+1 is not going to collapse, homogenise k and k+1
             Ht([k, k+1]) = (Ht(k) + Ht(k+1))/2;
-            [Tt,St,Vt] = homogenise_layers(Vt, Tt, St,[k,k+1]);
+            [Tt,St,Vt,HT] = homogenise_layers(Vt, Tt, St,[k,k+1],L,W);
             continue
         elseif k < N && H_tp1(k) < 0&& H_tp1(k+1) < 0 
             % If layer k+1 is also going to collapse, error because we have
@@ -28,7 +28,7 @@ for k=1:N
             homogenisation_flag = true;
             % If layer k-1 is not going to collapse, homogenise k and k-1
             Ht([k-1, k]) = (Ht(k-1) + Ht(k))/2;
-            [Tt,St,Vt] = homogenise_layers(Vt, Tt, St,[k-1,k]);
+            [Tt,St,Vt,HT] = homogenise_layers(Vt, Tt, St,[k-1,k],L, W);
             continue
         end
     end
