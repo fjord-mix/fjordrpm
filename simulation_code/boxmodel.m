@@ -113,7 +113,7 @@ for i = 1:length(t)-1
             counter = counter +1;
         end
     end
-    if counter == p.N
+    if counter > p.N
         % If p.N iterations of homogenisation have occurred and layers are
         % still collapsing, break because the model is unstable
         error("Error: collapsing layers still exist after homogenisation, model is unstable")
