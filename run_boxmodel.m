@@ -64,10 +64,12 @@ fjord_run.m.name = name;
 [fjord_run.s,fjord_run.f] = boxmodel(fjord_run.p, fjord_run.t, fjord_run.f, fjord_run.a);
 
 %% Saving results
-mkdir(output_folder);
-mkdir([output_folder,'/model_results']);
-mkdir([output_folder,'/figures']);
-mkdir([output_folder,'/animations']);
+if not(isfolder(output_folder))
+    mkdir(output_folder)
+    mkdir([output_folder,'/model_results']);
+    mkdir([output_folder,'/figures']);
+    mkdir([output_folder,'/animations']);
+end
 
 % Save the fjord structure, including input parameters, initial conditions, and results
 save([output_folder,'/model_results/', name, '.mat'], 'fjord_run')
