@@ -84,7 +84,8 @@ for i = 1:length(t)-1
         % buoyancy jump between boxes
         B = p.g*(p.betaS*(S(k+1,i)-S(k,i))-p.betaT*(T(k+1,i)-T(k,i)));        
         if B < 0
-            [T(:,i),S(:,i),V(:,i),H(:,i)] = homogenise_layers(V(:,i),T(:,i),S(:,i),[k,k+1],p.L,p.W);
+            [T(:,i),S(:,i),V(:,i),VT(:,i),VS(:,i),H(:,i)] ...
+            = homogenise_layers(V(:,i),T(:,i),S(:,i),VT(:,i),VS(:,i),[k,k+1],p.L,p.W);
         end
     end
     
@@ -104,8 +105,8 @@ for i = 1:length(t)-1
             H(:,i),T(:,i),S(:,i),f.Qsg(i),p,f.zs,f.Ts(:,i),f.Ss(:,i), ...
             V(:,i),I(:,i),f.zi);
     
-        [homogenisation_flag, H(:,i),T(:,i),S(:,i),V(:,i)] = ...
-            homogenise_thin_layers(V(:,i),T(:,i),S(:,i),H(:,i), dt, p.sid, QVg(:,i), ...
+        [homogenisation_flag, H(:,i),T(:,i),S(:,i),V(:,i), VT(:,i),VS(:,i)] = ...
+            homogenise_thin_layers(V(:,i),T(:,i),S(:,i), VT(:,i), VS(:,i), H(:,i), dt, p.sid, QVg(:,i), ...
             QVs(:,i), QVk(:,i), QVb(:,i), p.W, p.L, p.N, homogenisation_timestep);
 
         if homogenisation_flag == false

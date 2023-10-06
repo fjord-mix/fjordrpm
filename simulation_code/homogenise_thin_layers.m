@@ -1,4 +1,4 @@
-function [homogenisation_flag, Ht, Tt, St, Vt] = homogenise_thin_layers(Vt, Tt, St, Ht, dt, sid, QVg, QVs, QVk, QVb, W, L, N, ht)
+function [homogenisation_flag, Ht, Tt, St, Vt, VTt, VSt] = homogenise_thin_layers(Vt, Tt, St, VTt, VSt, Ht, dt, sid, QVg, QVs, QVk, QVb, W, L, N, ht)
 
 homogenisation_flag = false;
 
@@ -14,7 +14,7 @@ for k=1:N
             % problem.
             homogenisation_flag = true;
             % If layer k+1 is not going to collapse, homogenise k and k+1
-            [Tt,St,Vt,Ht] = homogenise_layers(Vt, Tt, St,[k,k+1],L,W);
+            [Tt,St,Vt,VTt,VSt,Ht] = homogenise_layers(Vt, Tt, St, VTt, VSt,[k,k+1],L,W);
             continue
         elseif  k < N &&  H_tp1(k+1) < 0 
             % If layer k+1 is also going to collapse, error because we have
@@ -26,7 +26,7 @@ for k=1:N
             % (This layer is not collapsing or it would have errored already)
             homogenisation_flag = true;
             % If layer k-1 is not going to collapse, homogenise k and k-1
-            [Tt,St,Vt,Ht] = homogenise_layers(Vt, Tt, St,[k-1,k],L, W);
+            [Tt,St,Vt,VTt,VSt,Ht] = homogenise_layers(Vt, Tt, St, VTt, VSt,[k,k+1],L,W);
             continue
         end
     end
