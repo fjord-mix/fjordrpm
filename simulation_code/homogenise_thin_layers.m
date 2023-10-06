@@ -1,4 +1,4 @@
-function [homogenisation_flag, Ht, Tt, St, Vt, VTt, VSt] = homogenise_thin_layers(Vt, Tt, St, VTt, VSt, Ht, dt, sid, QVg, QVs, QVk, QVb, W, L, N, ht)
+function [homogenisation_flag, Ht, Tt, St, Vt, VTt, VSt] = homogenise_thin_layers(Vt, Tt, St, VTt, VSt, Ht, dt, sid, QVg, QVs, QVk, QVb, W, L, N)
 
 homogenisation_flag = false;
 
@@ -15,10 +15,9 @@ for k=1:N
             homogenisation_flag = true;
             % If layer k+1 is not going to collapse, homogenise k and k+1
             [Tt,St,Vt,VTt,VSt,Ht] = homogenise_layers(Vt, Tt, St, VTt, VSt,[k,k+1],L,W);
-            continue
         elseif  k < N &&  H_tp1(k+1) < 0 
             % If layer k+1 is also going to collapse, error because we have
-            % 2 adjacent collapsing layers
+            % two adjacent collapsing layers
             error("Error: two adjacent collapsing layers")
         elseif  k == N   && H_tp1(k-1) > 0 
             % in the case that the collapsing layer is adjacent to the
@@ -27,7 +26,6 @@ for k=1:N
             homogenisation_flag = true;
             % If layer k-1 is not going to collapse, homogenise k and k-1
             [Tt,St,Vt,VTt,VSt,Ht] = homogenise_layers(Vt, Tt, St, VTt, VSt,[k,k+1],L,W);
-            continue
         end
     end
 end
