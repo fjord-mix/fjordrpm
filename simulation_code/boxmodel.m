@@ -29,6 +29,7 @@ VS(:,1) = V(:,1).*S(:,1); % salt
 [QVg,QTg,QSg,QVs,QTs,QSs,QVk,QTk,QSk,QVb,QTb,QSb,QIi,QTi,QSi,Te,Se] = deal(zeros(size(H,1),length(t)-1));
 phi = zeros(size(H,1)-p.sill,length(t)-1);
 M = zeros(length(f.zi),length(t)-1);
+homogenisation_timestep = zeros(1, length(t)-1);
 
 %% Error checks
 % Check shelf oscillation parameters have been set up correctly.
@@ -83,29 +84,49 @@ for i = 1:length(t)-1
         % buoyancy jump between boxes
         B = p.g*(p.betaS*(S(k+1,i)-S(k,i))-p.betaT*(T(k+1,i)-T(k,i)));        
         if B < 0
-            [T(:,i),S(:,i)] = homogenise_layers(V(:,i),T(:,i),S(:,i),[k,k+1]);
+            [T(:,i),S(:,i),V(:,i),VT(:,i),VS(:,i),H(:,i)] ...
+            = homogenise_layers(V(:,i),T(:,i),S(:,i),VT(:,i),VS(:,i),[k,k+1],p.L,p.W);
         end
     end
+    
+    counter = 0;
+    while counter <= p.N
+        % Compute fluxes. Check to see if any layer has collapsed, and if so homogenise and
+        % recompute fluxes.
 
-    % Calculate plume fluxes.
-    [QVg(:,i),QTg(:,i),QSg(:,i)] = ...
-        get_plume_fluxes(H(:,i),T(:,i),S(:,i),f.Qsg(i),p);
+        % Compute fluxes
+        [...
+            QVg(:,i),QTg(:,i),QSg(:,i),...
+            QVs(:,i),QTs(:,i),QSs(:,i),Se(:,i),Te(:,i),phi(:,i),...
+            QVk(:,i),QTk(:,i),QSk(:,i),...
+            QVb(:,i),QTb(:,i),QSb(:,i),...
+            QIi(:,i),QTi(:,i),QSi(:,i),M(:,i)] ...
+            = compute_fluxes(...
+            H(:,i),T(:,i),S(:,i),f.Qsg(i),p,f.zs,f.Ts(:,i),f.Ss(:,i), ...
+            V(:,i),I(:,i),f.zi);
+    
+        [homogenisation_flag, H(:,i),T(:,i),S(:,i),V(:,i), VT(:,i),VS(:,i)] = ...
+            homogenise_thin_layers(V(:,i),T(:,i),S(:,i), VT(:,i), VS(:,i), H(:,i), dt, p.sid, QVg(:,i), ...
+            QVs(:,i), QVk(:,i), QVb(:,i), p.W, p.L, p.N);
 
-    % Calculate shelf fluxes.
-    [QVs(:,i),QTs(:,i),QSs(:,i),Se(:,i),Te(:,i),phi(:,i)] = ...
-        get_shelf_fluxes(H(:,i),T(:,i),S(:,i),f.zs,f.Ts(:,i),f.Ss(:,i),f.Qsg(i),p);
+        if homogenisation_flag == false
+            % If no homogenisation has occurred, timestep forwards
+            break
+        else
+            % If homogenisation has occurred, recompute fluxes and go through
+            % the loop again.
+            counter = counter +1;
+        end
+    end
+    if counter > p.N
+        % If p.N iterations of homogenisation have occurred and layers are
+        % still collapsing, break because the model is unstable
+        error("Error: collapsing layers still exist after homogenisation, model is unstable")
+    end
 
-    % Calculate vertical mixing fluxes.
-    [QVk(:,i),QTk(:,i),QSk(:,i)] = ...
-        get_mixing_fluxes(H(:,i),T(:,i),S(:,i),QVg(:,i),QVs(:,i),p);
-
-    % Calculate "artificial" fluxes.
-    [QVb(:,i),QTb(:,i),QSb(:,i)] = ...
-        get_artificial_fluxes(QVg(:,i)-QVs(:,i)+QVk(:,i),H(:,i),V(:,i),T(:,i),S(:,i),f.zs,f.Ts(:,i),f.Ss(:,i),p);
-
-    % Calculate iceberg fluxes.
-    [QIi(:,i),QTi(:,i),QSi(:,i),M(:,i)] = ...
-        get_iceberg_fluxes(H(:,i),T(:,i),S(:,i),I(:,i),f.zi,p);
+    % Store timestep at which this has occured and how many iterations were
+    % needed
+    s.homogenisation_timestep(i) = counter;
 
     % Step fjord forwards.
     
@@ -119,7 +140,7 @@ for i = 1:length(t)-1
     T(:,i+1) = VT(:,i+1)./V(:,i+1);
     S(:,i+1) = VS(:,i+1)./V(:,i+1);
     % if ~isempty(find(S(:,end) > 35,1))
-    %     disp('started becoming untable')
+    %     disp('started becoming unstable')
     % end
 
     % Step icebergs forwards.
@@ -137,15 +158,15 @@ for i = 1:length(t)-1
         plot_debug_profile(i,t,f,p,H,S,[]);
     end
 
-    if ~isempty(find(H(:,i+1) < p.Hmin,1))
-        thinnest_layer=find(H(:,i+1) < p.Hmin,1);
-        fprintf('Error: layer %d thickness dropped below p.Hmin at time step %d\n',thinnest_layer,i);
-        s.status = 1; % status == 1 means there was an error
-        if thinnest_layer > 2
-            disp('we want to save this')
-        end
-        break
-    end
+    % if ~isempty(find(H(:,i+1) < p.Hmin,1))
+    %     thinnest_layer=find(H(:,i+1) < p.Hmin,1);
+    %     fprintf('Error: layer %d thickness dropped below p.Hmin at time step %d\n',thinnest_layer,i);
+    %     s.status = 1; % status == 1 means there was an error
+    %     if thinnest_layer > 2
+    %         disp('we want to save this')
+    %     end
+    %     break
+    % end
 
     % Break from loop if the sill layer is not acting as it was supposed to
     % Check bottom box is consistent with sill depth.
@@ -175,7 +196,7 @@ end
 %% Put solution into output structure
 % but just save ~daily values
 % as otherwise high time resolution results in large output files
-dtdaily = 1;
+dtdaily = max(1, p.dt);
 if s.status == 0
     int = round(dtdaily/dt);
 else

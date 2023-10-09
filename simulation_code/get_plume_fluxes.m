@@ -61,4 +61,7 @@ else
     QpT0(knb) = Qp(knb)*Tp(knb);
     QpS0(knb) = Qp(knb)*Sp(knb);
 end
+
+% Transpose vectors before outputting
+QpV0 = QpV0'; QpT0 = QpT0'; QpS0 = QpS0';
 end

@@ -23,8 +23,8 @@ if ~isnan(p.trelax) % if layer nudging active
     [QVb0,QTb0,QSb0]=get_nudging_fluxes(QVb0,QTb0,QSb0,H0,T0,S0,Ss,zs,p);
 end
 
-if ~isnan(p.Hmin) % if minimum thickness active
-    [QVb0, QTb0, QSb0] = get_hmin_fluxes(QV0,QVb0,QTb0,QSb0,V0,H0,T0,S0,p);
-end
+% if ~isnan(p.Hmin) % if minimum thickness active
+%     [QVb0, QTb0, QSb0] = get_hmin_fluxes(QV0,QVb0,QTb0,QSb0,V0,H0,T0,S0,p);
+% end
 
 end
