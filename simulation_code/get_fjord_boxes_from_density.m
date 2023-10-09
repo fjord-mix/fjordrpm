@@ -61,8 +61,8 @@ z_interfaces=search_Z_profile(inds_interfaces);
 if (z_interfaces(end) > p.silldepth) && p.sill
     z_interfaces(end+1) = p.silldepth; 
 elseif (z_interfaces(1) < p.silldepth) && p.sill
-    spaced_interfaces = linspace(p.silldepth,0,p.N);
-    z_interfaces = flip(spaced_interfaces);
+    spaced_interfaces = linspace(p.silldepth,0,p.N+1);
+    z_interfaces = flip(spaced_interfaces(1:end-1)); % we want to get rid of the zero
 else
     spaced_interfaces = linspace(p.silldepth,z_interfaces(1),p.N);
     z_interfaces = flip(spaced_interfaces);
