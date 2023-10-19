@@ -258,6 +258,7 @@ if nargin > 4
     fjord_output.f = s;
     fjord_output.t = s;
     fjord_output.p = p;
+    fjord_output.a = a;
     save(path_out,'fjord_output','-v7.3'); % v7.3 allows large files (> 2GB), which might happen in very long runs
 end
 
