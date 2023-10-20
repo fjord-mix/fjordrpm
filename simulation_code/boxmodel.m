@@ -182,7 +182,7 @@ for i = 1:length(t)-1
         break
     end
     % check if something starts to become unstable
-    % if ~isempty(find(S(:,i+1) > 38,1))
+    % if ~isempty(find(S(:,i+1) > 45,1))
     %     [sind,~]=find(S(:,i+1) > 38);
     %     fprintf('Salinity went above 38 in layer %d at time step %d\n',sind,i)
     % end
