@@ -107,7 +107,7 @@ for i = 1:length(t)-1
     
         [homogenisation_flag, H(:,i),T(:,i),S(:,i),V(:,i), VT(:,i),VS(:,i)] = ...
             homogenise_thin_layers(V(:,i),T(:,i),S(:,i), VT(:,i), VS(:,i), H(:,i), dt, p.sid, QVg(:,i), ...
-            QVs(:,i), QVk(:,i), QVb(:,i), p.W, p.L, p.N);
+            QVs(:,i), QVk(:,i), QVb(:,i), p.W, p.L, p.N, p);
 
         if homogenisation_flag == false
             % If no homogenisation has occurred, timestep forwards

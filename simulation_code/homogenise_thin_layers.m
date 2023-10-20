@@ -1,7 +1,12 @@
-function [homogenisation_flag, Ht, Tt, St, Vt, VTt, VSt] = homogenise_thin_layers(Vt, Tt, St, VTt, VSt, Ht, dt, sid, QVg, QVs, QVk, QVb, W, L, N)
+function [homogenisation_flag, Ht, Tt, St, Vt, VTt, VSt] = homogenise_thin_layers(Vt, Tt, St, VTt, VSt, Ht, dt, sid, QVg, QVs, QVk, QVb, W, L, N, p)
+
+if ~isfield(p,"Hmin_homogenise")
+    Hmin=0.5;
+else
+    Hmin=p.Hmin_homogenise;
+end
 
 homogenisation_flag = false;
-Hmin = 0.5;
 % Compute the thickness of each layer at the next timestep.
 V_tp1  = Vt+dt*sid*(QVg-QVs+QVk+QVb);
 H_tp1 = V_tp1/(W*L);
