@@ -246,10 +246,10 @@ s.IT = p.W*p.L*trapz(f.zi,s.I); % fjord iceberg volume
 s.MT = p.W*p.L*trapz(f.zi,s.M(:,1:size(s.I,2)).*s.I); % total iceberg melt flux
 s.ET = p.W*p.L*trapz(f.zi,p.E0*s.I); % total iceberg export flux
 
-% return forcing on same timestepping
-% f.Ss = f.Ss(:,1:int:end-1);
-% f.Ts = f.Ts(:,1:int:end-1);
-% f.Qsg = f.Qsg(1:int:end-1);
+% return forcing on same time step as forcings (in results structure to prevent overwriting)
+s.Ss = f.Ss(:,1:int:end-1);
+s.Ts = f.Ts(:,1:int:end-1);
+s.Qsg = f.Qsg(1:int:end-1);
 % f.D = f.D(1:int:end-1);
 
 %% Save output if a path+file name are provided
