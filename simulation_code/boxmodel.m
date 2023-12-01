@@ -88,6 +88,22 @@ for i = 1:length(t)-1
             = homogenise_layers(V(:,i),T(:,i),S(:,i),VT(:,i),VS(:,i),[k,k+1],p.L,p.W);
         end
     end
+    % if there is a sill
+    if p.sill == 1
+        % check the buoyancy jump between the below sill layer and layer N
+        k = p.N;
+        B = p.g*(p.betaS*(S(k+1,i)-S(k,i))-p.betaT*(T(k+1,i)-T(k,i)));
+        % if the buoyancy jump is negative, homogenise the heat and salt
+        % properties of the two layers but don't change their volume 
+        if B < 0
+            inds = [k, k+1];
+            T(inds,i) = sum(T(inds,i).*V(inds,i))./sum(V(inds,i));
+            S(inds,i) = sum(S(inds,i).*V(inds,i))./sum(V(inds,i));
+            % Recompute heat and salt content 
+            VT(inds,i) = V(inds,i).*T(inds,i);
+            VS(inds,i) = V(inds,i).*S(inds,i);
+        end
+    end
     
     counter = 0;
     while counter <= p.N
