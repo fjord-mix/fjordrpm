@@ -1,4 +1,4 @@
-function [QIi0,QTi0,QSi0,M0] = get_iceberg_fluxes(H0,T0,S0,I0,zi,p)
+function [QIi0,QTi0,QSi0,M0,QVmi0,QTmi0,QSmi0] = get_iceberg_fluxes(H0,T0,S0,I0,zi,p)
 
 % GET_ICBERG_FLUXES Compute iceberg fluxes.
 %   [QII0,QTI0,QSI0,M0] = GET_ICEBERG_FLUXES(H0,T0,S0,I0,ZI,P)
@@ -36,6 +36,31 @@ else
         inds = zi<=ints(k) & zi>=ints(k+1);
         M0(inds) = p.M0*(T0(k)-Tf(k));
     end
+
+    % mixing fluxes between boxes to account for buoyant rising of
+    % freshwater
+    % Preallocate variables
+    gamma = 0.2; % percentage of iceberg melt flux that gets mixed vertically
+    [QVmI, QTmI, QSmI] =  deal(zeros(1, p.N+p.sill-1));
+    % loop over interfaces
+    for k=1:p.N-1
+        % fluxes
+        QVmI(k) = gamma*QIi0(k+1);
+        QTmI(k) = gamma*QTi0(k+1);
+        QSmI(k) = gamma*QSi0(k+1);
+    end
+
+    % final fluxes
+    QVmi0 = [QVmI,0]'-[0,QVmI]';
+    QTmi0 = [QTmI,0]'-[0,QTmI]';
+    QSmi0 = [QSmI,0]'-[0,QSmI]';
+    if p.sill % ensures there is no mixing at the sill layer interface
+        QVmi0(p.N+p.sill) = 0;
+        QTmi0(p.N+p.sill) = 0;
+        QSmi0(p.N+p.sill) = 0;
+    end        
+
+
 end
 
 end

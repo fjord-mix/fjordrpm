@@ -26,7 +26,7 @@ VT(:,1) = V(:,1).*T(:,1); % heat
 VS(:,1) = V(:,1).*S(:,1); % salt
 
 % Preallocate variables
-[QVg,QTg,QSg,QVs,QTs,QSs,QVk,QTk,QSk,QVb,QTb,QSb,QIi,QTi,QSi,Te,Se] = deal(zeros(size(H,1),length(t)-1));
+[QVg,QTg,QSg,QVs,QTs,QSs,QVk,QTk,QSk,QVmi,QTmi,QSmi,QVb,QTb,QSb,QIi,QTi,QSi,Te,Se] = deal(zeros(size(H,1),length(t)-1));
 phi = zeros(size(H,1)-p.sill,length(t)-1);
 M = zeros(length(f.zi),length(t)-1);
 homogenisation_timestep = zeros(1, length(t)-1);
@@ -116,11 +116,11 @@ for i = 1:length(t)-1
             QVs(:,i),QTs(:,i),QSs(:,i),Se(:,i),Te(:,i),phi(:,i),...
             QVk(:,i),QTk(:,i),QSk(:,i),...
             QVb(:,i),QTb(:,i),QSb(:,i),...
-            QIi(:,i),QTi(:,i),QSi(:,i),M(:,i)] ...
+            QIi(:,i),QTi(:,i),QSi(:,i),M(:,i),QVmi(:,i),QTmi(:,i),QSmi(:,i)] ...
             = compute_fluxes(...
             H(:,i),T(:,i),S(:,i),f.Qsg(i),p,f.zs,f.Ts(:,i),f.Ss(:,i), ...
             V(:,i),I(:,i),f.zi);
-    
+        
         [homogenisation_flag, H(:,i),T(:,i),S(:,i),V(:,i), VT(:,i),VS(:,i)] = ...
             homogenise_thin_layers(V(:,i),T(:,i),S(:,i), VT(:,i), VS(:,i), H(:,i), dt, p.sid, QVg(:,i), ...
             QVs(:,i), QVk(:,i), QVb(:,i), p.W, p.L, p.N, p);
@@ -147,9 +147,9 @@ for i = 1:length(t)-1
     % Step fjord forwards.
     
     % dt = t(i+1)-t(i); % replaced by pre-defined dt because of problems when running in parallel
-    V(:,i+1)  = V(:,i)+dt*p.sid*(QVg(:,i)-QVs(:,i)+QVk(:,i)+QVb(:,i));
-    VT(:,i+1) = VT(:,i)+dt*p.sid*(QTg(:,i)-QTs(:,i)+QTk(:,i)+QTb(:,i)+QTi(:,i));
-    VS(:,i+1) = VS(:,i)+dt*p.sid*(QSg(:,i)-QSs(:,i)+QSk(:,i)+QSb(:,i)+QSi(:,i));
+    V(:,i+1)  = V(:,i)+dt*p.sid*(QVg(:,i)-QVs(:,i)+QVk(:,i)+QVmi(:,i)+QVb(:,i));
+    VT(:,i+1) = VT(:,i)+dt*p.sid*(QTg(:,i)-QTs(:,i)+QTk(:,i)+QTmi(:,i)+QTb(:,i)+QTi(:,i));
+    VS(:,i+1) = VS(:,i)+dt*p.sid*(QSg(:,i)-QSs(:,i)+QSk(:,i)+QSmi(:,i)+QSb(:,i)+QSi(:,i));
 
     % Calculate thicknesses and tracers.
     H(:,i+1) = V(:,i+1)/(p.W*p.L);
