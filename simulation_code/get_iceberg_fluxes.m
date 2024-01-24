@@ -8,6 +8,9 @@ if p.M0==0 % if no icebergs
     QIi0 = 0*H0;
     QTi0 = 0*H0;
     QSi0 = 0*H0;
+    QVmi0 = 0*H0;
+    QTmi0 = 0*H0;
+    QSmi0 = 0*H0;
     M0 = 0*zi;
 
 else
