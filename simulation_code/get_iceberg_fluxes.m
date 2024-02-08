@@ -43,25 +43,31 @@ else
     % mixing fluxes between boxes to account for buoyant rising of
     % freshwater
     % Preallocate variables
-    gamma = 0.2; % percentage of iceberg melt flux that gets mixed vertically
-    [QVmI, QTmI, QSmI] =  deal(zeros(1, p.N+p.sill-1));
-    % loop over interfaces
-    for k=1:p.N-1
+    [QVmI, QTmI, QSmI, gmelt, Heff, SA_ice] =  deal(zeros(1, p.N+p.sill-1));
+    % loop over interfaces, allow plumes to rise from below sill layer 
+    for k=1:p.N+p.sill-1
+        % reduced gravity
+        gmelt(k) = p.g*p.(betaS*S0(k)-p.betaT*T0(k)); % relative to the iceberg
+        % effective height rise of plume in layer
+        inds = find(zi0<=ints(k) & zi0>=ints(k+1));
+        Heff(k) = trapz(zi0(inds),Ii0(inds));
+        % Surface area of icebergs to melt (assume tetrahedral shape)
+        SA_ice(k) = 6*sqrt(6)/(sqrt(4*Heff(k)^2/3)); 
         % fluxes
-        QVmI(k) = gamma*QIi0(k+1);
-        QTmI(k) = gamma*QTi0(k+1);
-        QSmI(k) = gamma*QSi0(k+1);
+        QVmI(k) = p.gamma*QIi0(k+1)*p.alphaI^(2/3)*gmelt(k)^(1/3)*(SA_ice(k)/Heff(k))^(2/3)*Heff(k)/2;
+        QTmI(k) = QVmI(k)*T0(k+1)+p.gamma*QTi0(k+1);
+        QSmI(k) = QVmI(k)*S0(k+1)+p.gamma*QSi0(k+1);
     end
 
     % final fluxes
     QVmi0 = [QVmI,0]'-[0,QVmI]';
     QTmi0 = [QTmI,0]'-[0,QTmI]';
     QSmi0 = [QSmI,0]'-[0,QSmI]';
-    if p.sill % ensures there is no mixing at the sill layer interface
-        QVmi0(p.N+p.sill) = 0;
-        QTmi0(p.N+p.sill) = 0;
-        QSmi0(p.N+p.sill) = 0;
-    end        
+    % if p.sill % ensures there is no mixing at the sill layer interface
+    %     QVmi0(p.N+p.sill) = 0;
+    %     QTmi0(p.N+p.sill) = 0;
+    %     QSmi0(p.N+p.sill) = 0;
+    % end        
 
 
 end
