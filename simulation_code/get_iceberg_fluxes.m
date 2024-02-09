@@ -1,5 +1,6 @@
 function [QIi0,QTi0,QSi0,M0,QVmi0,QTmi0,QSmi0] = get_iceberg_fluxes(H0,T0,S0,I0,zi,p)
 
+
 % GET_ICBERG_FLUXES Compute iceberg fluxes.
 %   [QII0,QTI0,QSI0,M0] = GET_ICEBERG_FLUXES(H0,T0,S0,I0,ZI,P)
 %   computes the iceberg fluxes for the given parameters.
@@ -14,6 +15,7 @@ if p.M0==0 % if no icebergs
     M0 = 0*zi;
 
 else
+    
     % melting in boxes
     ints = [0;-cumsum(H0)];
     zj = 0.5*(ints(1:end-1)+ints(2:end)); % mean depth of box
@@ -47,7 +49,7 @@ else
     % loop over interfaces, allow plumes to rise from below sill layer 
     for k=1:p.N+p.sill-1
         % reduced gravity
-        gmelt(k) = p.g*p.(betaS*S0(k)-p.betaT*T0(k)); % relative to the iceberg
+        gmelt(k) = p.g*(p.betaS*S0(k)-p.betaT*T0(k)); % relative to the iceberg
         % effective height rise of plume in layer
         inds = find(zi0<=ints(k) & zi0>=ints(k+1));
         Heff(k) = trapz(zi0(inds),Ii0(inds));
