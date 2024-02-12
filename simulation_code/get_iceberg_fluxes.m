@@ -56,7 +56,12 @@ else
         % Surface area of icebergs to melt (assume tetrahedral shape)
         SA_ice(k) = 6*sqrt(6)/(sqrt(4*Heff(k)^2/3)); 
         % fluxes
-        QVmI(k) = p.gamma*QIi0(k+1)*p.alphaI^(2/3)*gmelt(k)^(1/3)*(SA_ice(k)/Heff(k))^(2/3)*Heff(k)/2;
+        if Heff(k) == 0
+            QVmI(k) = 0;
+        else
+
+            QVmI(k) = p.gamma*QIi0(k+1)*p.alphaI^(2/3)*gmelt(k)^(1/3)*(SA_ice(k)/Heff(k))^(2/3)*Heff(k)/2;
+        end
         QTmI(k) = QVmI(k)*T0(k+1)+p.gamma*QTi0(k+1);
         QSmI(k) = QVmI(k)*S0(k+1)+p.gamma*QSi0(k+1);
     end
@@ -65,6 +70,7 @@ else
     QVmi0 = [QVmI,0]'-[0,QVmI]';
     QTmi0 = [QTmI,0]'-[0,QTmI]';
     QSmi0 = [QSmI,0]'-[0,QSmI]';
+
     % if p.sill % ensures there is no mixing at the sill layer interface
     %     QVmi0(p.N+p.sill) = 0;
     %     QTmi0(p.N+p.sill) = 0;
