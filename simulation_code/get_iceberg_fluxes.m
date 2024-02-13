@@ -56,14 +56,20 @@ else
         % Surface area of icebergs to melt (assume tetrahedral shape)
         SA_ice(k) = 6*sqrt(6)/(sqrt(4*Heff(k)^2/3)); 
         % fluxes
-        if Heff(k) == 0
+        if Heff(k) == 0 % no iceberg concentration
             QVmI(k) = 0;
-        else
-
+                  QTmI(k) = 0;
+        QSmI(k) = 0;
+        elseif gmelt(k) < 0 % iceberg plume is denser than the box
+            QVmI(k) = 0;
+               QTmI(k) = 0;
+        QSmI(k) = 0;
+        else 
             QVmI(k) = p.gamma*QIi0(k+1)*p.alphaI^(2/3)*gmelt(k)^(1/3)*(SA_ice(k)/Heff(k))^(2/3)*Heff(k)/2;
-        end
         QTmI(k) = QVmI(k)*T0(k+1)+p.gamma*QTi0(k+1);
         QSmI(k) = QVmI(k)*S0(k+1)+p.gamma*QSi0(k+1);
+        end
+        
     end
 
     % final fluxes
