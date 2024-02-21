@@ -148,8 +148,8 @@ for i = 1:length(t)-1
     
     % dt = t(i+1)-t(i); % replaced by pre-defined dt because of problems when running in parallel
     V(:,i+1)  = V(:,i)+dt*p.sid*(QVg(:,i)-QVs(:,i)+QVk(:,i)+QVmi(:,i)+QVb(:,i));
-    VT(:,i+1) = VT(:,i)+dt*p.sid*(QTg(:,i)-QTs(:,i)+QTk(:,i)+QTmi(:,i)+QTb(:,i)+QTi(:,i));
-    VS(:,i+1) = VS(:,i)+dt*p.sid*(QSg(:,i)-QSs(:,i)+QSk(:,i)+QSmi(:,i)+QSb(:,i)+QSi(:,i));
+    VT(:,i+1) = VT(:,i)+dt*p.sid*(QTg(:,i)-QTs(:,i)+QTk(:,i)+QTi(:,i)+QTmi(:,i)+QTb(:,i));
+    VS(:,i+1) = VS(:,i)+dt*p.sid*(QSg(:,i)-QSs(:,i)+QSk(:,i)+QSi(:,i)+QSmi(:,i)+QSb(:,i));
 
     % Calculate thicknesses and tracers.
     H(:,i+1) = V(:,i+1)/(p.W*p.L);
@@ -160,7 +160,7 @@ for i = 1:length(t)-1
     % end
 
     % Step icebergs forwards.
-    I(:,i+1) = I(:,i)+dt*p.sid*((f.D(i)/(p.W*p.L))*f.xi-M(:,i).*I(:,i)-p.E0*I(:,i));
+    I(:,i+1) = I(:,i);%+dt*p.sid*((f.D(i)/(p.W*p.L))*f.xi-M(:,i).*I(:,i)-p.E0*I(:,i));
 
     % real-time nudging, i.e., nudging values are updated to mimic the current shelf conditions
     if ~isnan(p.trelax) && p.real_time_nudge
@@ -255,6 +255,7 @@ s.QSb = QSb(:,1:int:end);
 s.QIi = QIi(:,1:int:end);
 s.QTi = QTi(:,1:int:end);
 s.QSi = QSi(:,1:int:end);
+s.QVmi = QVmi(:, 1:int:end);
 s.M = M(:,1:int:end);
 
 % for iceberg fluxes also calculate and save fjord-integrated values
@@ -266,7 +267,7 @@ s.ET = p.W*p.L*trapz(f.zi,p.E0*s.I); % total iceberg export flux
 s.Ss = f.Ss(:,1:int:end-1);
 s.Ts = f.Ts(:,1:int:end-1);
 s.Qsg = f.Qsg(1:int:end-1);
-% f.D = f.D(1:int:end-1);
+s.D = f.D(1:int:end-1);
 
 %% Save output if a path+file name are provided
 if nargin > 4
