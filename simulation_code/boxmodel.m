@@ -160,7 +160,7 @@ for i = 1:length(t)-1
     % end
 
     % Step icebergs forwards.
-    I(:,i+1) = I(:,i);%+dt*p.sid*((f.D(i)/(p.W*p.L))*f.xi-M(:,i).*I(:,i)-p.E0*I(:,i));
+    I(:,i+1) = I(:,i)+ (1-p.icestatic)*dt*p.sid*((f.D(i)/(p.W*p.L))*f.xi-M(:,i).*I(:,i)-p.E0*I(:,i));
 
     % real-time nudging, i.e., nudging values are updated to mimic the current shelf conditions
     if ~isnan(p.trelax) && p.real_time_nudge
