@@ -25,6 +25,9 @@ function [p,a] = get_model_default_parameters()
     p.M0 = 2e-8;       % iceberg melt efficiency (s^-1 deg.C^-1)
     p.nu0 = 25;        % iceberg volume profile coefficient (-)
     p.E0 = 1e-7;       % iceberg export efficiency (s^-1)
+    p.gamma = 0.5;     % proportion of iceberg melt flux that gets mixed vertically (-)
+    p.alphaI = 0.1;    % iceberg plume entrainment coefficient
+    p.icestatic = 1;   % whether icebergs are "static" or "dynamic" in the model
 
     %% artificial parameters
     p.wmax = 4e-5;         % maximum vertical mixing velocity    
