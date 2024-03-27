@@ -57,7 +57,7 @@ z_interfaces=search_Z_profile(inds_interfaces);
 % check if interface depths ended up being the same (i.e., target sigma values do not exist in
 % the sigma profile). In that case, prescribe the minimum thickness to each layer below the first
 for i=2:length(z_interfaces)
-    if z_interfaces(i) - z_interfaces(i-1) < p.Hmin
+    if abs(z_interfaces(i) - z_interfaces(i-1)) < p.Hmin
         z_interfaces(i) = z_interfaces(i-1) - p.Hmin;
     end
 end
