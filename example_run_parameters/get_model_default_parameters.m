@@ -27,7 +27,7 @@ function [p,a] = get_model_default_parameters()
     p.E0 = 1e-7;       % iceberg export efficiency (s^-1)
     p.gamma = 0.5;     % proportion of iceberg melt flux that gets mixed vertically (-)
     p.alphaI = 0.1;    % iceberg plume entrainment coefficient
-    p.icestatic = 1;   % whether icebergs are "static" or "dynamic" in the model
+    p.icestatic = 0;   % whether icebergs are "static" or "dynamic" in the model
 
     %% artificial parameters
     p.wmax = 4e-5;         % maximum vertical mixing velocity    
@@ -45,7 +45,7 @@ function [p,a] = get_model_default_parameters()
     p.H = 800;          % fjord depth
     p.silldepth = -500; % only used if p.sill=1
     p.zgl = -800;       % grounding line depth
-    p.Hmin = 25;        % min box thickness
+    p.Hmin = 5;        % min box thickness
 
     %% Idealised-forcing parameters
     %  these should not be used except for when no forcing is provided to the model
