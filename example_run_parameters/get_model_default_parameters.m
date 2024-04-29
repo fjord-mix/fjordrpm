@@ -25,6 +25,7 @@ function [p,a] = get_model_default_parameters()
     p.M0 = 2e-8;       % iceberg melt efficiency (s^-1 deg.C^-1)
     p.nu0 = 25;        % iceberg volume profile coefficient (-)
     p.E0 = 1e-7;       % iceberg export efficiency (s^-1)
+    p.uIce = 0.005;    % iceberg down-fjord velocity (m s^-1)
 
     %% artificial parameters
     p.wmax = 4e-5;         % maximum vertical mixing velocity    
