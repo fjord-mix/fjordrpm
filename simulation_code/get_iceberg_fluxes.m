@@ -53,7 +53,7 @@ else
         % effective height rise of plume in layer
         inds = find(zi0<=ints(k) & zi0>=ints(k+1));
         Heff(k) = trapz(zi0(inds),Ii0(inds));
-        % Surface area of icebergs to melt (assume characteristic length scale p.H/p.N)
+        % Surface area of icebergs to melt in layer k (assume characteristic length scale p.H/p.N)
         SA_ice(k) = p.W*p.L*6*sqrt(6)/(p.H/p.N)*Heff(k);
         % fluxes
         if Heff(k) == 0 % no iceberg concentration (e.g. on first timestep)
@@ -65,7 +65,7 @@ else
             QTmI(k) = 0;
             QSmI(k) = 0;
         else % iceberg plume which mixes into box above 
-            QVmI(k) = p.gamma*QIi0(k+1)*p.alphaI^(2/3)*gmelt(k)^(1/3)*(SA_ice(k)/Heff(k))^(2/3)*Heff(k)/2;
+            QVmI(k) = p.gamma*(QIi0(k+1))^(1/3)*p.alphaI^(2/3)*gmelt(k)^(1/3)*(SA_ice(k)/Heff(k))^(2/3)*Heff(k)/2;
             QTmI(k) = QVmI(k)*T0(k+1)+p.gamma*QTi0(k+1);
             QSmI(k) = QVmI(k)*S0(k+1)+p.gamma*QSi0(k+1);
         end
