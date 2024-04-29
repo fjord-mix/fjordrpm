@@ -65,7 +65,7 @@ else
             QTmI(k) = 0;
             QSmI(k) = 0;
         else % iceberg plume which mixes into box above 
-            QVmI(k) = p.gamma*QIi0(k+1)*p.alphaI^(2/3)*gmelt(k)^(1/3)*(SA_ice(k)/Heff(k))^(2/3)*Heff(k)/2;
+            QVmI(k) = p.gamma*(QIi0(k+1))^(1/3)*p.alphaI^(2/3)*gmelt(k)^(1/3)*(SA_ice(k)/Heff(k))^(2/3)*Heff(k)/2;
             QTmI(k) = QVmI(k)*T0(k+1)+p.gamma*QTi0(k+1);
             QSmI(k) = QVmI(k)*S0(k+1)+p.gamma*QSi0(k+1);
         end
