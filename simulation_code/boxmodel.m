@@ -147,9 +147,9 @@ for i = 1:length(t)-1
     % Step fjord forwards.
     
     % dt = t(i+1)-t(i); % replaced by pre-defined dt because of problems when running in parallel
-    V(:,i+1)  = V(:,i)+dt*p.sid*(QVg(:,i)-QVs(:,i)+QVk(:,i)+QVmi(:,i)+QVb(:,i));
-    VT(:,i+1) = VT(:,i)+dt*p.sid*(QTg(:,i)-QTs(:,i)+QTk(:,i)+QTi(:,i)+QTmi(:,i)+QTb(:,i));
-    VS(:,i+1) = VS(:,i)+dt*p.sid*(QSg(:,i)-QSs(:,i)+QSk(:,i)+QSi(:,i)+QSmi(:,i)+QSb(:,i));
+    V(:,i+1)  = V(:,i)+dt*p.sid*(QVg(:,i)-QVs(:,i)+QVk(:,i)+p.gamma*QVmi(:,i)+QVb(:,i));
+    VT(:,i+1) = VT(:,i)+dt*p.sid*(QTg(:,i)-QTs(:,i)+QTk(:,i)+(1-p.gamma)*QTi(:,i)+p.gamma*QTmi(:,i)+QTb(:,i));
+    VS(:,i+1) = VS(:,i)+dt*p.sid*(QSg(:,i)-QSs(:,i)+QSk(:,i)+(1-p.gamma)*QSi(:,i)+p.gamma*QSmi(:,i)+QSb(:,i));
 
     % Calculate thicknesses and tracers.
     H(:,i+1) = V(:,i+1)/(p.W*p.L);
