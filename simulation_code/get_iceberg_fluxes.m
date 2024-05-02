@@ -77,6 +77,16 @@ else
     QTmi0 = [QTmI,0]'-[0,QTmI]';
     QSmi0 = [QSmI,0]'-[0,QSmI]';
 
+    % fraction of meltwater stays in box, while fraction rises up as plume
+    QIi0 = (1-p.gamma)*QIi0;
+    QTi0 = (1-p.gamma)*QTi0;
+    QSi0 = (1-p.gamma)*QSi0;
+    QVmi0 = p.gamma*QVmi0;
+    QTmi0 = p.gamma*QTmi0;
+    QSmi0 = p.gamma*QSmi0;
+
+
+
     % if p.sill % ensures there is no mixing at the sill layer interface
     %     QVmi0(p.N+p.sill) = 0;
     %     QTmi0(p.N+p.sill) = 0;
