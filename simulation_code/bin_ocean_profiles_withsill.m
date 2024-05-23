@@ -1,4 +1,4 @@
-function [T0, S0] = bin_ocean_profiles_withsill(Tz,Sz,z,H0,p)
+function [T0, S0, He0] = bin_ocean_profiles_withsill(Tz,Sz,z,H0,p)
 % BIN_OCEAN_PROFILES Bins temperature (Tz) and salinity (Sz) profiles to boxmodel layers (H0)
 % takes into account the sill, with separate calculations for partially-
 % occluded and below-sill layers.
@@ -23,9 +23,9 @@ Ss0 = interp1(zs,Ss,zs0,'pchip','extrap'); % first entry is bottom depth, last e
 Ts0 = interp1(zs,Ts,zs0,'pchip','extrap');
 
 % H0 is location of box model layer boundaries 
-[Te0,Se0] = deal(zeros(size(H0)));
+[Te0,Se0, He0] = deal(zeros(size(H0)));
 
-for k=1:length(ints)-1 
+for k=1:length(ints)-1
     
     % find the corresponding shelf conditions
     % H0 has entries going surface to bottom
@@ -35,9 +35,10 @@ for k=1:length(ints)-1
         % above sill
         % integral of the the layer depth on the sill, over the depth of the layer
         % find z bounding values of the layers, first loop is for top layer beneath surface
-        inds = find(zs0<=ints(k) & zs0>=ints(k+1)); 
+        inds = find(zs0<=ints(k) & zs0>=ints(k+1));
         Se0(k) = trapz(zs0(inds),Ss0(inds))/H0(k);       
         Te0(k) = trapz(zs0(inds),Ts0(inds))/H0(k);
+        He0(k) = H0(k);
 
     % if the layer is partially occluded, integrate only over the part in
     % contact with the fjord layer (above the sill)
@@ -48,6 +49,7 @@ for k=1:length(ints)-1
         % integral of the part of the layer in contact with the fjord, over the depth of the layer
         Se0(k) = trapz(zs0(inds),Ss0(inds))/abs(zs0(inds(1))-zs0(inds(end)));       
         Te0(k) = trapz(zs0(inds),Ts0(inds))/abs(zs0(inds(1))-zs0(inds(end)));
+        He0(k) = abs(zs0(inds(1))-zs0(inds(end)));
 
     % if the layer is completely below the sill, use the reference point on
     % the shelf immediately above the sill
@@ -59,15 +61,17 @@ for k=1:length(ints)-1
         % No integral- just use reference point salinity 
         Se0(k) = Ss0(inds);       
         Te0(k) = Ts0(inds);
-
+        He0(k) = He0(k-1)/10; % small gap in layer above for flow to go through - check with Donald 
+    
 
     end
-
+% First entry of se0, te0 is for surface layer, last entry is bottom depth 
 
 
 end
 S0 = Se0';
-T0 = Te0';        
+T0 = Te0';
+He0 = He0';
 
 % Plot to check interpolation
 % figure(98);
