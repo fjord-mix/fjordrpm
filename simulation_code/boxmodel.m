@@ -116,7 +116,8 @@ for i = 1:length(t)-1
             QVs(:,i),QTs(:,i),QSs(:,i),Se(:,i),Te(:,i),phi(:,i),...
             QVk(:,i),QTk(:,i),QSk(:,i),...
             QVb(:,i),QTb(:,i),QSb(:,i),...
-            QIi(:,i),QTi(:,i),QSi(:,i),M(:,i),QVmi(:,i),QTmi(:,i),QSmi(:,i)] ...
+            QIi(:,i),QTi(:,i),QSi(:,i),M(:,i),QVmi(:,i),QTmi(:,i),QSmi(:,i),...
+            QVv(:,i),QTv(:,i),QSv(:,i)] ...
             = compute_fluxes(...
             H(:,i),T(:,i),S(:,i),f.Qsg(i),p,f.zs,f.Ts(:,i),f.Ss(:,i), ...
             V(:,i),I(:,i),f.zi);
@@ -147,9 +148,9 @@ for i = 1:length(t)-1
     % Step fjord forwards.
     
     % dt = t(i+1)-t(i); % replaced by pre-defined dt because of problems when running in parallel
-    V(:,i+1)  = V(:,i)+dt*p.sid*(QVg(:,i)-QVs(:,i)+QVk(:,i)+QVmi(:,i)+QVb(:,i));
-    VT(:,i+1) = VT(:,i)+dt*p.sid*(QTg(:,i)-QTs(:,i)+QTk(:,i)+QTi(:,i)+QTmi(:,i)+QTb(:,i));
-    VS(:,i+1) = VS(:,i)+dt*p.sid*(QSg(:,i)-QSs(:,i)+QSk(:,i)+QSi(:,i)+QSmi(:,i)+QSb(:,i));
+    V(:,i+1)  = V(:,i)+dt*p.sid*(QVg(:,i)-QVs(:,i)+QVk(:,i)+QVmi(:,i)+QVb(:,i)+QVv(:,i));
+    VT(:,i+1) = VT(:,i)+dt*p.sid*(QTg(:,i)-QTs(:,i)+QTk(:,i)+QTi(:,i)+QTmi(:,i)+QTb(:,i)+QTv(:,i));
+    VS(:,i+1) = VS(:,i)+dt*p.sid*(QSg(:,i)-QSs(:,i)+QSk(:,i)+QSi(:,i)+QSmi(:,i)+QSb(:,i)+QSv(:,i));
 
     % Calculate thicknesses and tracers.
     H(:,i+1) = V(:,i+1)/(p.W*p.L);
@@ -250,6 +251,11 @@ s.QSk = QSk(:,1:int:end);
 s.QVb = QVb(:,1:int:end);
 s.QTb = QTb(:,1:int:end);
 s.QSb = QSb(:,1:int:end);
+
+% vertical fluxes
+s.QVv = QVv(:,1:int:end);
+s.QTv = QTv(:,1:int:end);
+s.QSv = QSv(:,1:int:end);
 
 % iceberg fluxes
 s.QIi = QIi(:,1:int:end);

@@ -12,7 +12,8 @@ else
 end
 
 %% No icebergs in the fjord initially if dynamic, 
-a.I0 = p.icestatic*p.B*f.xi; % 
+% a.I0 = p.icestatic*p.B*f.xi; % 
+a.I0 = 0*f.xi;
 
 %% Set initial fjord T/S to be in equilibrium with shelf
 ints = [0;-cumsum(a.H0')];
