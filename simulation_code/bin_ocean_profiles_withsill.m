@@ -61,7 +61,7 @@ for k=1:length(ints)-1
         % No integral- just use reference point salinity 
         Se0(k) = Ss0(inds);       
         Te0(k) = Ts0(inds);
-        He0(k) = He0(k-1)/10; % small gap in layer above for flow to go through - check with Donald 
+        He0(k) = 100; % small gap in layer above for flow to go through - check with Donald 
     
 
     end
