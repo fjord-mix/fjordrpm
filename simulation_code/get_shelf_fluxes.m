@@ -16,17 +16,16 @@ else
     % calculate mean shelf T/S over box model layers above sill
     [gp, phi0, Q] = deal(zeros(1, p.N+p.sill));
     [Te0, Se0, He0] = bin_ocean_profiles_withsill(Ts,Ss,zs,H0',p);
- 
 
     % compute the location of the below sill, partially occluded and above sill layers
     depthcheck = H0;
-    depths = [0; cumsum(H0)]
-    for k = 1:p.N + p.sill-1
+    depths = [0; cumsum(H0)];
+    for k = 1:p.N + p.sill
         if depths(k) < p.silldepth && depths(k+1) <= p.silldepth
             depthcheck(k) = 1; %'abovesill';
         elseif depths(k) < p.silldepth && depths(k+1) > p.silldepth 
             depthcheck(k) = 2; %'partiallyoccluded';
-        else
+        elseif depths(k) >= p.silldepth
             depthcheck(k) = 3; %'belowsill';
         end
     end
@@ -36,7 +35,6 @@ else
      % no need to split into above, partially occluded and below sill because the shelf
      % conditions have already been computed 
             gp(k) = p.g*(p.betaS*(S0(k)-Se0(k))-p.betaT*(T0(k)-Te0(k)));
-
     end
 
     % calculate potentials over above-sill layers
@@ -61,7 +59,6 @@ else
     for k = 1:p.N + p.sill
             Q(k) = p.C0*p.W*He0(k)*phi0(k)/p.L; % He0 contains information about the gap that the flow can go through 
     end
-  
 
    % Q = p.C0*p.W*H0(1:p.N).*phi0'/p.L;
 
@@ -81,9 +78,15 @@ else
     % end
 
     % 
-    size(T0)
-    size(Te0)
-    size(QVs0)
+% Check the signs of the below sill fluxes 
+% If they disagree with the direction of the flux of the deepest below sill
+% box then they become fluxes to the box above/below
+% for k = 1:p.N +p.sill
+%     if depthcheck(k)==3 % below sill
+%         if sign(QVs0(k)) ~= sign(QVs0(end)) 
+%             if sign(QVs0(k)) > 0
+%                 QVs0(k) = 0;
+%                 QVs0()
 
     % resulting heat/salt fluxes
     QTs0 = (QVs0>0).*QVs0.*T0 + (QVs0<0).*QVs0.*Te0;
