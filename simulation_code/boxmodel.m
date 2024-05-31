@@ -40,10 +40,18 @@ if (isfield(p,'zd') && p.zd > 0) && (isfield(p,'tw') && p.tw  <= 0)
 end
 
 % Check initialisation is consistent with specified number of layers.
-if any([length(H) ~= p.N+p.sill,length(T) ~= p.N+p.sill,length(S) ~= p.N+p.sill])
-    disp('Error: Initial conditions not consistent with number of layers');
-    s.status = 1; % status == 1 means there was an error
-    return
+if p.fixedthickness==0
+    if any([length(H) ~= p.N+p.sill,length(T) ~= p.N+p.sill,length(S) ~= p.N+p.sill])
+        disp('Error: Initial conditions not consistent with number of layers');
+        s.status = 1; % status == 1 means there was an error
+        return
+    end
+elseif p.fixedthickness==1
+    if any([length(H) ~= p.N,length(T) ~= p.N,length(S) ~= p.N])
+        disp('Error: Initial conditions not consistent with number of layers');
+        s.status = 1; % status == 1 means there was an error
+        return
+    end
 end
 
 % Check bottom box is consistent with sill depth.
@@ -168,10 +176,32 @@ for i = 1:length(t)-1
     end
 
     % Plot model evolution (mainly debugging).
-    if p.plot_runtime
+    % if p.plot_runtime
+    %     % hf_track = monitor_boxmodel(hf_track,i,H,T,S,f);
+    %     % hf_track = show_boxmodel([],i,t,H,T,S,QVs,QVg,QVk,QVb,f);
+    %     plot_debug_profile(i,t,f,p,H,S,[],T,[]);
+    % end
+
+     if p.plot_runtime
+        ints = -[0;cumsum(H(:,i))];
+        z = f.zs;
+        Sshelf = f.Ss(:,i);
+        for k=1:size(H,1)
+            inds=find(z<=ints(k)&z>=ints(k+1));
+            Sfjord(inds)=S(k,i);
+            Sext(inds)=Se(k,i);
+            Uext(inds)=QVs(k,i)/(p.W*H(k,i));
+        end
+        Sfjord(1) = S(end,i);
+        Sext(1) = Se(end,i);
+        Uext(1) = QVs(end,i)/(p.W*H(end,i));
         % hf_track = monitor_boxmodel(hf_track,i,H,T,S,f);
         % hf_track = show_boxmodel([],i,t,H,T,S,QVs,QVg,QVk,QVb,f);
-        plot_debug_profile(i,t,f,p,H,S,[],T,[]);
+%         plot_debug_profile(i,t,f,p,H,S,[]);
+        subplot(1,2,1);
+        plot(f.Ss(:,i),z,Sfjord,z,Sext,z); drawnow;
+        subplot(1,2,2);
+        plot(Uext,z); drawnow;
     end
 
     % if ~isempty(find(H(:,i+1) < p.Hmin,1))
