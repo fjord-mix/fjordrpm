@@ -26,7 +26,7 @@ VT(:,1) = V(:,1).*T(:,1); % heat
 VS(:,1) = V(:,1).*S(:,1); % salt
 
 % Preallocate variables
-[QVg,QTg,QSg,QVs,QTs,QSs,QVk,QTk,QSk,QVmi,QTmi,QSmi,QVb,QTb,QSb,QIi,QTi,QSi,Te,Se] = deal(zeros(size(H,1),length(t)-1));
+[QVg,QTg,QSg,QVs,QTs,QSs,QVk,QTk,QSk,QVmi,QTmi,QSmi,QVv,QTv,QSv,QIi,QTi,QSi,Te,Se] = deal(zeros(size(H,1),length(t)-1));
 phi = zeros(size(H,1)-p.sill,length(t)-1);
 M = zeros(length(f.zi),length(t)-1);
 homogenisation_timestep = zeros(1, length(t)-1);
