@@ -287,11 +287,6 @@ s.QVk = QVk(:,1:int:end);
 s.QTk = QTk(:,1:int:end);
 s.QSk = QSk(:,1:int:end);
 
-% artificial fluxes
-s.QVb = QVb(:,1:int:end);
-s.QTb = QTb(:,1:int:end);
-s.QSb = QSb(:,1:int:end);
-
 % vertical fluxes
 s.QVv = QVv(:,1:int:end);
 s.QTv = QTv(:,1:int:end);
