@@ -36,7 +36,7 @@ else
 
     if p.fixedthickness==1 && p.sill==1
         % no exchange below the sill height
-        Q(-cumsum(H0)<= -p.silldepth) = 0;
+        Q(-cumsum(H0)< -p.silldepth) = 0;
     end
 
     % fluxes after ensuring depth mean = QSg0 when plume is turned on,
@@ -53,7 +53,7 @@ else
             Te0(p.N+p.sill) = 0;
         elseif p.fixedthickness==1
             % only computed based on the above-sill layers
-            QVs0 = Q + H0(-cumsum(H0)>=-p.silldepth)*(Qsg0-sum(Q))/sum(H0(-cumsum(H0)>=-p.silldepth));
+            QVs0 = Q + [H0(-cumsum(H0)>=-p.silldepth); 0*H0(-cumsum(H0)<-p.silldepth)]*(Qsg0-sum(Q))/sum([H0(-cumsum(H0)>=-p.silldepth); 0*H0(-cumsum(H0)<-p.silldepth)]);
         end
     end
    
