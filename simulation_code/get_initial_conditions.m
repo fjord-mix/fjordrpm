@@ -7,7 +7,12 @@ function a = get_initial_conditions(p, f)
 %% Initial fjord layer thicknesses
 if p.sill
     if p.fixedthickness==1
-        a.H0 = (p.H/(p.N))*ones(1,p.N+1); % no extra layers with a sill 
+        a.H0 = (p.H/(p.N))*ones(1,p.N); % no extra layers with a sill 
+        % make sure the sill height corresponds with a layer boundary
+        [minValue, closestIndex] = min(abs(cumsum(a.H0)-p.silldepth));
+        % reshuffle the layer boundaries 
+        a.H0(closestIndex) = a.H0(closestIndex) + minValue;
+        a.H0(closestIndex+1) = a.H0(closestIndex+1) - minValue;
     else
         a.H0 = [(abs(p.silldepth)/p.N)*ones(1,p.N),p.H-abs(p.silldepth)];
     end
