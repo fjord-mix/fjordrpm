@@ -34,18 +34,29 @@ else
     % fluxes before barotropic compensation
     Q = p.C0*p.W*H0(1:p.N).*phi0'/p.L;
 
+    if p.fixedthickness==1 && p.sill==1
+        % no exchange below the sill height
+        Q(-cumsum(H0)<= -p.silldepth) = 0;
+    end
+
     % fluxes after ensuring depth mean = QSg0 when plume is turned on,
     % and 0 when plume is turned off
     if p.P0==0
         Qsg0 = 0;
     end
+    % fluxes after barotropic compensation
     QVs0 = Q + H0(1:p.N)*(Qsg0-sum(Q))/sum(H0(1:p.N));
     if p.sill==1
-        QVs0(p.N+p.sill) = 0;
-        Se0(p.N+p.sill) = 0;
-        Te0(p.N+p.sill) = 0;
+        if p.fixedthickness==0
+            QVs0(p.N+p.sill) = 0;
+            Se0(p.N+p.sill) = 0;
+            Te0(p.N+p.sill) = 0;
+        elseif p.fixedthickness==1
+            % only computed based on the above-sill layers
+            QVs0 = Q + H0(-cumsum(H0)>=-p.silldepth)*(Qsg0-sum(Q))/sum(H0(-cumsum(H0)>=-p.silldepth));
+        end
     end
-
+   
     % resulting heat/salt fluxes
     QTs0 = (QVs0>0).*QVs0.*T0 + (QVs0<0).*QVs0.*Te0;
     QSs0 = (QVs0>0).*QVs0.*S0 + (QVs0<0).*QVs0.*Se0;
