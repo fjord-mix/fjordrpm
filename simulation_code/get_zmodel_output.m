@@ -1,23 +1,19 @@
-function s = get_zmodel_output(p, f, t, H, T, S, V, I, ...
+function s = get_zmodel_output(p, f, t, status, T, S, I, ...
     QVg, QTg, QSg, QVs, QTs, QSs, Se, Te, phi, QVk, QTk, QSk, ...
     QVv, QTv, QSv, QIi, QTi, QSi, QVmi, M)
 
-% Just save ~daily values
-% as otherwise high time resolution results in large output files
+% Just save daily values as otherwise high time resolution results in large output files
 dtdaily = max(1, p.dt);
-if s.status == 0
+if status == 0
     int = round(dtdaily/p.dt);
 else
     int = 1; % if something went wrong, we want all time steps to properly understand what happened
 end
-int = round(dtdaily/p.dt);
 s.t = t(1:int:end-1);
 
 % box variables
-s.H = H(:,1:int:end-1);
 s.T = T(:,1:int:end-1);
 s.S = S(:,1:int:end-1);
-s.V = V(:,1:int:end-1);
 s.I = I(:,1:int:end-1);
 
 % glacier exchanges
@@ -61,4 +57,5 @@ s.Ts = f.Ts(:,1:int:end-1);
 s.Qsg = f.Qsg(1:int:end-1);
 s.D = f.D(1:int:end-1);
 
+s.status = status;
 end
