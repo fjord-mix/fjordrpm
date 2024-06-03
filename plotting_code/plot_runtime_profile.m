@@ -1,4 +1,5 @@
-function plot_runtime_profile(i,t,f,p,H,S,s_bnds,T,t_bnds)
+function plot_runtime_profile(i,t,f,p,H,S,T,t_bnds)
+s_bnds = [min(f.Ss(:)) max(f.Ss(:))+0.1];
    ints = -[0;cumsum(H(:,i))];
         z = f.zs;
         Sshelf = f.Ss(:,i);
