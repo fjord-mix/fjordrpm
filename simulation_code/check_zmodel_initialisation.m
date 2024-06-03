@@ -1,5 +1,7 @@
 function status = check_zmodel_initialisation(p, a)
 
+status = 0;
+
 % Check shelf oscillation parameters have been set up correctly.
 if (isfield(p,'zd') && p.zd > 0) && (isfield(p,'tw') && p.tw  <= 0)
     disp('Error: must have positive oscillation period if oscillation strength is set.')
