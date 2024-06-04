@@ -1,4 +1,4 @@
-function [VT, VS, T, S, I] = step_zmodel_forwards(p, f, V, VT, VS, I, M,...
+function [VT, VS, T, S, I] = step_zmodel_forwards(p, f, V, VT, VS, I, M, D,...
     QTg, QTs, QTk, QTi, QTmi, QTv, ...
     QSg, QSs, QSk, QSi, QSmi, QSv)
 
@@ -9,6 +9,6 @@ function [VT, VS, T, S, I] = step_zmodel_forwards(p, f, V, VT, VS, I, M,...
     S = VS./V;
 
     % Step icebergs forwards.
-    I = I+ (1-p.icestatic)*p.dt*p.sid*((f.D/(p.W*p.L))*f.xi-M.*I-p.uIce/p.L*I);
+    I = I+ (1-p.icestatic)*p.dt*p.sid*((D/(p.W*p.L))*f.xi-M.*I-p.uIce/p.L*I);
 
 end
