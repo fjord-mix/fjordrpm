@@ -26,12 +26,8 @@ VT(:,1) = V(:,1).*T(:,1); % heat
 VS(:,1) = V(:,1).*S(:,1); % salt
 
 % Preallocate variables
-[QVg,QTg,QSg,QVs,QTs,QSs,QVk,QTk,QSk,QVmi,QTmi,QSmi,QVv,QTv,QSv,QIi,QTi,QSi,Te,Se] = deal(zeros(size(H,1),length(t)-1));
-if p.fixedthickness==0
+[QVg,QTg,QSg,QVs,QTs,QSs,QVk,QTk,QSk,QVmi,QTmi,QSmi,QVb,QTb,QSb,QIi,QTi,QSi,Te,Se] = deal(zeros(size(H,1),length(t)-1));
 phi = zeros(size(H,1)-p.sill,length(t)-1);
-elseif p.fixedthickness==1
-  phi = zeros(size(H,1),length(t)-1);  
-end
 M = zeros(length(f.zi),length(t)-1);
 homogenisation_timestep = zeros(1, length(t)-1);
 
@@ -44,18 +40,10 @@ if (isfield(p,'zd') && p.zd > 0) && (isfield(p,'tw') && p.tw  <= 0)
 end
 
 % Check initialisation is consistent with specified number of layers.
-if p.fixedthickness==0
-    if any([length(H) ~= p.N+p.sill,length(T) ~= p.N+p.sill,length(S) ~= p.N+p.sill])
-        disp('Error: Initial conditions not consistent with number of layers');
-        s.status = 1; % status == 1 means there was an error
-        return
-    end
-elseif p.fixedthickness==1
-    if any([length(H) ~= p.N,length(T) ~= p.N,length(S) ~= p.N])
-        disp('Error: Initial conditions not consistent with number of layers');
-        s.status = 1; % status == 1 means there was an error
-        return
-    end
+if any([length(H) ~= p.N+p.sill,length(T) ~= p.N+p.sill,length(S) ~= p.N+p.sill])
+    disp('Error: Initial conditions not consistent with number of layers');
+    s.status = 1; % status == 1 means there was an error
+    return
 end
 
 % Check bottom box is consistent with sill depth.
@@ -90,52 +78,34 @@ end
 %% The main loop
 for i = 1:length(t)-1
     
-    if p.fixedthickness==0
-          % check if the fjord stratification is unstable, and homogenise layer
-        % properties if it is
-        for k=1:p.N-1        
-            % buoyancy jump between boxes
-            B = p.g*(p.betaS*(S(k+1,i)-S(k,i))-p.betaT*(T(k+1,i)-T(k,i)));        
-            if B < 0
-                [T(:,i),S(:,i),V(:,i),VT(:,i),VS(:,i),H(:,i)] ...
-                = homogenise_layers(V(:,i),T(:,i),S(:,i),VT(:,i),VS(:,i),[k,k+1],p.L,p.W);
-            end
-        end
-        % if there is a sill
-        if p.sill == 1
-            % check the buoyancy jump between the below sill layer and layer N
-            k = p.N;
-            B = p.g*(p.betaS*(S(k+1,i)-S(k,i))-p.betaT*(T(k+1,i)-T(k,i)));
-            % if the buoyancy jump is negative, homogenise the heat and salt
-            % properties of the two layers but don't change their volume 
-            if B < 0
-                inds = [k, k+1];
-                T(inds,i) = sum(T(inds,i).*V(inds,i))./sum(V(inds,i));
-                S(inds,i) = sum(S(inds,i).*V(inds,i))./sum(V(inds,i));
-                % Recompute heat and salt content 
-                VT(inds,i) = V(inds,i).*T(inds,i);
-                VS(inds,i) = V(inds,i).*S(inds,i);
-            end
-        end
-    elseif p.fixedthickness==1
-          % check if the fjord stratification is unstable, and homogenise layer
-        % properties if it is
-        for k=1:p.N-1        
-            % buoyancy jump between boxes
-            B = p.g*(p.betaS*(S(k+1,i)-S(k,i))-p.betaT*(T(k+1,i)-T(k,i)));        
-            if B < 0
-                inds = [k, k+1];
-                T(inds,i) = sum(T(inds,i).*V(inds,i))./sum(V(inds,i));
-                S(inds,i) = sum(S(inds,i).*V(inds,i))./sum(V(inds,i));
-                % Recompute heat and salt content 
-                VT(inds,i) = V(inds,i).*T(inds,i);
-                VS(inds,i) = V(inds,i).*S(inds,i);
-            end
+    % check if the fjord stratification is unstable, and homogenise layer
+    % properties if it is
+    for k=1:p.N-1        
+        % buoyancy jump between boxes
+        B = p.g*(p.betaS*(S(k+1,i)-S(k,i))-p.betaT*(T(k+1,i)-T(k,i)));        
+        if B < 0
+            [T(:,i),S(:,i),V(:,i),VT(:,i),VS(:,i),H(:,i)] ...
+            = homogenise_layers(V(:,i),T(:,i),S(:,i),VT(:,i),VS(:,i),[k,k+1],p.L,p.W);
         end
     end
-
-    if p.fixedthickness==0
- counter = 0;
+    % if there is a sill
+    if p.sill == 1
+        % check the buoyancy jump between the below sill layer and layer N
+        k = p.N;
+        B = p.g*(p.betaS*(S(k+1,i)-S(k,i))-p.betaT*(T(k+1,i)-T(k,i)));
+        % if the buoyancy jump is negative, homogenise the heat and salt
+        % properties of the two layers but don't change their volume 
+        if B < 0
+            inds = [k, k+1];
+            T(inds,i) = sum(T(inds,i).*V(inds,i))./sum(V(inds,i));
+            S(inds,i) = sum(S(inds,i).*V(inds,i))./sum(V(inds,i));
+            % Recompute heat and salt content 
+            VT(inds,i) = V(inds,i).*T(inds,i);
+            VS(inds,i) = V(inds,i).*S(inds,i);
+        end
+    end
+    
+    counter = 0;
     while counter <= p.N
         % Compute fluxes. Check to see if any layer has collapsed, and if so homogenise and
         % recompute fluxes.
@@ -145,15 +115,15 @@ for i = 1:length(t)-1
             QVg(:,i),QTg(:,i),QSg(:,i),...
             QVs(:,i),QTs(:,i),QSs(:,i),Se(:,i),Te(:,i),phi(:,i),...
             QVk(:,i),QTk(:,i),QSk(:,i),...
-            QIi(:,i),QTi(:,i),QSi(:,i),M(:,i),QVmi(:,i),QTmi(:,i),QSmi(:,i),...
-            QVv(:,i),QTv(:,i),QSv(:,i)] ...
+            QVb(:,i),QTb(:,i),QSb(:,i),...
+            QIi(:,i),QTi(:,i),QSi(:,i),M(:,i),QVmi(:,i),QTmi(:,i),QSmi(:,i)] ...
             = compute_fluxes(...
             H(:,i),T(:,i),S(:,i),f.Qsg(i),p,f.zs,f.Ts(:,i),f.Ss(:,i), ...
             V(:,i),I(:,i),f.zi);
         
         [homogenisation_flag, H(:,i),T(:,i),S(:,i),V(:,i), VT(:,i),VS(:,i)] = ...
             homogenise_thin_layers(V(:,i),T(:,i),S(:,i), VT(:,i), VS(:,i), H(:,i), dt, p.sid, QVg(:,i), ...
-            QVs(:,i), QVk(:,i), p.W, p.L, p.N, p);
+            QVs(:,i), QVk(:,i), QVb(:,i), p.W, p.L, p.N, p);
 
         if homogenisation_flag == false
             % If no homogenisation has occurred, timestep forwards
@@ -175,31 +145,11 @@ for i = 1:length(t)-1
     s.homogenisation_timestep(i) = counter;
 
     % Step fjord forwards.
-
-    elseif p.fixedthickness==1
-
-   counter = 0;
-        % Compute fluxes
-        [...
-            QVg(:,i),QTg(:,i),QSg(:,i),...
-            QVs(:,i),QTs(:,i),QSs(:,i),Se(:,i),Te(:,i),phi(:,i),...
-            QVk(:,i),QTk(:,i),QSk(:,i),...
-            QIi(:,i),QTi(:,i),QSi(:,i),M(:,i),QVmi(:,i),QTmi(:,i),QSmi(:,i),...
-            QVv(:,i),QTv(:,i),QSv(:,i)] ...
-            = compute_fluxes(...
-            H(:,i),T(:,i),S(:,i),f.Qsg(i),p,f.zs,f.Ts(:,i),f.Ss(:,i), ...
-            V(:,i),I(:,i),f.zi);
-        
-    s.homogenisation_timestep(i) = counter;
-    end
-
-
-    % Step fjord forwards.
-
+    
     % dt = t(i+1)-t(i); % replaced by pre-defined dt because of problems when running in parallel
-    V(:,i+1)  = V(:,i)+dt*p.sid*(QVg(:,i)-QVs(:,i)+QVk(:,i)+QVmi(:,i)+QVv(:,i));
-    VT(:,i+1) = VT(:,i)+dt*p.sid*(QTg(:,i)-QTs(:,i)+QTk(:,i)+QTi(:,i)+QTmi(:,i)+QTv(:,i));
-    VS(:,i+1) = VS(:,i)+dt*p.sid*(QSg(:,i)-QSs(:,i)+QSk(:,i)+QSi(:,i)+QSmi(:,i)+QSv(:,i));
+    V(:,i+1)  = V(:,i)+dt*p.sid*(QVg(:,i)-QVs(:,i)+QVk(:,i)+QVmi(:,i)+QVb(:,i));
+    VT(:,i+1) = VT(:,i)+dt*p.sid*(QTg(:,i)-QTs(:,i)+QTk(:,i)+QTi(:,i)+QTmi(:,i)+QTb(:,i));
+    VS(:,i+1) = VS(:,i)+dt*p.sid*(QSg(:,i)-QSs(:,i)+QSk(:,i)+QSi(:,i)+QSmi(:,i)+QSb(:,i));
 
     % Calculate thicknesses and tracers.
     H(:,i+1) = V(:,i+1)/(p.W*p.L);
@@ -218,32 +168,10 @@ for i = 1:length(t)-1
     end
 
     % Plot model evolution (mainly debugging).
-    % if p.plot_runtime
-    %     % hf_track = monitor_boxmodel(hf_track,i,H,T,S,f);
-    %     % hf_track = show_boxmodel([],i,t,H,T,S,QVs,QVg,QVk,QVb,f);
-    %     plot_debug_profile(i,t,f,p,H,S,[],T,[]);
-    % end
-
-     if p.plot_runtime
-        ints = -[0;cumsum(H(:,i))];
-        z = f.zs;
-        Sshelf = f.Ss(:,i);
-        for k=1:size(H,1)
-            inds=find(z<=ints(k)&z>=ints(k+1));
-            Sfjord(inds)=S(k,i);
-            Sext(inds)=Se(k,i);
-            Uext(inds)=QVs(k,i)/(p.W*H(k,i));
-        end
-        Sfjord(1) = S(end,i);
-        Sext(1) = Se(end,i);
-        Uext(1) = QVs(end,i)/(p.W*H(end,i));
+    if p.plot_runtime
         % hf_track = monitor_boxmodel(hf_track,i,H,T,S,f);
         % hf_track = show_boxmodel([],i,t,H,T,S,QVs,QVg,QVk,QVb,f);
-%         plot_debug_profile(i,t,f,p,H,S,[]);
-        subplot(1,2,1);
-        plot(f.Ss(:,i),z,Sfjord,z,Sext,z); drawnow;
-        subplot(1,2,2);
-        plot(Uext,z); drawnow;
+        plot_debug_profile(i,t,f,p,H,S,[],T,[]);
     end
 
     % if ~isempty(find(H(:,i+1) < p.Hmin,1))
@@ -258,14 +186,11 @@ for i = 1:length(t)-1
 
     % Break from loop if the sill layer is not acting as it was supposed to
     % Check bottom box is consistent with sill depth.
-    if p.fixedthickness==0
-    if p.sill == 1 && abs(H(end,i+1) - (p.H-abs(p.silldepth))) > 1e-4
+    if p.sill == 1 && (H(end,i+1) - (p.H-abs(p.silldepth))) > 1e-4
         disp('Error: when p.sill=1, bottom box must have thickness p.H-p.silldepth');
         s.status = 1; % status == 1 means there was an error
         break
     end
-    end
-    
     % Check sum of layer thicknesses is equal to fjord depth.
     if abs(sum(H(:,i+1))-p.H) > 1e-10
         disp('Error: box thicknesses must sum to fjord depth');
@@ -321,10 +246,10 @@ s.QVk = QVk(:,1:int:end);
 s.QTk = QTk(:,1:int:end);
 s.QSk = QSk(:,1:int:end);
 
-% vertical fluxes
-s.QVv = QVv(:,1:int:end);
-s.QTv = QTv(:,1:int:end);
-s.QSv = QSv(:,1:int:end);
+% artificial fluxes
+s.QVb = QVb(:,1:int:end);
+s.QTb = QTb(:,1:int:end);
+s.QSb = QSb(:,1:int:end);
 
 % iceberg fluxes
 s.QIi = QIi(:,1:int:end);
