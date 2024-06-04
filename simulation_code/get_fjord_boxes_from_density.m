@@ -15,6 +15,7 @@ function H = get_fjord_boxes_from_density(Tz,Sz,z,p)
 salt_profile=mean(Sz(:,1),2,'omitnan');
 temp_profile=mean(Tz(:,1),2,'omitnan');    
 
+
 % will ignore the very top, ensuring minimum layer thickness for box1
 search_T_profile = temp_profile(z < -p.Hmin);
 search_S_profile = salt_profile(z < -p.Hmin);
@@ -44,7 +45,7 @@ else
     % define interfaces from sigma intervals
     if p.N-1 > length(p.sigma_bnds)
         disp('Layer interfaces being defined from sigma values!')
-        disp('One value per interface (excl. the sill) is needed!')
+        disp('One valid value per interface (excl. the sill) is needed!')
     end
     for i=1:p.N-1
         [~,inds_interfaces(i)] = min(abs(sigma_profile-p.sigma_bnds(i))); % finds closest value
@@ -53,30 +54,50 @@ end
 
 z_interfaces=search_Z_profile(inds_interfaces);
 
-% adds the sill depth if it exists
-if p.sill
+% check if interface depths ended up being the same (i.e., target sigma values do not exist in
+% the sigma profile). In that case, prescribe the minimum thickness to each layer below the first
+for i=2:length(z_interfaces)
+    if abs(z_interfaces(i) - z_interfaces(i-1)) < p.Hmin
+        z_interfaces(i) = z_interfaces(i-1) - p.Hmin;
+    end
+end
+
+% Adds the sill depth if it exists, 
+% but also check whether the sill is shallower than the deepest and shallowest isopycnal. 
+% In that case, we set equally spaced boxes between the sill and the first isopycnal,
+% or between the sill and the surface.
+if (z_interfaces(end) > p.silldepth) && p.sill
     z_interfaces(end+1) = p.silldepth; 
+else
+    if (z_interfaces(1) < p.silldepth) && p.sill
+        spaced_interfaces = linspace(p.silldepth,0,p.N+1);
+        z_interfaces = flip(spaced_interfaces(1:end-1)); % we want to get rid of the zero
+    else
+        spaced_interfaces = linspace(p.silldepth,z_interfaces(1),p.N);
+        z_interfaces = flip(spaced_interfaces);
+    end
 end
 
 H=z_interfaces(2:end)-z_interfaces(1:end-1);
 H = abs([z_interfaces(1), H,-p.H-z_interfaces(end)]); % adds the bottom of the fjord
 
-for k=2:length(H)-1               % goes down the boxes        
-    if H(k) < p.Hmin              % if k-th box is too thin
-        h_needed = p.Hmin-H(k);   % checks how much it is missing
-        H(k) = H(k)+h_needed;     % adds it up
-        H(k+1) = H(k+1)-h_needed; % removes from the box below
-        % last box should be substantially thick that no problem would come up
-        % However, if that happens, we set it to minimum thickness and
-        % display a warning
-        if H(k+1) < 0
-            H(k+1) = p.Hmin;
-            disp(['WARNING: bottom box was too thin and was artificially set to ',num2str(p.Hmin),'m!'])
-            disp(["This only happens if the sill is only ",num2str(p.Hmin),"m above the fjord's max depth."])
-            disp('This means that the fjord is was made slightly deeper than in reality')
-        end
-    end                            
-end    
+% do we still need this given the newly implemented homogenisation?
+% for k=2:length(H)-1               % goes down the boxes        
+%     if H(k) < p.Hmin              % if k-th box is too thin
+%         h_needed = p.Hmin-H(k);   % checks how much it is missing
+%         H(k) = H(k)+h_needed;     % adds it up
+%         H(k+1) = H(k+1)-h_needed; % removes from the box below
+%         % last box should be substantially thick that no problem would come up
+%         % However, if that happens, we set it to minimum thickness and
+%         % display a warning
+%         if H(k+1) < 0
+%             H(k+1) = p.Hmin;
+%             % disp(['WARNING: bottom box was too thin and was artificially set to ',num2str(p.Hmin),'m!'])
+%             % disp(["This only happens if the sill is only ",num2str(p.Hmin),"m above the fjord's max depth."])
+%             % disp('This means that the fjord is was made slightly deeper than in reality')
+%         end
+%     end                            
+% end    
 H = double(H);
 
 % Plot to check the box distribution
