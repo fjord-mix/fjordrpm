@@ -16,7 +16,7 @@ if isempty(f), f = get_idealised_forcing(p, t); end % we cannot use an OR statem
 if nargin < 4, a = get_initial_conditions(p, f); end
 if isempty(a), a = get_initial_conditions(p, f); end
 
-% Check for errors in the initial state.
+% Check for errors in the given initial state.
 status = check_zmodel_initialisation(p, a);
 
 %% Preallocate and initialise variables according to the number of layers for each timestep.
@@ -41,8 +41,8 @@ for i = 1:length(t)-1
 
     % Homogenise the heat and salt content of layers if the density
     % stratification is unstable.
-    [V, T(:,i), S(:,i), VT(:,i), VS(:,i)] = ...
-        homogenise_unstable_layers(V, T(:,i), S(:,i), VT(:,i), VS(:,i));
+    [T(:,i), S(:,i), VT(:,i), VS(:,i)] = ...
+        homogenise_unstable_layers(p, V, T(:,i), S(:,i), VT(:,i), VS(:,i));
 
     % Compute the fluxes at the boundaries of each layer.
     [QVg(:,i),QTg(:,i),QSg(:,i),...
@@ -51,26 +51,21 @@ for i = 1:length(t)-1
         QIi(:,i),QTi(:,i),QSi(:,i),M(:,i),QVmi(:,i),QTmi(:,i),QSmi(:,i),...
         QVv(:,i),QTv(:,i),QSv(:,i)] ...
         = compute_fluxes(...
-        a.H0, T(:,i),S(:,i),f.Qsg(i),p,f.zs,f.Ts(:,i),f.Ss(:,i), ...
-        V(:,i),I(:,i),f.zi);
+        a.H0', T(:,i),S(:,i),f.Qsg(i),p,f.zs,f.Ts(:,i),f.Ss(:,i), ...
+        V,I(:,i),f.zi);
 
+    % Step the fjord forwards.
     [VT(:,i+1), VS(:,i+1), T(:,i+1), S(:,i+1), I(:,i+1)] = ...
-        step_zmodel_forwards(p, f, V,  VT(:,i), VS(:,i), I(:,i), M(:,i),...
-        QVg(:,i),QTg(:,i),QSg(:,i),...
-        QVs(:,i),QTs(:,i),QSs(:,i),Se(:,i),Te(:,i),phi(:,i),...
-        QVk(:,i),QTk(:,i),QSk(:,i),...
-        QIi(:,i),QTi(:,i),QSi(:,i),QVmi(:,i),QTmi(:,i),QSmi(:,i),...
-        QVv(:,i),QTv(:,i),QSv(:,i));
+        step_zmodel_forwards(p, f, V, VT(:,i), VS(:,i), I(:,i), M(:,i), f.D(i),...
+        QTg(:,i), QTs(:,i), QTk(:,i), QTi(:,i), QTmi(:,i), QTv(:,i), ...
+        QSg(:,i), QSs(:,i), QSk(:,i), QSi(:,i), QSmi(:,i), QSv(:,i));
 
-    % Plot model evolution (for runtime debugging).
+    % Plot model evolution (for optional runtime debugging).
     if p.plot_runtime
         % hf_track = monitor_boxmodel(hf_track,i,H,T,S,f);
         % hf_track = show_boxmodel([],i,t,H,T,S,QVs,QVg,QVk,QVb,f);
         plot_runtime_profile(i,t,f,p,H,S,T,[]);
     end
-
-% Check for errors after stepping forwards.
-status = check_zmodel(p, H(:,i+1));
 
 end
 
