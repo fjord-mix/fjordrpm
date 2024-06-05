@@ -56,6 +56,10 @@ else
         inds = find(zi0<=ints(k) & zi0>=ints(k+1));
         Heff(k) = trapz(zi0(inds),Ii0(inds));
         % Surface area of icebergs to melt in layer k (assume characteristic length scale based on Heff(k))
+        % if dynamic, allow MITgcm profile, keep width divided by Heff=
+        % height of box
+        % if static, change to cubes
+        % plus discrete iceberg concentration 
         SA_ice(k) = 6*sqrt(6)*p.W*p.L*Heff(k)/(sqrt(5*Heff(k)^2/4));
         % fluxes
         if Heff(k) == 0 % no iceberg concentration (e.g. on first timestep)
