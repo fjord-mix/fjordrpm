@@ -13,6 +13,7 @@ p.sill = 0; % flag for sill (0 = no sill, 1 = sill)
 %% Tuning/artificial parameters
 p.Hmin = NaN; % minimum box thickness, NaN = no min thickness
 p.Snudge = 0.*ones(1, p.N-1); % controls layer thickness for nudging, 0 if no nudging
+p.fixedthickness = 1; % fixed or variable layer thickness run
 
 %% Time step
 p.dt = 0.1; % time stepping (units are days)
