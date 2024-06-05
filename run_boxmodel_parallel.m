@@ -26,8 +26,15 @@ if isempty(checkPool) % if there is no pool
     parpool(num_workers);
 end
 
-parfor INDEX = 1:length(parameter_space)            
-    [fjord_par_outputs(INDEX).s,fjord_par_outputs(INDEX).f] = ...
-    boxmodel(fjord_par_outputs(INDEX).p, fjord_par_outputs(INDEX).t,[],[],[outs_path,'test_parallel/',fjord_par_outputs(INDEX).m.name,'.mat']);
+parfor INDEX = 1:length(parameter_space)
+    if p.fixedthickness==0
+        % Run the code for variable thickness layers.
+        [fjord_par_outputs(INDEX).s,fjord_par_outputs(INDEX).f] = ...
+        boxmodel(fjord_par_outputs(INDEX).p, fjord_par_outputs(INDEX).t,[],[],[outs_path,'test_parallel/',fjord_par_outputs(INDEX).m.name,'.mat']);
+    elseif p.fixedthickness==1
+        % Run the code for fixed thickness layers.
+        [fjord_par_outputs(INDEX).s,fjord_par_outputs(INDEX).f] = ...
+        zmodel(fjord_par_outputs(INDEX).p, fjord_par_outputs(INDEX).t,[],[],[outs_path,'test_parallel/',fjord_par_outputs(INDEX).m.name,'.mat']);
+    end
     disp(fjord_par_outputs(INDEX).m.name)
 end
