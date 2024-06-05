@@ -1,4 +1,4 @@
-function s = get_zmodel_output(p, f, t, status, T, S, I, ...
+function s = get_zmodel_output(p, f, t, status, H, T, S, V, I, ...
     QVg, QTg, QSg, QVs, QTs, QSs, Se, Te, phi, QVk, QTk, QSk, ...
     QVv, QTv, QSv, QIi, QTi, QSi, QVmi, M)
 
@@ -12,8 +12,10 @@ end
 s.t = t(1:int:end-1);
 
 % box variables
+s.H = H(:,1:int:end-1);
 s.T = T(:,1:int:end-1);
 s.S = S(:,1:int:end-1);
+s.V = V(:,1:int:end-1);
 s.I = I(:,1:int:end-1);
 
 % glacier exchanges
