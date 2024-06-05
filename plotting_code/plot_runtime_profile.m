@@ -23,12 +23,13 @@ s_bnds = [min(f.Ss(:)) max(f.Ss(:))+0.1];
           set(gca,'box','on'); grid on;
         xlabel('salinity');
         ylabel('depth (m)');
-        legend('true shelf','shelf in box','fjord','location','southwest');
+        legend('true shelf','shelf in box','fjord','location','southwest');       
         drawnow;
         subplot(1,2,2);
         plot(Uext,z); 
         set(gca,'box','on'); grid on;
         xlabel('exchange velocity (m/s)');
         ylabel('depth (m)');
+        text(gca,0.05,0.05,['t = ',num2str(0.01*round(100*t(i+1))),' days'],'fontsize',12,'VerticalAlignment','bottom','units','normalized');
         drawnow;
 end
