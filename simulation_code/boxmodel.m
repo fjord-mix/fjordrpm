@@ -71,7 +71,7 @@ end
 if p.plot_runtime
     % hf_track = monitor_boxmodel([],1,H,T,S,f);
     % hf_track = show_boxmodel([],1,t,H,T,S,[],[],[],[],f);
-    s_bnds = [min(f.Ss(:)) max(f.Ss(:))+0.1];
+    s_bnds = [min(f.Ss(:)) max(f.Ss(:))+0.1]
     plot_debug_profile(0,t,f,p,H,S,s_bnds,T,[]);
 end
 
