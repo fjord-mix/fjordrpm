@@ -8,17 +8,18 @@ function run_output = example_subglacial_discharge
 [p,~] = get_model_default_parameters();
 
 %% Fjord geometry parameters
-p.N         = 6; % number of above-sill model layers
+p.N         = 60; % number of above-sill model layers
 p.sill      = 0; % flag for sill (0 = no sill, 1 = sill)
 
 %% Tuning/artificial parameters
 p.Hmin   = NaN; % minimum box thickness, NaN = no min thickness
 p.trelax = NaN; % controls layer nudging, NaN = no nudging
 p.Snudge = 0.*ones(1, p.N-1); % controls layer thickness for nudging, 0 if no nudging
+p.fixedthickness = 1; % fixed or variable layer thickness run
 
 %% Time step
-p.dt    = 0.1; % time stepping (units are days)
-p.t_end = 1000; % time to end the simulation
+p.dt    = 1; % time stepping (units are days)
+p.t_end = 200; % time to end the simulation
 t       = 0:p.dt:p.t_end;
 
 %% Forcing parameters: idealised forcing

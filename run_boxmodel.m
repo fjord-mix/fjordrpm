@@ -27,7 +27,7 @@ output_folder='./outputs'; % choose where to save your model outputs here
 %    Be mindful that these are not 100% "plug and play". The user
 %    needs to choose which fjord from the fjord_model array to run
 
-example_run = 5;
+example_run = 3;
 which_fjord = 3; % used for example_run 5 to 7
 
 switch example_run
@@ -61,7 +61,13 @@ end
 fjord_run.p.plot_runtime = 1; 
 
 fjord_run.m.name = name;
-[fjord_run.s,fjord_run.f] = boxmodel(fjord_run.p, fjord_run.t, fjord_run.f, fjord_run.a);
+if p.fixedthickness == 0
+    % Run the code for variable thickness layers.
+    [fjord_run.s,fjord_run.f] = boxmodel(fjord_run.p, fjord_run.t, fjord_run.f, fjord_run.a);
+elseif p.fixedthickness == 1
+    % Run the code for fixed thickness layers.
+    [fjord_run.s,fjord_run.f] = zmodel(fjord_run.p, fjord_run.t, fjord_run.f, fjord_run.a);
+end
 
 %% Saving results
 if not(isfolder(output_folder))

@@ -14,6 +14,7 @@ p.sill      = 0; % flag for sill (0 = no sill, 1 = sill)
 p.Hmin   = 0; % minimum box thickness, NaN = no min thickness
 p.trelax = 100; % controls layer nudging, NaN = no nudging
 p.Snudge = [32,33,34,34.5,34.8].*ones(1, p.N-1); % controls layer thickness for nudging, 0 if no nudging
+p.fixedthickness = 1; % fixed or variable layer thickness run
 
 %% Time step
 p.dt    = 0.1; % time stepping (units are days)
