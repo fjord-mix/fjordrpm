@@ -13,6 +13,6 @@ function [V, VT, VS, H, T, S, I] = step_zmodel_forwards(p, f, V, VT, VS, I, M, D
 
 
     % Step icebergs forwards.
-    I = I+ (1-p.icestatic)*p.dt*p.sid*((D/(p.W*p.L))*f.xi-M.*I-p.uIce/p.L*I);
+%     I = I+ (1-p.icestatic)*p.dt*p.sid*((D/(p.W*p.L))*f.xi-M.*I-p.uIce/p.L*I);
 
 end

@@ -25,10 +25,10 @@ function [...
 
 % Calculate iceberg fluxes.
 [QIi ,QTi ,QSi ,M , QVmi, QTmi, QSmi] = ...
-    get_iceberg_fluxes(H ,T ,S ,I ,zi,p);
+    get_iceberg_fluxes(H ,T ,S ,I ,p);
 
 % Calculate vertical fluxes.
 [QVv ,QTv ,QSv ] = ...
-    get_vertical_fluxes(QVg-QVs,T,S,p);
+    get_vertical_fluxes(QVg'-QVs+QVmi,T,S,p);
 
 end

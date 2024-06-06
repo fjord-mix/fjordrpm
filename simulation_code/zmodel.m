@@ -15,6 +15,7 @@ if isempty(f), f = get_idealised_forcing(p, t); end % we cannot use an OR statem
 % Initial conditions:
 if nargin < 4, a = get_initial_conditions(p, f); end
 if isempty(a), a = get_initial_conditions(p, f); end
+p.ksill = a.ksill;
 
 % Check for errors in the given initial state.
 status = check_zmodel_initialisation(p, a);

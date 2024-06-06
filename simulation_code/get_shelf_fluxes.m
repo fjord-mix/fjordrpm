@@ -18,12 +18,12 @@ else
     [Te0, Se0] = bin_ocean_profiles(Ts,Ss,zs,H0',p);
 
     % get fjord to shelf reduced gravity
-    for k=1:p.N
+    for k=1:p.ksill
         gp(k) = p.g*(p.betaS*(S0(k)-Se0(k))-p.betaT*(T0(k)-Te0(k)));
     end
 
     % calculate potentials over above-sill layers
-    for k=1:p.N
+    for k=1:p.ksill
         if k==1
             phi0(k) = gp(k)*H0(k)/2;
         else
@@ -31,35 +31,37 @@ else
         end
     end
 
-    % fluxes before barotropic compensation
-    Q = p.C0*p.W*H0(1:p.N).*phi0'/p.L;
+    % above-sill fluxes before barotropic compensation
+    Q = p.C0*p.W*H0(1:p.ksill).*phi0(1:p.ksill)'/p.L;
 
-    if p.fixedthickness==1 && p.sill==1
-        % no exchange below the sill height
-        Q(-cumsum(H0)< -p.silldepth) = 0;
-    end
+%     if p.fixedthickness==1 && p.sill==1
+%         % no exchange below the sill height
+%         Q(-cumsum(H0)< -p.silldepth) = 0;
+%     end
 
-    % fluxes after ensuring depth mean = QSg0 when plume is turned on,
+    % above-sill fluxes after ensuring depth mean = QSg0 when plume is turned on,
     % and 0 when plume is turned off
     if p.P0==0
         Qsg0 = 0;
     end
-    % fluxes after barotropic compensation
-    QVs0 = Q + H0(1:p.N)*(Qsg0-sum(Q))/sum(H0(1:p.N));
-    if p.sill==1
-        if p.fixedthickness==0
-            QVs0(p.N+p.sill) = 0;
-            Se0(p.N+p.sill) = 0;
-            Te0(p.N+p.sill) = 0;
-        elseif p.fixedthickness==1
-            % only computed based on the above-sill layers
-            QVs0 = Q + [H0(-cumsum(H0)>=-p.silldepth); 0*H0(-cumsum(H0)<-p.silldepth)]*(Qsg0-sum(Q))/sum([H0(-cumsum(H0)>=-p.silldepth); 0*H0(-cumsum(H0)<-p.silldepth)]);
-        end
-    end
+    % above-sill fluxes after barotropic compensation
+    QVs0 = Q + H0(1:p.ksill)*(Qsg0-sum(Q))/sum(H0(1:p.ksill));
+%     if p.sill==1
+%         if p.fixedthickness==0
+%             QVs0(p.N+p.sill) = 0;
+%             Se0(p.N+p.sill) = 0;
+%             Te0(p.N+p.sill) = 0;
+%         elseif p.fixedthickness==1
+%             % only computed based on the above-sill layers
+%             QVs0 = Q + [H0(-cumsum(H0)>=-p.silldepth); 0*H0(-cumsum(H0)<-p.silldepth)]*(Qsg0-sum(Q))/sum([H0(-cumsum(H0)>=-p.silldepth); 0*H0(-cumsum(H0)<-p.silldepth)]);
+%         end
+%     end
+    % fill any below-sill exchanges with zeros
+    QVs0(p.ksill+1:p.N) = 0;
    
     % resulting heat/salt fluxes
-    QTs0 = (QVs0>0).*QVs0.*T0 + (QVs0<0).*QVs0.*Te0;
-    QSs0 = (QVs0>0).*QVs0.*S0 + (QVs0<0).*QVs0.*Se0;
+    QTs0 = (QVs0>=0).*QVs0.*T0 + (QVs0<0).*QVs0.*Te0;
+    QSs0 = (QVs0>=0).*QVs0.*S0 + (QVs0<0).*QVs0.*Se0;
 end
 
 end
