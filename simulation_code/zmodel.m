@@ -15,7 +15,6 @@ if isempty(f), f = get_idealised_forcing(p, t); end % we cannot use an OR statem
 % Initial conditions:
 if nargin < 4, a = get_initial_conditions(p, f); end
 if isempty(a), a = get_initial_conditions(p, f); end
-p.ksill = a.ksill;
 
 % Check for errors in the given initial state.
 status = check_zmodel_initialisation(p, a);
@@ -28,7 +27,7 @@ status = check_zmodel_initialisation(p, a);
     QVmi, QTmi, QSmi,...
     QIi, QTi, QSi,...
     QVv, QTv, QSv,...
-    Te, Se, phi, M] = initialise_zmodel_variables(p, f, a, t);
+    Te, Se, phi, M, p] = initialise_zmodel_variables(p, f, a, t);
 dt = p.dt;
 
 %% Optional runtime plotting (for debugging)
