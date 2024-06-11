@@ -6,24 +6,7 @@ function a = get_initial_conditions(p, f)
 
 %% Set the initial fjord layer thicknesses.
 a.H0 = (p.H/p.N)*ones(1,p.N);
-if p.sill==1
-    if p.fixedthickness==1
-        % If the layers are fixed thickness, distribute layers so that
-        % they are roughly the same thickness above and below sill
-        % but a box boundary coincides with the sill depth
-        Nabove = round((abs(p.silldepth)/p.H)*p.N);
-        Nbelow = p.N-Nabove;
-        a.H0 = [(abs(p.silldepth)/Nabove)*ones(1,Nabove),...
-                ((p.H-abs(p.silldepth))/Nbelow)*ones(1,Nbelow)];
-        a.ksill = Nabove;
-    else 
-        % If the layers are variable thickness, add an extra layer for the
-        % sill.
-        a.H0 = [(abs(p.silldepth)/p.N)*ones(1,p.N),p.H-abs(p.silldepth)];
-    end
-else
-    a.ksill = p.N;
-end
+
 
 %% Initial icebergs in fjord
 if p.icestatic
