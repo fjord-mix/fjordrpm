@@ -9,7 +9,14 @@ a.H0 = (p.H/p.N)*ones(1,p.N);
 
 
 %% Initial icebergs in fjord
- a.I0 = 0*a.H0;
+if p.icestatic
+    % a.I0 is the surface area of icebergs in a box
+    % so either use the idealised expression here or load from file
+    a.I0 = p.A0*p.if(p.nu0, abs(p.zgl), -cumsum(a.H0)+a.H0/2);    
+else
+    a.I0 = 0*a.H0;
+end
+
 
 
 %% Set the initial fjord T/S to be in equilibrium with shelf.
