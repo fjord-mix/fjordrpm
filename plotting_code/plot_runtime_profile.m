@@ -19,7 +19,7 @@ s_bnds = [min(f.Ss(:)) max(f.Ss(:))+0.1];
         % hf_track = show_boxmodel([],i,t,H,T,S,QVs,QVg,QVk,QVb,f);
 %         plot_debug_profile(i,t,f,p,H,S,[]);
         subplot(1,2,1);
-        plot(f.Ss(:,i),z,Sfjord,z,Sext,z); 
+        plot(f.Ss(:,i),z,Sext,z,Sfjord,z); 
           set(gca,'box','on'); grid on;
         xlabel('salinity');
         ylabel('depth (m)');

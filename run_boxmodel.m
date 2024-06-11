@@ -27,16 +27,17 @@ output_folder='./outputs'; % choose where to save your model outputs here
 %    Be mindful that these are not 100% "plug and play". The user
 %    needs to choose which fjord from the fjord_model array to run
 
-example_run = 3;
+example_run = 2;
 which_fjord = 3; % used for example_run 5 to 7
+p.fixedthickness = 1;
 
 switch example_run
     case 1
         fjord_run = example_intermediate_circulation;
         name = 'example_intermediate_circulation';
     case 2
-        fjord_run = example_nudging;
-        name = 'example_nudging';
+        fjord_run = example_icebergs;
+        name = 'example_icebergs';
     case 3
         fjord_run = example_subglacial_discharge;
         name = 'example_subglacial_discharge';
@@ -51,7 +52,17 @@ switch example_run
         name = ['example_',fjord_run.m.name,'_2010_2018_2layers'];
     case 7
         fjord_run = load('./input_data_examples/example_benchmark_fjords_bad_3layers.mat').fjords_bad(which_fjord);
-        name = ['bad_',fjord_run.m.name];
+        name = ['bad_',fjord_run.m.name];    
+    case 8
+        load('boxmodel_example_not_conserving_H_dt0p05.mat');
+        fjord_run = cur_fjord;
+        fjord_run.a = [];
+
+
+    fjord_run.p.dt    = 1; % time stepping (units are days)
+fjord_run.p.t_end = 200; % time to end the simulation
+fjord_run.t       = 0:fjord_run.p.dt:fjord_run.p.t_end;
+        name = 'martim_crash';
     otherwise
         fjord_run = test_changes;
         name = 'test_fjord_model';
@@ -81,11 +92,11 @@ end
 save([output_folder,'/model_results/', name, '.mat'], 'fjord_run')
 
 % create animation of the fjord run
-animate([output_folder,'/model_results/', name, '.mat'],[output_folder,'/animations/'],name,50)
+% animate([output_folder,'/model_results/', name, '.mat'],[output_folder,'/animations/'],name,50)
 
 % Example plot that can be generated from the model outputs
-plot_outputs(fjord_run);
-exportgraphics(gcf,[output_folder,'/figures/',name,'.pdf'],'ContentType','vector','BackgroundColor','none')
-
-plot_TS_boxmodel(fjord_run);
-exportgraphics(gcf,[output_folder,'/figures/TS_',name,'.pdf'],'ContentType','vector','BackgroundColor','none')
+% plot_outputs(fjord_run);
+% exportgraphics(gcf,[output_folder,'/figures/',name,'.pdf'],'ContentType','vector','BackgroundColor','none')
+% 
+% plot_TS_boxmodel(fjord_run);
+% exportgraphics(gcf,[output_folder,'/figures/TS_',name,'.pdf'],'ContentType','vector','BackgroundColor','none')
