@@ -41,6 +41,11 @@ V(:,1) = H(:,1)'*p.W*p.L; % volume of layers
 T(:,1) = a.T0; % temperature
 S(:,1) = a.S0; % salinity
 I(:,1) = a.I0; % iceberg concentration
+if p.icestatic
+    % a.I0 is the surface area of icebergs in a box
+    % so either use the idealised expression here or load from file
+    I(:,1) = p.A0*p.if(p.nu0, abs(p.zgl), -cumsum(H(:,1))+H(:,1)/2);    
+end
 VT(:,1) = V(:,1).*T(:,1); % heat content
 VS(:,1) = V(:,1).*S(:,1); % salt content
 
