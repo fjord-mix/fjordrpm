@@ -51,7 +51,6 @@ run_output.f = get_idealised_forcing(p, t);
 
 %% Initial conditions
 run_output.a = get_initial_conditions(p, run_output.f);
-p.ksill = run_output.a.ksill;
 
 %% adding the other structures to output structure
 run_output.p = p;

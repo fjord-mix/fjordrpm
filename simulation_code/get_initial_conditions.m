@@ -6,33 +6,11 @@ function a = get_initial_conditions(p, f)
 
 %% Set the initial fjord layer thicknesses.
 a.H0 = (p.H/p.N)*ones(1,p.N);
-if p.sill==1
-    if p.fixedthickness==1
-        % If the layers are fixed thickness, distribute layers so that
-        % they are roughly the same thickness above and below sill
-        % but a box boundary coincides with the sill depth
-        Nabove = round((abs(p.silldepth)/p.H)*p.N);
-        Nbelow = p.N-Nabove;
-        a.H0 = [(abs(p.silldepth)/Nabove)*ones(1,Nabove),...
-                ((p.H-abs(p.silldepth))/Nbelow)*ones(1,Nbelow)];
-        a.ksill = Nabove;
-    else 
-        % If the layers are variable thickness, add an extra layer for the
-        % sill.
-        a.H0 = [(abs(p.silldepth)/p.N)*ones(1,p.N),p.H-abs(p.silldepth)];
-    end
-else
-    a.ksill = p.N;
-end
+
 
 %% Initial icebergs in fjord
-if p.icestatic
-    % a.I0 is the surface area of icebergs in a box
-    % so either use the idealised expression here or load from file
-    a.I0 = p.A0*p.if(p.nu0, abs(p.zgl), -cumsum(a.H0)+a.H0/2);    
-else
-    a.I0 = 0*a.H0;
-end
+ a.I0 = 0*a.H0;
+
 
 %% Set the initial fjord T/S to be in equilibrium with shelf.
 % Interpolate the boundary conditions to the model z-discretisation.
