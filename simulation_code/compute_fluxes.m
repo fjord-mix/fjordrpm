@@ -29,6 +29,6 @@ function [...
 
 % Calculate vertical fluxes.
 [QVv ,QTv ,QSv ] = ...
-    get_vertical_fluxes(QVg'-QVs+QVmi,T,S,p);
+    get_vertical_fluxes(QVg-QVs+QVmi,T,S,p);
 
 end
