@@ -46,7 +46,10 @@ else
     end % find neutral buoyancy box
     % flux in boxes below grounding line and above neutral buoyancy are 0    
     inds = find((1:length(H0))>kgl | (1:length(H0))<knb);
-    
+
+      % initialise vectors
+    [QpV0, QpT0, QpS0] = deal(zeros(p.N, 1));
+
     QpV0(inds) = 0;
     QpT0(inds) = 0;
     QpS0(inds) = 0;
@@ -63,5 +66,5 @@ else
 end
 
 % Transpose vectors before outputting
-QpV0 = QpV0'; QpT0 = QpT0'; QpS0 = QpS0';
+% QpV0 = QpV0'; QpT0 = QpT0'; QpS0 = QpS0';
 end
