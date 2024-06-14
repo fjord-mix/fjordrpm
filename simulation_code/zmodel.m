@@ -1,7 +1,7 @@
 function [s,f] = zmodel(p,t,f,a,path_out)
 
 % ZMODEL z-model simulation.
-%   [S,F] = ZMODEL(P,T,F,A,PATH_OUT) runs the z-model simulation for parameters structure P,
+%   [S,F] = ZMODEL(P, T, F, A, PATH_OUT) runs the z-model simulation for parameters structure P,
 %   time T, forcings structure F, initial conditions structure A, and returns solution structure
 %   S and forcing structure F in the same time steps as S. If PATH_OUT is
 %   specified, ZMODEL will save a file. If F and/or A are not specified, default idealised values will be used.
@@ -34,8 +34,7 @@ for i = 1:length(t)-1
 
     % Homogenise the heat and salt content of layers if the density
     % stratification is unstable.
-    [s.T(:,i), s.S(:,i), s.VT(:,i), s.VS(:,i)] = ...
-        homogenise_unstable_layers(p, s.V(:,i), s.T(:,i), s.S(:,i), s.VT(:,i), s.VS(:,i));
+    s = homogenise_zmodel_unstable_layers(i, p, s);
 
      % Compute the fluxes at the boundaries of each layer.
     [s.QVg(:,i),s.QTg(:,i),s.QSg(:,i),...
