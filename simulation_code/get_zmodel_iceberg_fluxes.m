@@ -1,4 +1,4 @@
-function Qi = get_zmodel_iceberg_fluxes(i, p, s)
+function [QIi0,QTi0,QSi0,M0,QVmi0,QTmi0,QSmi0] = get_zmodel_iceberg_fluxes(i, p, s)
 
 
 % GET_ICEBERG_FLUXES Compute iceberg fluxes.

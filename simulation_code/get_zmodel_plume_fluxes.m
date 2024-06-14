@@ -1,4 +1,4 @@
-function Qg = get_zmodel_plume_fluxes(i, p, f, s)
+function [QpV0 ,QpT0 ,QpS0 ] = get_zmodel_plume_fluxes(i, p, f, s)
 
 % GET_PLUME_FLUXES Compute plume fluxes.
 %   [QPV0,QPT0,QPS0] = GET_PLUME_FLUXES(H0,T0,S0,QSG0,P)
@@ -74,8 +74,12 @@ end
 % Transpose vectors before outputting
 % QpV0 = QpV0'; QpT0 = QpT0'; QpS0 = QpS0';
 
-Qg.V = QpV0;
-Qg.T = QpT0;
-Qg.S = QpS0;
+% Qg.V = QpV0;
+% Qg.T = QpT0;
+% Qg.S = QpS0;
+% 
+% s.QVg(:,i) = Q.Qg.V;
+% s.QTg(:,i) = Q.Qg.T;
+% s.QSg(:,i) = Q.Qg.S;
 
 end

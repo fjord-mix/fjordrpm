@@ -1,4 +1,4 @@
-function Qk = get_zmodel_mixing_fluxes(i, p, s)
+function [QVk0,QTk0,QSk0] = get_zmodel_mixing_fluxes(i, p, s)
 
 % GET_MIXING_FLUXES Compute vertical mixing fluxes.
 %   [QVk0,QTk0,QSk0] = GET_MIXING_FLUXES(H0,T0,S0,P)

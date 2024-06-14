@@ -37,7 +37,7 @@ for i = 1:length(t)-1
     s = homogenise_zmodel_unstable_layers(i, p, s);
 
      % Compute the fluxes at the boundaries of each layer.
-    [Q, s] = compute_zmodel_fluxes(i, p, f, s);
+    [s, Q] = compute_zmodel_fluxes(i, p, f, s);
     
     % Step the fjord forwards.
     s = step_zmodel_forwards(i, p, s, Q);

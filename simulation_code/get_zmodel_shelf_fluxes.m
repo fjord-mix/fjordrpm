@@ -1,4 +1,4 @@
-function Qs = get_zmodel_shelf_fluxes(i, p, f, s)
+function [QVs0,QTs0,QSs0,Se0,Te0,phi0] = get_zmodel_shelf_fluxes(i, p, f, s)
 
 % GET_SHELF_FLUXES Compute shelf fluxes.
 %   [QVS0,QTS0,QSS0,SE0,TE0,PHI0] = GET_SHELF_FLUXES(H0,T0,S0,ZS,TS,SS,QSG0,P)

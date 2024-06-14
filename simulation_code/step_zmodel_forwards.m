@@ -1,26 +1,31 @@
 function s = step_zmodel_forwards(i, p, s, Q)
 
-    QVg = Q.Qg.V;
-QTg = Q.Qg.T;
-QSg = Q.Qg.S;
 
-QVs = Q.Qs.V;
-QTs = Q.Qs.T;
-QSs = Q.Qs.S;
 
-QVk = Q.Qk.V;
-QTk = Q.Qk.T;
-QSk = Q.Qk.S;
 
-QTi = Q.Qi.T;
-QSi = Q.Qi.S;
-QVmi = Q.Qi.Vm;
-QTmi = Q.Qi.Tm;
-QSmi = Q.Qi.Sm;
 
-QVv = Q.Qv.V;
-QTv = Q.Qv.T;
-QSv = Q.Qv.S;
+
+    QVg = Q.QVg;
+QTg = Q.QTg;
+QSg = Q.QSg;
+
+QVs = Q.QVs;
+QTs = Q.QTs;
+QSs = Q.QSs;
+
+QVk = Q.QVk;
+QTk = Q.QTk;
+QSk = Q.QSk;
+
+QTi = Q.QTi;
+QSi = Q.QSi;
+QVmi = Q.QVmi;
+QTmi = Q.QTmi;
+QSmi = Q.QSmi;
+
+QVv = Q.QVv;
+QTv = Q.QTv;
+QSv = Q.QSv;
 
 % Step the temperature, salt, heat content and salt content of the fjord forwards.
     s.V(:,i+1)  = s.V(:,i)+p.dt*p.sid*(QVg-QVs+QVk+QVmi+QVv);
