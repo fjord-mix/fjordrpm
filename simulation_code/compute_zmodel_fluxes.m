@@ -20,16 +20,15 @@ Qg = get_zmodel_plume_fluxes(i, p, f, s);
 Qs = get_zmodel_shelf_fluxes(i, p, f, s);
 
 % Calculate vertical mixing fluxes.
-[QVk ,QTk ,QSk ] = ...
-    get_mixing_fluxes(H ,T ,S ,p);
+Qk = get_zmodel_mixing_fluxes(i, p, s);
 
 % Calculate iceberg fluxes.
-[QIi ,QTi ,QSi ,M , QVmi, QTmi, QSmi] = ...
-    get_iceberg_fluxes(H ,T ,S ,I ,p);
+Qi = get_zmodel_iceberg_fluxes(i, p, s);
+
 
 % Calculate vertical fluxes.
 [QVv ,QTv ,QSv ] = ...
-    get_vertical_fluxes(Qg.V-Qs.V+QVmi,T,S,p);
+    get_vertical_fluxes(Qg.V-Qs.V+Qi.Vm,T,S,p);
 
 s.QVg(:,i) = Qg.V;
 s.QTg(:,i) = Qg.T;
@@ -42,15 +41,18 @@ s.Se(:,i) = Qs.Se;
 s.Te(:,i) = Qs.Te;
 s.phi(:,i) = Qs.phi;
 
-s.QVk(:,i) = QVk;
-s.QTk(:,i) = QTk;
-s.QSk(:,i) = QSk;
-s.QIi(:,i) = QIi;
-s.QTi(:,i) = QTi;
-s.QSi(:,i) = QSi;
-s.M(:,i) = M;
-s.QTmi(:,i) = QTmi;
-s.Smi(:,i) = QSmi;
+s.QVk(:,i) = Qk.V;
+s.QTk(:,i) = Qk.T;
+s.QSk(:,i) = Qk.S;
+
+s.QIi(:,i) = Qi.I;
+s.QTi(:,i) = Qi.T;
+s.QSi(:,i) = Qi.S;
+s.M(:,i) = Qi.M;
+s.QVmi(:,i) = Qi.Vm;
+s.QTmi(:,i) = Qi.Tm;
+s.Smi(:,i) = Qi.Sm;
+
 s.QVv(:,i) = QVv;
 s.QTv(:,i) = QTv;
 s.QSv(:,i) = QSv;
