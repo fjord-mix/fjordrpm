@@ -22,6 +22,7 @@ else
     Tf = p.l1*S0 + p.l2 + p.l3*zj; % local freezing point
     % melt flux
     meltflux = max(0,p.M0*(T0-Tf).*I0);
+    meltflux(I0==0) = 0;
 
     % mixing fluxes between boxes to account for buoyant rising of
     % freshwater
@@ -33,10 +34,12 @@ else
     gmelt = p.g*(p.betaS*S0-p.betaT*(T0-Tmelt));
     % potential upwelling flux
     QVmI = p.U0*p.alphaI^(2/3)*meltflux.^(1/3).*gmelt.^(1/3).*H0.*I0.^(2/3);
+    QVmI(meltflux==0) = 0;
     % scale for density stratification
     gk = max(0,[NaN;p.g*(p.betaS*(S0(2:end)-S0(1:end-1))-p.betaT*(T0(2:end)-T0(1:end-1)))]);
     lengthfac = (1/p.alphaI^(2/3))*((meltflux./I0).^2./(gmelt.*H0)).^(1/3).*gmelt./gk;
     scalefac = 1-exp(-lengthfac);
+    scalefac(I0==0)=0;
     scalefac(1) = 0; % no upwelling to atmosphere
     QVmI = scalefac.*QVmI;
     % associated temperature and salt fluxes
