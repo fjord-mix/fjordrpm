@@ -37,14 +37,12 @@ for i = 1:length(t)-1
     s = homogenise_zmodel_unstable_layers(i, p, s);
 
      % Compute the fluxes at the boundaries of each layer.
-    s = compute_zmodel_fluxes(i, p, f, s);
+    [Q, s] = compute_zmodel_fluxes(i, p, f, s);
     
     % Step the fjord forwards.
-    [s.V(:,i+1), s.VT(:,i+1), s.VS(:,i+1), s.H(:,i+1), s.T(:,i+1), s.S(:,i+1), s.I(:,i+1)] = ...
-        step_zmodel_forwards(p, f, s.V(:,i), s.VT(:,i), s.VS(:,i), s.I(:,i), s.M(:,i), f.D(i),...
-        s.QVg(:,i), s.QVs(:,i), s.QVk(:,i), s.QVmi(:,i), s.QVv(:,i), ...
-        s.QTg(:,i), s.QTs(:,i), s.QTk(:,i), s.QTi(:,i), s.QTmi(:,i), s.QTv(:,i), ...
-        s.QSg(:,i), s.QSs(:,i), s.QSk(:,i), s.QSi(:,i), s.QSmi(:,i), s.QSv(:,i));
+    s = step_zmodel_forwards(i, p, s, Q);
+
+    
 
     % Optional runtime plotting (for debugging).
     if p.plot_runtime

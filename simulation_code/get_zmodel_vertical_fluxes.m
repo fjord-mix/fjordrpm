@@ -1,10 +1,10 @@
-function Qv = get_zmodel_vertical_fluxes(i, p, s, Qg, Qs, Qi)
+function Qv = get_zmodel_vertical_fluxes(i, p, s, Q)
 
 % GET_VERTICAL_FLUXES Compute vertical fluxes when thicknesses fixed.
 %   [QVv0,QTv0,QSv0] = GET_VERTICAL_FLUXES(Qnet,T0,S0,p)
 %   computes the vertical fluxes for the given parameters.
 
-Qnet = Qg.V-Qs.V+Qi.Vm;
+Qnet = Q.Qg.V-Q.Qs.V+Q.Qi.Vm;
 T0 = s.T(:,i);
 S0 = s.S(:,i);
 

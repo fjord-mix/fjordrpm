@@ -1,45 +1,45 @@
-function s = compute_zmodel_fluxes(i, p, f, s)
+function [Q, s] = compute_zmodel_fluxes(i, p, f, s)
 
 % Calculate plume fluxes.
-Qg = get_zmodel_plume_fluxes(i, p, f, s);
+Q.Qg = get_zmodel_plume_fluxes(i, p, f, s);
 
 % Calculate shelf fluxes.
-Qs = get_zmodel_shelf_fluxes(i, p, f, s);
+Q.Qs = get_zmodel_shelf_fluxes(i, p, f, s);
 
 % Calculate vertical mixing fluxes.
-Qk = get_zmodel_mixing_fluxes(i, p, s);
+Q.Qk = get_zmodel_mixing_fluxes(i, p, s);
 
 % Calculate iceberg fluxes.
-Qi = get_zmodel_iceberg_fluxes(i, p, s);
+Q.Qi = get_zmodel_iceberg_fluxes(i, p, s);
 
 % Calculate vertical fluxes.
-Qv = get_zmodel_vertical_fluxes(i, p, s, Qg, Qs, Qi);
+Q.Qv = get_zmodel_vertical_fluxes(i, p, s, Q);
 
-s.QVg(:,i) = Qg.V;
-s.QTg(:,i) = Qg.T;
-s.QSg(:,i) = Qg.S;
+s.QVg(:,i) = Q.Qg.V;
+s.QTg(:,i) = Q.Qg.T;
+s.QSg(:,i) = Q.Qg.S;
 
-s.QVs(:,i) = Qs.V;
-s.QTs(:,i) = Qs.T;
-s.QSs(:,i) = Qs.S;
-s.Se(:,i) = Qs.Se;
-s.Te(:,i) = Qs.Te;
-s.phi(:,i) = Qs.phi;
+s.QVs(:,i) = Q.Qs.V;
+s.QTs(:,i) = Q.Qs.T;
+s.QSs(:,i) = Q.Qs.S;
+s.Se(:,i) = Q.Qs.Se;
+s.Te(:,i) = Q.Qs.Te;
+s.phi(:,i) =Q.Qs.phi;
 
-s.QVk(:,i) = Qk.V;
-s.QTk(:,i) = Qk.T;
-s.QSk(:,i) = Qk.S;
+s.QVk(:,i) = Q.Qk.V;
+s.QTk(:,i) = Q.Qk.T;
+s.QSk(:,i) = Q.Qk.S;
 
-s.QIi(:,i) = Qi.I;
-s.QTi(:,i) = Qi.T;
-s.QSi(:,i) = Qi.S;
-s.M(:,i) = Qi.M;
-s.QVmi(:,i) = Qi.Vm;
-s.QTmi(:,i) = Qi.Tm;
-s.Smi(:,i) = Qi.Sm;
+s.QIi(:,i) = Q.Qi.I;
+s.QTi(:,i) = Q.Qi.T;
+s.QSi(:,i) = Q.Qi.S;
+s.M(:,i) = Q.Qi.M;
+s.QVmi(:,i) = Q.Qi.Vm;
+s.QTmi(:,i) = Q.Qi.Tm;
+s.Smi(:,i) = Q.Qi.Sm;
 
-s.QVv(:,i) = Qv.V;
-s.QTv(:,i) = Qv.T;
-s.QSv(:,i) = Qv.S;
+s.QVv(:,i) = Q.Qv.V;
+s.QTv(:,i) = Q.Qv.T;
+s.QSv(:,i) = Q.Qv.S;
 
 end
