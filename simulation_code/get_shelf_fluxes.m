@@ -1,4 +1,4 @@
-function [QVs0,QTs0,QSs0,Se0,Te0,phi0] = get_shelf_fluxes(H0,T0,S0,zs,Ts,Ss,Qsg0,p)
+function [QVs0,QTs0,QSs0,Se0,Te0,phi0] = get_shelf_fluxes(H0,T0,S0,zs,Ts,Ss,Qsg0,p, s)
 
 % GET_SHELF_FLUXES Compute shelf fluxes.
 %   [QVS0,QTS0,QSS0,SE0,TE0,PHI0] = GET_SHELF_FLUXES(H0,T0,S0,ZS,TS,SS,QSG0,P)
@@ -18,12 +18,12 @@ else
     [Te0, Se0] = bin_ocean_profiles(Ts,Ss,zs,H0',p);
 
     % get fjord to shelf reduced gravity
-    for k=1:p.ksill
+    for k=1:s.ksill
         gp(k) = p.g*(p.betaS*(S0(k)-Se0(k))-p.betaT*(T0(k)-Te0(k)));
     end
 
     % calculate potentials over above-sill layers
-    for k=1:p.ksill
+    for k=1:s.ksill
         if k==1
             phi0(k) = gp(k)*H0(k)/2;
         else
@@ -32,7 +32,7 @@ else
     end
 
     % above-sill fluxes before barotropic compensation
-    Q = p.C0*p.W*H0(1:p.ksill).*phi0(1:p.ksill)'/p.L;
+    Q = p.C0*p.W*H0(1:s.ksill).*phi0(1:s.ksill)'/p.L;
 
 %     if p.fixedthickness==1 && p.sill==1
 %         % no exchange below the sill height
@@ -45,7 +45,7 @@ else
         Qsg0 = 0;
     end
     % above-sill fluxes after barotropic compensation
-    QVs0 = Q + H0(1:p.ksill)*(Qsg0-sum(Q))/sum(H0(1:p.ksill));
+    QVs0 = Q + H0(1:s.ksill)*(Qsg0-sum(Q))/sum(H0(1:s.ksill));
 %     if p.sill==1
 %         if p.fixedthickness==0
 %             QVs0(p.N+p.sill) = 0;
@@ -57,7 +57,7 @@ else
 %         end
 %     end
     % fill any below-sill exchanges with zeros
-    QVs0(p.ksill+1:p.N) = 0;
+    QVs0(s.ksill+1:p.N) = 0;
    
     % resulting heat/salt fluxes
     QTs0 = (QVs0>=0).*QVs0.*T0 + (QVs0<0).*QVs0.*Te0;
