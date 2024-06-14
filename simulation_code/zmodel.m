@@ -1,11 +1,10 @@
 function [s,f] = zmodel(p,t,f,a,path_out)
 
-% BOXMODEL Box model simulation.
-%   [S,F] = BOXMODEL(P,T,F,A,PATH_OUT) runs the box model simulation for parameters structure P,
-%   time T, forcings structure F, initial conditions structure A. Returns solution structure
+% ZMODEL z-model simulation.
+%   [S,F] = ZMODEL(P,T,F,A,PATH_OUT) runs the z-model simulation for parameters structure P,
+%   time T, forcings structure F, initial conditions structure A, and returns solution structure
 %   S and forcing structure F in the same time steps as S. If PATH_OUT is
-%   specified, will save a file.
-%   If F and/or A are not specified, default idealised values will be used.
+%   specified, ZMODEL will save a file. If F and/or A are not specified, default idealised values will be used.
 
 %% Check boundary and initial conditions.
 % Set idealised boundary and initial conditions, if not given, based on input parameters.
@@ -21,8 +20,6 @@ status = check_zmodel_initialisation(p, a);
 
 % Preallocate and initialise variables- fluxes and box tracers- according to the number of layers for each timestep.
 s = initialise_zmodel_variables(p, f, a, t);
-
-dt = p.dt;
 
 %% Optional runtime plotting (for debugging)
 if p.plot_runtime
