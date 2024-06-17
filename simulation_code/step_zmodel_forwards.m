@@ -1,12 +1,12 @@
-function Z_ip1 = step_zmodel_forwards(i, p, s, Q_i)
+function Tr = step_zmodel_forwards(i, p, s, Q)
 
-    % Compute the zmodel variables at timestep i+1.
-    Z_ip1.V = s.V(:,i) +p.dt*p.sid*(Q_i.QVg-Q_i.QVs+Q_i.QVk+Q_i.QVmi+Q_i.QVv);
-    Z_ip1.VT = s.VT(:,i)+p.dt*p.sid*(Q_i.QTg-Q_i.QTs+Q_i.QTk+Q_i.QTi+Q_i.QTmi+Q_i.QTv);
-    Z_ip1.VS = s.VS(:,i)+p.dt*p.sid*(Q_i.QSg-Q_i.QSs+Q_i.QSk+Q_i.QSi+Q_i.QSmi+Q_i.QSv);
-    Z_ip1.H = Z_ip1.V/(p.W*p.L);
-    Z_ip1.T = Z_ip1.VT./Z_ip1.V;
-    Z_ip1.S = Z_ip1.VS./Z_ip1.V;
+    % Compute the zmodel tracer variables at timestep i+1.
+    Tr.V = s.V(:,i) +p.dt*p.sid*(Q.QVg-Q.QVs+Q.QVk+Q.QVmi+Q.QVv);
+    Tr.VT = s.VT(:,i)+p.dt*p.sid*(Q.QTg-Q.QTs+Q.QTk+Q.QTi+Q.QTmi+Q.QTv);
+    Tr.VS = s.VS(:,i)+p.dt*p.sid*(Q.QSg-Q.QSs+Q.QSk+Q.QSi+Q.QSmi+Q.QSv);
+    Tr.H = Tr.V/(p.W*p.L);
+    Tr.T = Tr.VT./Tr.V;
+    Tr.S = Tr.VS./Tr.V;
 
     % Step icebergs forwards.
 %     I = I+ (1-p.icestatic)*p.dt*p.sid*((D/(p.W*p.L))*f.xi-M.*I-p.uIce/p.L*I);

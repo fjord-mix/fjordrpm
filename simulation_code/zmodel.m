@@ -4,7 +4,7 @@ function [s,f] = zmodel(p,t,f,a,path_out)
 %   [S,F] = ZMODEL(P, T, F, A, PATH_OUT) runs the z-model simulation for parameters structure P,
 %   time T, forcings structure F, initial conditions structure A, and returns solution structure
 %   S and forcing structure F in the same time steps as S. If PATH_OUT is
-%   specified, ZMODEL will save a file. If F and/or A are not specified, default idealised values will be used.
+%   specified, ZMODEL will save a file. 
 
 %% Check for errors in the given boundary and initial conditions.
 status = check_zmodel_initialisation(p, a);
@@ -29,14 +29,14 @@ for i = 1:length(t)-1
     s = homogenise_zmodel_unstable_layers(i, p, s);
 
     % Compute the fluxes at the boundaries of each layer at timestep i.
-    Q_i = compute_zmodel_fluxes(i, p, f, s);
+    Q = compute_zmodel_fluxes(i, p, f, s);
     
-    % Step the fjord forwards to compute the zmodel variables at timestep i+1.
-    Z_ip1 = step_zmodel_forwards(i, p, s, Q_i);
+    % Step the fjord forwards to compute the tracer variables at timestep i+1.
+    Tr = step_zmodel_forwards(i, p, s, Q);
 
     % Store the fluxes computed at timestep i and the zmodel variables computed at
     % timestep i+1 in s.
-    s = store_zmodel_solution(i, s, Q_i, Z_ip1);
+    s = store_zmodel_solution(i, s, Q, Tr);
 
     % Optional runtime plotting (for debugging).
     if p.plot_runtime
