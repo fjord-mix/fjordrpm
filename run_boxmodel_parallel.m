@@ -17,6 +17,15 @@ for INDEX = 1:length(parameter_space)
     fjord_par_outputs(INDEX).m.name = sprintf('Iteration_%d\n', INDEX);
     fjord_par_outputs(INDEX).t = t;
     fjord_par_outputs(INDEX).p = mod_run_param(parameter_to_vary, parameter_space(INDEX), p_def);
+    % Set idealised boundary and initial conditions, if not given, based on input parameters.
+    % Boundary conditions:
+    if isempty(fjord_par_outputs(INDEX).f)
+        fjord_par_outputs(INDEX).f = get_idealised_forcing(fjord_par_outputs(INDEX).p, t); 
+    end % we cannot use an OR statement here
+    % Initial conditions
+    if isempty(fjord_par_outputs(INDEX).a)
+        fjord_par_outputs(INDEX).a = get_initial_conditions(fjord_par_outputs(INDEX).p, fjord_par_outputs(INDEX).f); 
+    end
 end
 
 %% Run the model (output is saved automatically).

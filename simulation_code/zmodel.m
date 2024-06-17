@@ -6,19 +6,10 @@ function [s,f] = zmodel(p,t,f,a,path_out)
 %   S and forcing structure F in the same time steps as S. If PATH_OUT is
 %   specified, ZMODEL will save a file. If F and/or A are not specified, default idealised values will be used.
 
-%% Check boundary and initial conditions.
-% Set idealised boundary and initial conditions, if not given, based on input parameters.
-% Boundary conditions:
-if nargin < 3, f = get_idealised_forcing(p, t); end
-if isempty(f), f = get_idealised_forcing(p, t); end % we cannot use an OR statement here
-% Initial conditions:
-if nargin < 4, a = get_initial_conditions(p, f); end
-if isempty(a), a = get_initial_conditions(p, f); end
-
-% Check for errors in the given initial state.
+%% Check for errors in the given boundary and initial conditions.
 status = check_zmodel_initialisation(p, a);
 
-% Preallocate and initialise variables- fluxes and box tracers-
+%% Preallocate and initialise variables- fluxes and box tracers-
 % according to the number of layers for each timestep and store in s.
 s = initialise_zmodel_variables(p, f, a, t);
 

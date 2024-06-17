@@ -54,14 +54,14 @@ switch example_run
         fjord_run = load('./input_data_examples/example_benchmark_fjords_bad_3layers.mat').fjords_bad(which_fjord);
         name = ['bad_',fjord_run.m.name];    
     case 8
-        load('boxmodel_example_not_conserving_H_dt0p05.mat');
+        load('boxmodel_example_bad_H_negT_lim.mat');
         fjord_run = cur_fjord;
-        fjord_run.a = [];
+      %  fjord_run.a = [];
 
 
-    fjord_run.p.dt    = 1; % time stepping (units are days)
-fjord_run.p.t_end = 200; % time to end the simulation
-fjord_run.t       = 0:fjord_run.p.dt:fjord_run.p.t_end;
+%     fjord_run.p.dt    = 0; % time stepping (units are days)
+% fjord_run.p.t_end = 200; % time to end the simulation
+% fjord_run.t       = 0:fjord_run.p.dt:fjord_run.p.t_end;
         name = 'martim_crash';
     otherwise
         fjord_run = test_changes;
@@ -69,15 +69,27 @@ fjord_run.t       = 0:fjord_run.p.dt:fjord_run.p.t_end;
 end
 
 % use the plot runtime at your discretion. It substantially slows down the simulation, because it spends most of the time plotting!
-fjord_run.p.plot_runtime = 1; 
-
+fjord_run.p.plot_runtime = 0; 
 fjord_run.m.name = name;
+
+% Set idealised boundary and initial conditions, if not given, based on input parameters.
+% Boundary conditions:
+if isempty(fjord_run.f), 
+    fjord_run.f = get_idealised_forcing(p, t); 
+end % we cannot use an OR statement here
+% Initial conditions:
+if isempty(fjord_run.a), 
+    fjord_run.a = get_initial_conditions(p, fjord_run.f); 
+end
+
 if p.fixedthickness == 0
     % Run the code for variable thickness layers.
     [fjord_run.s,fjord_run.f] = boxmodel(fjord_run.p, fjord_run.t, fjord_run.f, fjord_run.a);
 elseif p.fixedthickness == 1
     % Run the code for fixed thickness layers.
+    tic
     [fjord_run.s,fjord_run.f] = zmodel(fjord_run.p, fjord_run.t, fjord_run.f, fjord_run.a);
+    toc
 end
 
 %% Saving results
