@@ -1,4 +1,4 @@
-function s = store_zmodel_solution(i, s, Q, Tr)
+function s = store_zmodel_solution(i, s, Q, E, I, Tr)
 
 % Store zmodel fluxes at timestep i
 s.QVg(:,i) = Q.QVg;
@@ -8,9 +8,9 @@ s.QSg(:,i) = Q.QSg;
 s.QVs(:,i) = Q.QVs;
 s.QTs(:,i) = Q.QTs;
 s.QSs(:,i) = Q.QSs;
-s.Se(:,i) = Q.Se;
-s.Te(:,i) = Q.Te;
-s.phi(:,i) =Q.phi;
+s.Se(:,i) = E.Se;
+s.Te(:,i) = E.Te;
+s.phi(:,i) =E.phi;
 
 s.QVk(:,i) = Q.QVk;
 s.QTk(:,i) = Q.QTk;
@@ -19,10 +19,10 @@ s.QSk(:,i) = Q.QSk;
 s.QIi(:,i) = Q.QIi;
 s.QTi(:,i) = Q.QTi;
 s.QSi(:,i) = Q.QSi;
-s.M(:,i) = Q.M;
 s.QVmi(:,i) = Q.QVmi;
 s.QTmi(:,i) = Q.QTmi;
 s.Smi(:,i) = Q.QSmi;
+s.M(:,i) = I.M;
 
 s.QVv(:,i) = Q.QVv;
 s.QTv(:,i) = Q.QTv;

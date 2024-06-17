@@ -28,15 +28,16 @@ for i = 1:length(t)-1
     % stratification is unstable and store the updated solution in s.
     s = homogenise_zmodel_unstable_layers(i, p, s);
 
-    % Compute the fluxes at the boundaries of each layer at timestep i.
-    Q = compute_zmodel_fluxes(i, p, f, s);
+    % Compute the fluxes Q at the boundaries of each layer at timestep i and
+    % associated exterior E and ice I variables.
+    [Q, E, I] = compute_zmodel_fluxes(i, p, f, s);
     
     % Step the fjord forwards to compute the tracer variables at timestep i+1.
     Tr = step_zmodel_forwards(i, p, s, Q);
 
-    % Store the fluxes computed at timestep i and the zmodel variables computed at
+    % Store the fluxes and variables computed at timestep i and the zmodel variables computed at
     % timestep i+1 in s.
-    s = store_zmodel_solution(i, s, Q, Tr);
+    s = store_zmodel_solution(i, s, Q, E, I, Tr);
 
     % Optional runtime plotting (for debugging).
     if p.plot_runtime
