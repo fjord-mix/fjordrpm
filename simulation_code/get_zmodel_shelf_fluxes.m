@@ -1,8 +1,17 @@
-function [QVs0,QTs0,QSs0,Se0,Te0,phi0] = get_shelf_fluxes(H0,T0,S0,zs,Ts,Ss,Qsg0,p, s)
+function Qs = get_zmodel_shelf_fluxes(i, p, f, s)
 
 % GET_SHELF_FLUXES Compute shelf fluxes.
 %   [QVS0,QTS0,QSS0,SE0,TE0,PHI0] = GET_SHELF_FLUXES(H0,T0,S0,ZS,TS,SS,QSG0,P)
 %   computes the shelf fluxes for the given parameters. 
+
+H0 = s.H(:,i);
+T0 = s.T(:,i);
+S0 = s.S(:,i);
+Qsg0 = f.Qsg(i);
+zs = f.zs;
+Ts = f.Ts(:,i);
+Ss = f.Ss(:,i);
+
 
 if p.C0==0
     QVs0 = 0*H0;
@@ -14,7 +23,7 @@ if p.C0==0
 
 else
     % calculate mean shelf T/S over box model layers above sill
-    [gp, phi0] = deal(zeros(1, p.N));
+    [gp, phi0] = deal(zeros(p.N, 1));
     [Te0, Se0] = bin_ocean_profiles(Ts,Ss,zs,H0',p);
 
     % get fjord to shelf reduced gravity
@@ -32,7 +41,7 @@ else
     end
 
     % above-sill fluxes before barotropic compensation
-    Q = p.C0*p.W*H0(1:s.ksill).*phi0(1:s.ksill)'/p.L;
+    Q = p.C0*p.W*H0(1:s.ksill).*phi0(1:s.ksill)/p.L;
 
 %     if p.fixedthickness==1 && p.sill==1
 %         % no exchange below the sill height
@@ -63,5 +72,12 @@ else
     QTs0 = (QVs0>=0).*QVs0.*T0 + (QVs0<0).*QVs0.*Te0;
     QSs0 = (QVs0>=0).*QVs0.*S0 + (QVs0<0).*QVs0.*Se0;
 end
+
+Qs.V = QVs0;
+Qs.T = QTs0;
+Qs.S = QSs0;
+Qs.Se = Se0;
+Qs.Te = Te0;
+Qs.phi = phi0;
 
 end

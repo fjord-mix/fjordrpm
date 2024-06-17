@@ -1,9 +1,14 @@
-function [QIi0,QTi0,QSi0,M0,QVmi0,QTmi0,QSmi0] = get_iceberg_fluxes(H0,T0,S0,I0,p)
+function Qi = get_zmodel_iceberg_fluxes(i, p, s)
 
 
 % GET_ICEBERG_FLUXES Compute iceberg fluxes.
 %   [QII0,QTI0,QSI0,M0] = GET_ICEBERG_FLUXES(H0,T0,S0,I0,ZI,P)
 %   computes the iceberg fluxes for the given parameters.
+
+H0 = s.H(:,i);
+T0 = s.T(:,i);
+S0 = s.S(:,i);
+I0 = s.I(:,i);
 
 if p.M0==0 % if no icebergs
 
@@ -34,17 +39,12 @@ else
     gmelt = p.g*(p.betaS*S0-p.betaT*(T0-Tmelt));
     % potential upwelling flux
     QVmI = p.U0*p.alphaI^(2/3)*meltflux.^(1/3).*gmelt.^(1/3).*H0.*I0.^(2/3);
-
-%     QVmI(meltflux==0) = 0;
-
+    QVmI(meltflux==0) = 0;
     % scale for density stratification
     gk = max(0,[NaN;p.g*(p.betaS*(S0(2:end)-S0(1:end-1))-p.betaT*(T0(2:end)-T0(1:end-1)))]);
     lengthfac = (1/p.alphaI^(2/3))*((meltflux./I0).^2./(gmelt.*H0)).^(1/3).*gmelt./gk;
     scalefac = 1-exp(-lengthfac);
-
-    scalefac(gk==0) = 1;
-    scalefac(I0==0) = 0;
-
+    scalefac(I0==0)=0;
     scalefac(1) = 0; % no upwelling to atmosphere
     QVmI = scalefac.*QVmI;
     % associated temperature and salt fluxes
@@ -113,5 +113,13 @@ else
 
 
 end
+
+Qi.I = QIi0;
+Qi.T = QTi0;
+Qi.S = QSi0;
+Qi.M = M0;
+Qi.Vm = QVmi0;
+Qi.Tm = QTmi0;
+Qi.Sm = QSmi0;
 
 end

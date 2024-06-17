@@ -1,22 +1,39 @@
-function [H, V, T, S, I, VT, VS,...
-    QVg, QTg, QSg, QVs, QTs, QSs,...
-    QVk, QTk, QSk, QVmi, QTmi, QSmi,QIi,QTi,QSi,...
-    QVv,QTv,QSv,Te,Se, phi, M, p] = initialise_zmodel_variables(p, f, a, t)
+function s = initialise_zmodel_variables(p, f, a, t)
 
-[H, V, T, S, I, M] = deal(zeros(p.N, length(t)));
+% initialise variable fieldnames
+vars = {'H' 'V' 'T', 'S', 'QVg', 'QTg', 'QSg', 'QVk',  'QVk', 'QTk', 'QSk',...
+    'QVmi', 'QTmi', 'QSmi',...
+    'QIi', 'QTi', 'QSi',...
+    'QVv', 'QTv', 'QSv',...
+    'Te', 'Se', 'phi', 'I', 'M', 'VT', 'VS'};
 
-[QVg,QTg,QSg,...
-    QVs,QTs,QSs,...
-    QVk,QTk,QSk,...
-    QVmi,QTmi,QSmi,...
-    QIi,QTi,QSi,...
-    QVv,QTv,QSv,...
-    Te,Se, phi] = deal(zeros(p.N,length(t)-1));
+for index = 1 : length(vars)
+    s.(vars{index}) = index;  
+end
+
+[s.H, s.V, s.T, s.S, s.VT, s.VS] = deal(zeros(p.N, length(t)));
+
+[s.QVg, s.QTg, s.QSg,...
+    s.QVs, s.QTs, s.QSs,...
+    s.QVk, s.QTk, s.QSk,...
+    s.QVmi, s.QTmi, s.QSmi,...
+    s.QIi, s.QTi, s.QSi,...
+    s.QVv, s.QTv, s.QSv,...
+    s.Te, s.Se, s.phi, s.I, s.M] = deal(zeros(p.N, length(t)-1));
+
+% [s.I, s.M] = deal(zeros(length(f.zi), length(t)-1));
+
 
 % [I, M] = deal(zeros(length(f.zi),length(t)-1));
 
 %% Initialise variables according with the boundary and initial conditions.
-H(:,1) = a.H0;
+s.H(:,1) = a.H0;
+%s.V(:,1) = a.H0'*p.W*p.L; % volume of layers
+s.T(:,1) = a.T0; % temperature
+s.S(:,1) = a.S0; % salinity
+s.I(:,1) = a.I0; % iceberg concentration
+
+s.ksill = p.N;
 if p.sill==1
     if p.fixedthickness==1
         % If the layers are fixed thickness, redistribute layers so that
@@ -24,17 +41,18 @@ if p.sill==1
         % but a box boundary coincides with the sill depth
         Nabove = round((abs(p.silldepth)/p.H)*p.N);
         Nbelow = p.N-Nabove;
-        H(:,1) = [(abs(p.silldepth)/Nabove)*ones(1,Nabove),...
+        s.H(:,1) = [(abs(p.silldepth)/Nabove)*ones(1,Nabove),...
                 ((p.H-abs(p.silldepth))/Nbelow)*ones(1,Nbelow)];
-        p.ksill = Nabove;
+        s.ksill = Nabove;
     else 
         % If the layers are variable thickness, add an extra layer for the
         % sill.
-       H(:,1) = [(abs(p.silldepth)/p.N)*ones(1,p.N),p.H-abs(p.silldepth)];
+       s.H(:,1) = [(abs(p.silldepth)/p.N)*ones(1,p.N),p.H-abs(p.silldepth)];
     end
 else
-    p.ksill = p.N;
+    s.ksill = p.N;
 end
+
 
 
 V(:,1) = H(:,1)'*p.W*p.L; % volume of layers
@@ -62,5 +80,7 @@ I(:,1) = interp1(centres_old,a.I0,centres_new,'linear','extrap');
 % end       
 VT(:,1) = V(:,1).*T(:,1); % heat content
 VS(:,1) = V(:,1).*S(:,1); % salt content
+
+
 
 end
