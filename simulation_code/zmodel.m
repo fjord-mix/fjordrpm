@@ -63,14 +63,9 @@ end
 %% Get the output solution (save daily values to avoid large output files).
 s = get_zmodel_output(p, f, t, s, status);
 
-%% Save output if a path+file name are provided
+%% Save output if a path and file name are provided.
 if nargin > 4
-    fjord_output.s = s;
-    fjord_output.f = f;
-    fjord_output.t = t;
-    fjord_output.p = p;
-    fjord_output.a = a;
-    save(path_out,'fjord_output','-v7.3'); % v7.3 allows large files (> 2GB), which might happen in very long runs
+    save_zmodel_output(s, f, t, p, a, path_out);
 end
 
 end
