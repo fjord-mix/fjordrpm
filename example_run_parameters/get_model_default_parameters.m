@@ -29,8 +29,6 @@ function [p,a] = get_model_default_parameters()
     p.gamma = 0.5;     % proportion of iceberg melt flux that gets mixed vertically (-)
     p.alphaI = 0.1;    % iceberg plume entrainment coefficient
     p.icestatic = 0;   % whether icebergs are "static" or "dynamic" in the model
-    p.U0 = 0.25;       % scale upwelling
-    p.A0 = 2e9;        % scale of iceberg area
 
 
     %% artificial parameters
