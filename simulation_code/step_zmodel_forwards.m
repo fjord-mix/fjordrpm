@@ -1,54 +1,12 @@
-function s = step_zmodel_forwards(i, p, s, Q)
+function Z_ip1 = step_zmodel_forwards(i, p, s, Q_i)
 
-     % Compute the fluxes at the boundaries of each layer at timestep i.
-    Q = compute_zmodel_fluxes(i, p, f, s);
-
-% Compute the temperature, salt, heat content and salt content at timestep i+1.
-    s.V(:,i+1)  = s.V(:,i)+p.dt*p.sid*(Q.QVg-Q.QVs+Q.QVk+Q.QVmi+Q.QVv);
-    s.VT(:,i+1) = s.VT(:,i) +p.dt*p.sid*(Q.QTg-Q.QTs+Q.QTk+Q.QTi+Q.QTmi+Q.QTv);
-    s.VS(:,i+1) = s.VS(:,i)+p.dt*p.sid*(Q.QSg-Q.QSs+Q.QSk+Q.QSi+Q.QSmi+Q.QSv);
-    % compute tracers
-    s.H(:,i+1) = s.V(:,i+1)/(p.W*p.L);
-    s.T(:,i+1) = s.VT(:,i+1)./s.V(:,i+1);
-    s.S(:,i+1) = s.VS(:,i+1)./s.V(:,i+1);
-
-
-
-
-    s.V(:,i+1)  = s.V(:,i)+p.dt*p.sid*(QVg-QVs+QVk+QVmi+QVv);
-    s.VT(:,i+1) = s.VT(:,i) +p.dt*p.sid*(QTg-QTs+QTk+QTi+QTmi+QTv);
-    s.VS(:,i+1) = s.VS(:,i)+p.dt*p.sid*(QSg-QSs+QSk+QSi+QSmi+QSv);
-    % compute tracers
-    s.H(:,i+1) = s.V(:,i+1)/(p.W*p.L);
-    s.T(:,i+1) = s.VT(:,i+1)./s.V(:,i+1);
-    s.S(:,i+1) = s.VS(:,i+1)./s.V(:,i+1);
-
-    
-
-        QVg = Q.QVg;
-QTg = Q.QTg;
-QSg = Q.QSg;
-
-QVs = Q.QVs;
-QTs = Q.QTs;
-QSs = Q.QSs;
-
-QVk = Q.QVk;
-QTk = Q.QTk;
-QSk = Q.QSk;
-
-QTi = Q.QTi;
-QSi = Q.QSi;
-QVmi = Q.QVmi;
-QTmi = Q.QTmi;
-QSmi = Q.QSmi;
-
-QVv = Q.QVv;
-QTv = Q.QTv;
-QSv = Q.QSv;
-
-
-% Store the solution
+    % Compute the zmodel variables at timestep i+1.
+    Z_ip1.V = s.V(:,i) +p.dt*p.sid*(Q_i.QVg-Q_i.QVs+Q_i.QVk+Q_i.QVmi+Q_i.QVv);
+    Z_ip1.VT = s.VT(:,i)+p.dt*p.sid*(Q_i.QTg-Q_i.QTs+Q_i.QTk+Q_i.QTi+Q_i.QTmi+Q_i.QTv);
+    Z_ip1.VS = s.VS(:,i)+p.dt*p.sid*(Q_i.QSg-Q_i.QSs+Q_i.QSk+Q_i.QSi+Q_i.QSmi+Q_i.QSv);
+    Z_ip1.H = Z_ip1.V/(p.W*p.L);
+    Z_ip1.T = Z_ip1.VT./Z_ip1.V;
+    Z_ip1.S = Z_ip1.VS./Z_ip1.V;
 
     % Step icebergs forwards.
 %     I = I+ (1-p.icestatic)*p.dt*p.sid*((D/(p.W*p.L))*f.xi-M.*I-p.uIce/p.L*I);

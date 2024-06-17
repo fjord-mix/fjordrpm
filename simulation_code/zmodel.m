@@ -18,7 +18,8 @@ if isempty(a), a = get_initial_conditions(p, f); end
 % Check for errors in the given initial state.
 status = check_zmodel_initialisation(p, a);
 
-% Preallocate and initialise variables- fluxes and box tracers- according to the number of layers for each timestep.
+% Preallocate and initialise variables- fluxes and box tracers-
+% according to the number of layers for each timestep and store in s.
 s = initialise_zmodel_variables(p, f, a, t);
 
 %% Optional runtime plotting (for debugging)
@@ -33,13 +34,18 @@ end
 for i = 1:length(t)-1
 
     % Homogenise the heat and salt content of layers if the density
-    % stratification is unstable.
+    % stratification is unstable and store the updated solution in s.
     s = homogenise_zmodel_unstable_layers(i, p, s);
-    
-    % Step the fjord forwards.
-    s = step_zmodel_forwards(i, p, s, Q);
 
+    % Compute the fluxes at the boundaries of each layer at timestep i.
+    Q_i = compute_zmodel_fluxes(i, p, f, s);
     
+    % Step the fjord forwards to compute the zmodel variables at timestep i+1.
+    Z_ip1 = step_zmodel_forwards(i, p, s, Q_i);
+
+    % Store the fluxes computed at timestep i and the zmodel variables computed at
+    % timestep i+1 in s.
+    s = store_zmodel_solution(i, s, Q_i, Z_ip1);
 
     % Optional runtime plotting (for debugging).
     if p.plot_runtime
@@ -55,10 +61,7 @@ for i = 1:length(t)-1
 end
 
 %% Get the output solution (save daily values to avoid large output files).
-s = get_zmodel_output(p, f, t, status, s.H, s.T, s.S, s.V, s.I, ...
-    s.QVg, s.QTg, s.QSg, s.QVs, s.QTs, s.QSs, s.Se, s.Te, s.phi, s.QVk, s.QTk, s.QSk, ...
-    s.QVv, s.QTv, s.QSv, s.QIi, s.QTi, s.QSi, s.QVmi, s.M);
-
+s = get_zmodel_output(p, f, t, s, status);
 
 %% Save output if a path+file name are provided
 if nargin > 4

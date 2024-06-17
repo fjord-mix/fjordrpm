@@ -1,6 +1,4 @@
-function s = get_zmodel_output(p, f, t, status, H, T, S, V, I, ...
-    QVg, QTg, QSg, QVs, QTs, QSs, Se, Te, phi, QVk, QTk, QSk, ...
-    QVv, QTv, QSv, QIi, QTi, QSi, QVmi, M)
+function s = get_zmodel_output(p, f, t, s, status)
 
 % Just save daily values as otherwise high time resolution results in large output files
 dtdaily = max(1, p.dt);
@@ -12,41 +10,41 @@ end
 s.t = t(1:int:end-1);
 
 % box variables
-s.H = H(:,1:int:end-1);
-s.T = T(:,1:int:end-1);
-s.S = S(:,1:int:end-1);
-s.V = V(:,1:int:end-1);
-s.I = I(:,1:int:end-1);
+s.H = s.H(:,1:int:end-1);
+s.T = s.T(:,1:int:end-1);
+s.S = s.S(:,1:int:end-1);
+s.V = s.V(:,1:int:end-1);
+s.I = s.I(:,1:int:end-1);
 
 % glacier exchanges
-s.QVg = QVg(:,1:int:end);
-s.QTg = QTg(:,1:int:end);
-s.QSg = QSg(:,1:int:end);
+s.QVg = s.QVg(:,1:int:end);
+s.QTg = s.QTg(:,1:int:end);
+s.QSg = s.QSg(:,1:int:end);
 
 % shelf exchanges
-s.QVs = QVs(:,1:int:end);
-s.QTs = QTs(:,1:int:end);
-s.QSs = QSs(:,1:int:end);
-s.Se = Se(:,1:int:end);
-s.Te = Te(:,1:int:end);
-s.phi = phi(:,1:int:end);
+s.QVs = s.QVs(:,1:int:end);
+s.QTs = s.QTs(:,1:int:end);
+s.QSs = s.QSs(:,1:int:end);
+s.Se = s.Se(:,1:int:end);
+s.Te = s.Te(:,1:int:end);
+s.phi = s.phi(:,1:int:end);
 
 % vertical mixing
-s.QVk = QVk(:,1:int:end);
-s.QTk = QTk(:,1:int:end);
-s.QSk = QSk(:,1:int:end);
+s.QVk = s.QVk(:,1:int:end);
+s.QTk = s.QTk(:,1:int:end);
+s.QSk = s.QSk(:,1:int:end);
 
 % vertical fluxes
-s.QVv = QVv(:,1:int:end);
-s.QTv = QTv(:,1:int:end);
-s.QSv = QSv(:,1:int:end);
+s.QVv = s.QVv(:,1:int:end);
+s.QTv = s.QTv(:,1:int:end);
+s.QSv = s.QSv(:,1:int:end);
 
 % iceberg fluxes
-s.QIi = QIi(:,1:int:end);
-s.QTi = QTi(:,1:int:end);
-s.QSi = QSi(:,1:int:end);
-s.QVmi = QVmi(:, 1:int:end);
-s.M = M(:,1:int:end);
+s.QIi = s.QIi(:,1:int:end);
+s.QTi = s.QTi(:,1:int:end);
+s.QSi = s.QSi(:,1:int:end);
+s.QVmi = s.QVmi(:, 1:int:end);
+s.M = s.M(:,1:int:end);
 
 % for iceberg fluxes also calculate and save fjord-integrated values
 s.IT = sum(s.I); % fjord iceberg surface area
