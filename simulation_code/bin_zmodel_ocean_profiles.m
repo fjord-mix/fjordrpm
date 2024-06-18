@@ -1,7 +1,7 @@
 function [Te0, Se0] = bin_zmodel_ocean_profiles(Tz, Sz, z, H0)
 
 % BIN_ZMODEL_OCEAN_PROFILES Bins temperature (Tz) and salinity (Sz) profiles 
-% to boxmodel layers (H0) and returns a  "box profile" for temperature (Te0)
+% to zmodel layers (H0) and returns a  "box profile" for temperature (Te0)
 % and salinity (Se0) for the boxes given by H0
 
 % Remove any nan entries from the shelf temperature, salinity and depth
