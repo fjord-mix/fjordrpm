@@ -12,7 +12,7 @@ function [s, f] = zmodel(p, t, f, a, path_out)
 
 %% Preallocate and initialise variables- fluxes and box tracers-
 % according to the number of layers for each timestep and store in s.
-s = initialise_zmodel_variables(p, f, a, t);
+s = initialise_zmodel_variables(p, a, t);
 
 %% The main ZMODEL loop.
 for i = 1:length(t)-1
