@@ -1,6 +1,10 @@
 function s = store_zmodel_solution(i, s, Q, E, I, Tr)
 
-% Store zmodel fluxes at timestep i
+% STORE_ZMODEL_SOLUTION z-model simulation.
+%   S = STORE_ZMODEL_SOLUTION(I, S, Q, E, I, TR) stores the zmodel solution
+%   Q, E, I, TR after iteration I in structure S.
+
+% Store zmodel fluxes and shelf/ice variables at timestep i.
 s.QVg(:,i) = Q.QVg;
 s.QTg(:,i) = Q.QTg;
 s.QSg(:,i) = Q.QSg;
@@ -28,7 +32,7 @@ s.QVv(:,i) = Q.QVv;
 s.QTv(:,i) = Q.QTv;
 s.QSv(:,i) = Q.QSv;
 
-% Store zmodel tracer variables at timestep i+1
+% Store zmodel tracer variables at timestep i+1.
 s.V(:,i+1) = Tr.V;
 s.T(:,i+1) = Tr.T;
 s.S(:,i+1) = Tr.S;
