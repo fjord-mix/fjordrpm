@@ -12,9 +12,7 @@ Qsg0 = f.Qsg(i);
 
 if Qsg0==0 || p.P0==0 
     % If there is no plume, the fluxes are zero by default.
-    QpV0 = 0*H0;
-    QpT0 = 0*H0;
-    QpS0 = 0*H0;
+    [QpV0, QpT0, QpS0] = deal(0*H0);
 else
     % Initialise variables.
     [QpV0, QpT0, QpS0] = deal(zeros(p.N, 1));
