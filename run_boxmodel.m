@@ -45,12 +45,12 @@ switch example_run
     case 5
         fjord_run = load('./input_data_examples/example_benchmark_fjords_3layers.mat').fjord_model(which_fjord);
         name = ['example_',fjord_run.m.name,'_2010_2018_3layers'];
-    case 6        
+    case 6
         fjord_run = load('./input_data_examples/example_benchmark_fjords_2layers.mat').fjord_model(which_fjord);
         name = ['example_',fjord_run.m.name,'_2010_2018_2layers'];
     case 7
         fjord_run = load('./input_data_examples/example_benchmark_fjords_bad_3layers.mat').fjords_bad(which_fjord);
-        name = ['bad_',fjord_run.m.name];    
+        name = ['bad_',fjord_run.m.name];
     case 8
         load('boxmodel_example_bad_H_negT_lim.mat');
         fjord_run = cur_fjord;
@@ -62,17 +62,17 @@ end
 
 % Use the plot runtime at your discretion. It substantially slows down the
 % simulation, because it spends most of the time plotting!
-fjord_run.p.plot_runtime = 0; 
+fjord_run.p.plot_runtime = 0;
 fjord_run.m.name = name;
 
 % Set idealised boundary and initial conditions, if not given, based on
 % input parameters. Boundary conditions:
 if isempty(fjord_run.f)
-    fjord_run.f = get_idealised_forcing(p, t); 
+    fjord_run.f = get_idealised_forcing(p, t);
 end % we cannot use an OR statement here
 % Initial conditions:
 if isempty(fjord_run.a)
-    fjord_run.a = get_initial_conditions(p, fjord_run.f); 
+    fjord_run.a = get_initial_conditions(p, fjord_run.f);
 end
 
 if p.fixedthickness == 0
@@ -102,6 +102,6 @@ save([output_folder,'/model_results/', name, '.mat'], 'fjord_run')
 % Example plot that can be generated from the model outputs
 % plot_outputs(fjord_run);
 % exportgraphics(gcf,[output_folder,'/figures/',name,'.pdf'],'ContentType','vector','BackgroundColor','none')
-% 
+%
 % plot_TS_boxmodel(fjord_run);
 % exportgraphics(gcf,[output_folder,'/figures/TS_',name,'.pdf'],'ContentType','vector','BackgroundColor','none')
