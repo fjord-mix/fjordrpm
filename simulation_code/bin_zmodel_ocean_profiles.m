@@ -1,8 +1,8 @@
 function [Te0, Se0] = bin_zmodel_ocean_profiles(Tz, Sz, z, H0)
 
-% BIN_ZMODEL_OCEAN_PROFILES Bins temperature (Tz) and salinity (Sz) profiles 
-% to zmodel layers (H0) and returns a  "box profile" for temperature (Te0)
-% and salinity (Se0) for the boxes given by H0
+% BIN_ZMODEL_OCEAN_PROFILES Bins temperature (Tz) and salinity (Sz)
+% profiles to zmodel layers (H0) and returns a  "box profile" for
+% temperature (Te0) and salinity (Se0) for the boxes given by H0
 
 % Remove any nan entries from the shelf temperature, salinity and depth
 % profiles.
@@ -20,7 +20,8 @@ zs0 = unique(sort([0; zs'; -cumsum(H0)]));
 Ss0 = interp1(zs,Ss,zs0,'pchip','extrap');
 Ts0 = interp1(zs,Ts,zs0,'pchip','extrap');
 
-% Calculate mean shelf temperature and salinity Te0 and Se0 over zmodel layers.
+% Calculate mean shelf temperature and salinity Te0 and Se0 over zmodel
+% layers.
 ints=[0; -cumsum(H0)];
 [Te0, Se0] = deal(zeros(size(H0)));
 for k=1:length(ints)-1
@@ -31,6 +32,9 @@ for k=1:length(ints)-1
     Te0(k) = trapz(zs0(inds),Ts0(inds))/H0(k);
 end
       
+end
+
+
 % % Plot to check interpolation
 % figure(98);
 % subplot(1,2,1); hold on; box on
@@ -49,5 +53,3 @@ end
 % end
 % ylim([ints(end) ints(1)])
 % xlabel('Salinity (-)')
-
-end
