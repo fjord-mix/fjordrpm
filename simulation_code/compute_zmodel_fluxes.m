@@ -20,6 +20,6 @@ function [Q, E, I] = compute_zmodel_fluxes(i, p, f, s)
 [Q.QIi, Q.QTi, Q.QSi, Q.QVmi, Q.QTmi, Q.QSmi, I.M] = get_zmodel_iceberg_fluxes(i, p, s);
 
 % Calculate vertical fluxes.
-[Q.QVv, Q.QTv, Q.QSv] = get_zmodel_vertical_fluxes(i, p, s, Q.QVg-Q.QVs+Q.QVmi);
+[Q.QVv, Q.QTv, Q.QSv] = get_zmodel_vertical_fluxes(i, s, Q.QVg-Q.QVs+Q.QVmi);
 
 end

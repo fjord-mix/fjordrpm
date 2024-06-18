@@ -1,12 +1,14 @@
 function s = homogenise_zmodel_unstable_layers(i, p, s)
 
-% HOMOGENISE_ZMODEL_UNSTABLE_LAYERS Homogenise two unstably stratified layers.
-%   S = HOMOGENISE_ZMODEL_UNSTABLE_LAYERS(I, P, S) takes input timestep I, arameters structure P,
-%   and solution structure S and computes the buoyancy jump between layers
-%   in the solution for that timestep, homogenises any layers that are
-%   unstably stratified and returns an updated solution structure S.
+% HOMOGENISE_ZMODEL_UNSTABLE_LAYERS Homogenise two unstably stratified
+% layers.
+%   S = HOMOGENISE_ZMODEL_UNSTABLE_LAYERS(I, P, S) takes input timestep I,
+%   parameters structure P, and solution structure S and computes the
+%   buoyancy jump between layers in the solution for that timestep,
+%   homogenises any layers that are unstably stratified and returns an
+%   updated solution structure S.
 
-% Initialise variables that will be used in a loop- faster than looking 
+% Initialise variables that will be used in a loop- faster than looking
 % through the structure in a loop each time.
  V = s.V(:,i);
  T = s.T(:,i);
