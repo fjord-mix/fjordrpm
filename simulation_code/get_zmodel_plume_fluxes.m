@@ -9,8 +9,6 @@ function [QpV0, QpT0, QpS0] = get_zmodel_plume_fluxes(i, p, f, s)
 H0 = s.H(:,i); T0 = s.T(:,i); S0 = s.S(:,i);
 % Get boundary conditions at timestep i.
 Qsg0 = f.Qsg(i);
-% Initialise variables.
-[QpV0, QpT0, QpS0] = deal(zeros(p.N, 1));
 
 if Qsg0==0 || p.P0==0 
     % If there is no plume, the fluxes are zero by default.
@@ -18,6 +16,9 @@ if Qsg0==0 || p.P0==0
     QpT0 = 0*H0;
     QpS0 = 0*H0;
 else
+    % Initialise variables.
+    [QpV0, QpT0, QpS0] = deal(zeros(p.N, 1));
+    
     % Compute the plume properties (flux, salinity, temp) in each zmodel
     % layer and the location of the grounding line and neutral buoyancy
     % box.
