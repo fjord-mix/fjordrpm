@@ -35,8 +35,8 @@ for i = 1:length(t)-1
     % Step the fjord forwards to compute the tracer variables at timestep i+1.
     Tr = step_zmodel_forwards(i, p, s, Q);
 
-    % Store the fluxes and variables computed at timestep i and the zmodel variables computed at
-    % timestep i+1 in s.
+    % Store the fluxes and variables computed at timestep i and the
+    % zmodel variables computed at timestep i+1 in s.
     s = store_zmodel_solution(i, s, Q, E, I, Tr);
 
     % Optional runtime plotting (for debugging).

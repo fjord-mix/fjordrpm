@@ -27,13 +27,8 @@ end
 % [I, M] = deal(zeros(length(f.zi),length(t)-1));
 
 %% Initialise variables according with the boundary and initial conditions.
-s.H(:,1) = a.H0;
-%s.V(:,1) = a.H0'*p.W*p.L; % volume of layers
-s.T(:,1) = a.T0; % temperature
-s.S(:,1) = a.S0; % salinity
-s.I(:,1) = a.I0; % iceberg concentration
-
-s.ksill = p.N;
+%% Initialise variables according with the boundary and initial conditions.
+H(:,1) = a.H0;
 if p.sill==1
     if p.fixedthickness==1
         % If the layers are fixed thickness, redistribute layers so that
@@ -41,45 +36,52 @@ if p.sill==1
         % but a box boundary coincides with the sill depth
         Nabove = round((abs(p.silldepth)/p.H)*p.N);
         Nbelow = p.N-Nabove;
-        s.H(:,1) = [(abs(p.silldepth)/Nabove)*ones(1,Nabove),...
+        H(:,1) = [(abs(p.silldepth)/Nabove)*ones(1,Nabove),...
                 ((p.H-abs(p.silldepth))/Nbelow)*ones(1,Nbelow)];
-        s.ksill = Nabove;
+        p.ksill = Nabove;
     else 
         % If the layers are variable thickness, add an extra layer for the
         % sill.
-       s.H(:,1) = [(abs(p.silldepth)/p.N)*ones(1,p.N),p.H-abs(p.silldepth)];
+       H(:,1) = [(abs(p.silldepth)/p.N)*ones(1,p.N),p.H-abs(p.silldepth)];
     end
 else
-    s.ksill = p.N;
+    p.ksill = p.N;
 end
 
 
-s.V(:,1) = s.H(:,1)'*p.W*p.L; % volume of layers
-ints_old = [0, cumsum(a.H0)];
+V(:,1) = H(:,1)'*p.W*p.L; % volume of layers
+ints_old = [0;cumsum(a.H0)];
 centres_old = 0.5*(ints_old(1:end-1)+ints_old(2:end));
-ints_new = [0;cumsum(s.H(:,1))];
+ints_new = [0;cumsum(H(:,1))];
 centres_new = 0.5*(ints_new(1:end-1)+ints_new(2:end));
-s.T(:,1) = interp1(centres_old,a.T0,centres_new,'linear','extrap');
-s.S(:,1) = interp1(centres_old,a.S0,centres_new,'linear','extrap');
-s.I(:,1) = interp1(centres_old,a.I0,centres_new,'linear','extrap');
+T(:,1) = interp1(centres_old,a.T0,centres_new,'linear','extrap');
+S(:,1) = interp1(centres_old,a.S0,centres_new,'linear','extrap');
+I(:,1) = interp1(centres_old,a.I0,centres_new,'linear','extrap');
 % T(:,1) = a.T0; % temperature
 % S(:,1) = a.S0; % salinity
 % I(:,1) = a.I0; % iceberg concentration
-%T(:,1) = a.T0; % temperature
-%S(:,1) = a.S0; % salinity
-%I(:,1) = a.I0; % iceberg concentration
 
 % If the layers are fixed thickness, redistribute initial
 % conditions to be the same as the box thicknesses
 % if p.sill ==1 
 %     if p.fixedthickness == 1
-%         % redistribute the layers 
-%         s.T(:,1) = s.T(:,1).*s.H(:,1)./a.H0;
-%         s.S(:,1) = s.S(:,1).*s.H(:,1)./a.H0;
-%         s.I(:,1) = s.I(:,1).*s.H(:,1)./a.H0;
+%         % redistribute the layers
+%         T(:,1) = interp1(cumsum(a.H0),a.T0,cumsum(H(:,1)));
+%         T(:,1) = T(:,1).*H(:,1)./a.H0;
+%         S(:,1) = S(:,1).*H(:,1)./a.H0;
+%         I(:,1) = I(:,1).*H(:,1)./a.H0;
 %     end
 % end       
-s.VT(:,1) = s.V(:,1).*s.T(:,1); % heat content
-s.VS(:,1) = s.V(:,1).*s.S(:,1); % salt content
+VT(:,1) = V(:,1).*T(:,1); % heat content
+VS(:,1) = V(:,1).*S(:,1); % salt content
+
+s.ksill = p.ksill;
+s.H(:,1) = H(:,1);
+s.V(:,1) = V(:,1);
+s.VT(:,1) = VT(:,1);
+s.VS(:,1) = VS(:,1);
+s.T(:,1) = T(:,1);
+s.S(:,1) = S(:,1);
+s.I(:,1) = I(:,1);
 
 end

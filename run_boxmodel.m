@@ -27,7 +27,7 @@ output_folder='./outputs'; % choose where to save your model outputs here
 %    Be mindful that these are not 100% "plug and play". The user
 %    needs to choose which fjord from the fjord_model array to run
 
-example_run = 2;
+example_run = 8;
 which_fjord = 3; % used for example_run 5 to 7
 p.fixedthickness = 1;
 
