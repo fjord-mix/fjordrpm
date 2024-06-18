@@ -1,4 +1,4 @@
-function status = check_zmodel_initialisation(p, a)
+function [status, a] = check_zmodel_initialisation(p, a)
 
 status = 0;
 
@@ -18,9 +18,15 @@ end
 
 % Check sum of layer thicknesses is equal to fjord depth.
 if abs(sum(a.H0)-p.H) > 1e-10
-    disp('Error: box thicknesses must sum to fjord depth');
+    disp('Error: initial box thicknesses must sum to fjord depth');
     status = 1; 
     return
 end
+
+
+if size(a.H0, 1) < size(a.H0, 2)
+    a.H0 = a.H0';
+end
+
 
 end

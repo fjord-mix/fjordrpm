@@ -55,7 +55,7 @@ end
 
 
 s.V(:,1) = s.H(:,1)'*p.W*p.L; % volume of layers
-ints_old = [0, cumsum(a.H0')];
+ints_old = [0; cumsum(a.H0)];
 centres_old = 0.5*(ints_old(1:end-1)+ints_old(2:end));
 ints_new = [0;cumsum(s.H(:,1))];
 centres_new = 0.5*(ints_new(1:end-1)+ints_new(2:end));

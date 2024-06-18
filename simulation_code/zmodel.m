@@ -8,7 +8,7 @@ function [s,f] = zmodel(p,t,f,a,path_out)
 %   ZMODEL will save a file.
 
 %% Check for errors in the given boundary and initial conditions.
-status = check_zmodel_initialisation(p, a);
+[status, a] = check_zmodel_initialisation(p, a);
 
 %% Preallocate and initialise variables- fluxes and box tracers-
 % according to the number of layers for each timestep and store in s.
