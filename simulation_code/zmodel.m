@@ -1,25 +1,18 @@
-function [s,f] = zmodel(p,t,f,a,path_out)
+function [s, f] = zmodel(p, t, f, a, path_out)
 
 % ZMODEL z-model simulation.
-%   [S,F] = ZMODEL(P, T, F, A, PATH_OUT) runs the z-model simulation for
+%   [S, F] = ZMODEL(P, T, F, A, PATH_OUT) runs the z-model simulation for
 %   parameters structure P, time T, forcings structure F, initial
 %   conditions structure A, and returns solution structure S and forcing
 %   structure F in the same time steps as S. If PATH_OUT is specified,
 %   ZMODEL will save a file.
 
 %% Check for errors in the given boundary and initial conditions.
-[status, a] = check_zmodel_initialisation(p, a);
+[status, a] = check_zmodel_inputs(p, a);
 
 %% Preallocate and initialise variables- fluxes and box tracers-
 % according to the number of layers for each timestep and store in s.
 s = initialise_zmodel_variables(p, f, a, t);
-
-%% Optional runtime plotting (for debugging)
-if p.plot_runtime
-    % hf_track = monitor_boxmodel([],1,H,T,S,f); hf_track =
-    % show_boxmodel([],1,t,H,T,S,[],[],[],[],f); s_bnds = [min(f.Ss(:))
-    % max(f.Ss(:))+0.1]; plot_debug_profile(0,t,f,p,a.H0',S,s_bnds,T,[]);
-end
 
 %% The main ZMODEL loop.
 for i = 1:length(t)-1
