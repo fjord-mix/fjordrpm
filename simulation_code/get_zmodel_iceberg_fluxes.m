@@ -1,9 +1,10 @@
 function [QIi0, QTi0, QSi0, QVmi0, QTmi0, QSmi0, M0] = get_zmodel_iceberg_fluxes(i, p, s)
 
 % GET_ZMODEL_ICEBERG_FLUXES Compute mixing fluxes for the zmodel.
-%   [QII0, QTI0, QSI0, QVMI0, QTMI0, QSMI0, M0] = GET_ZMODEL_ICEBERG_FLUXES(I, P, S) computes the
-%   iceberg fluxes QII0, QTI0, QSI0, QVMI0, QTMI0, QSMI0 and iceberg parameter M0 for the given parameters P and boundary
-%   conditions F at timestep I.
+%   [QII0, QTI0, QSI0, QVMI0, QTMI0, QSMI0, M0] =
+%   GET_ZMODEL_ICEBERG_FLUXES(I, P, S) computes the iceberg fluxes QII0,
+%   QTI0, QSI0, QVMI0, QTMI0, QSMI0 and iceberg parameter M0 for the given
+%   parameters P and boundary conditions F at timestep I.
 
 % Get tracer variables at timestep i.
 H0 = s.H(:,i); T0 = s.T(:,i); S0 = s.S(:,i); I0 = s.I(:,i);
@@ -12,52 +13,42 @@ if p.M0==0
     % If there are no icebergs, the fluxes are zero by default.
     [QIi0, QTi0, QSi0, QVmi0, QTmi0, QSmi0, M0] = deal(0*H0);
 else
-    % Initialise variables
-
-    
-    % melting in boxes
-    zj = cumsum(H0)-H0/2; % mean depth of boxes
-    Tf = p.l1*S0 + p.l2 + p.l3*zj; % local freezing point
-    % melt flux
+    % Compute the melt flux into each box.
+    zj = cumsum(H0)-H0/2; % Mean depth of boxes.
+    Tf = p.l1*S0 + p.l2 + p.l3*zj; % Local freezing point.
     meltflux = max(0,p.M0*(T0-Tf).*I0);
+    % Set the melt flux to zero where I0 is zero to avoid NaN values.
     meltflux(I0==0) = 0;
 
-    % mixing fluxes between boxes to account for buoyant rising of
-    % freshwater
-    % Preallocate variables
-%     [QVmI, QTmI, QSmI, gmelt, Heff, SA_ice] =  deal(zeros(1, length(I0)-1));
-    % effective temperature of meltwater
-    Tmelt = -p.l/p.cw;
-    % buoyancy difference between melt and ambient
-    gmelt = p.g*(p.betaS*S0-p.betaT*(T0-Tmelt));
-    % potential upwelling flux
+    % Compute mixing flux QVmI between boxes to account for the buoyant
+    % rising of freshwater.
+    Tmelt = -p.l/p.cw; % effective temperature of meltwater   
+    gmelt = p.g*(p.betaS*S0-p.betaT*(T0-Tmelt)); % buoyancy difference between melt and ambient
     QVmI = p.U0*p.alphaI^(2/3)*meltflux.^(1/3).*gmelt.^(1/3).*H0.*I0.^(2/3);
-%     QVmI(meltflux==0) = 0;
-    % scale for density stratification
-    gk = max(0,[NaN;p.g*(p.betaS*(S0(2:end)-S0(1:end-1))-p.betaT*(T0(2:end)-T0(1:end-1)))]);
-    lengthfac = (1/p.alphaI^(2/3))*((meltflux./I0).^2./(gmelt.*H0)).^(1/3).*gmelt./gk;
-    scalefac = 1-exp(-lengthfac);
-    scalefac(gk==0) = 1;
-    scalefac(I0==0) = 0;
-    scalefac(1) = 0; % no upwelling to atmosphere
+
+    % Compute scale factor to account for density stratification between
+    % boxes.
+    scalefac = get_zmodel_upwelling_scalefactor(p, H0, T0, S0, I0, meltflux, gmelt);
+  
+    % Scale the mixing flux.
     QVmI = scalefac.*QVmI;
-    % associated temperature and salt fluxes
+    % Compute the associated temperature and salt fluxes.
     QTmI = QVmI.*T0;
     QSmI = QVmI.*S0;
 
-    % final upwelling fluxes
+    % Calculate the final upwelling fluxes.
     QVmi0 = [QVmI(2:end)',0]'-[0,QVmI(2:end)']';
     QTmi0 = [QTmI(2:end)',0]'-[0,QTmI(2:end)']';
     QSmi0 = [QSmI(2:end)',0]'-[0,QSmI(2:end)']';
 
-    % assume that the same fraction of meltwater upwells
+    % Assume that the same fraction of meltwater upwells.
     QIi0 = (1-scalefac).*meltflux + [scalefac(2:end);0].*[meltflux(2:end);0];
-    % associated heat and salt fluxes
+    % Compute the associated heat and salt fluxes
     QTi0 = -QIi0*p.l/p.cw;
     QSi0 = -QIi0.*S0;
 
+    % Compute the melt rate profile.
     M0 = 0*H0;
-
 end
 
 end
