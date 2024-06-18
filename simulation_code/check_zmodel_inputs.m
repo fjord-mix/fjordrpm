@@ -1,4 +1,9 @@
-function [status, a] = check_zmodel_initialisation(p, a)
+function [status, a] = check_zmodel_inputs(p, a)
+
+% CHECK_ZMODEL_INITIALISATION Check for errors in zmodel intialisation.
+%   STATUS = CHECK_ZMODEL(I, P, S) checks the zmodel layers H at timestep
+%   parameters P and returns an error status S with default value 0, or 1
+%   if there was an error.
 
 status = 0;
 
