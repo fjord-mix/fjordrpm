@@ -48,7 +48,7 @@ for i = 1:length(t)-1
         plot_runtime_profile(i,t,f,p,s.H,s.S,s.T,s.Se,s.QVs)
     end
 
-    % Check for errors in the new state.
+    % Check for errors in the layer depths in the new solution.
     status = check_zmodel(p, s.H(:,i+1));
     
 end
