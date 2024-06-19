@@ -32,5 +32,11 @@ if any(B < 0)
     end
 end
 
+% Put homogenised solution into output stucture.
+s.T(:,i) = T;
+s.S(:,i) = S;
+s.VT(:,i) = VT;
+s.VS(:,i) = VS;
+
 end
 
