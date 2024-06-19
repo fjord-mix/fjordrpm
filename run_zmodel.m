@@ -1,4 +1,4 @@
-% RUN_BOXMODEL Driver to run the box model simulation.
+% RUN_ZMODEL Driver to run the zmodel simulation.
 
 %% Dealing with paths
 addpath(genpath('./'))
@@ -13,9 +13,9 @@ output_folder='./outputs';
 % 1. Intermediate circulation 
 % 2. Icebergs
 % 3. Subglacial discharge 
-% 4. Data-driven example: Kangerlussuaq during 2010-2018 
+% 4. Data-driven example: something 
 %
-% The last example has 4 fjords ready to be run: 
+% The data-driven example has 4 fjords ready to be run: 
 % (1) Kangerlussuaq, (2) Sermilik, (3) Kangersuneq, (4) Ilulissat 
 % The user needs to choose which fjord from the fjord_model array to run.
 
@@ -33,9 +33,9 @@ switch example_run
         fjord_run = example_subglacial_discharge;
         name = 'example_subglacial_discharge';
     case 4
-        fjord_run = load('./input_data_examples/KF_ctrl.mat').fjord_ctrl;
-        name = 'example_Kangerlussuaq_2010_2018_3layers';
-    case 8 % debugging
+        fjord_run = load('a_file').fjord_ctrl;
+        name = 'data_example';
+    case 10 % debugging
         load('boxmodel_example_bad_H_negT_lim.mat');
         fjord_run = cur_fjord;
         name = 'martim_crash';
