@@ -27,7 +27,7 @@ output_folder='./outputs'; % choose where to save your model outputs here
 %    Be mindful that these are not 100% "plug and play". The user
 %    needs to choose which fjord from the fjord_model array to run
 
-example_run = 2;
+example_run = 8;
 which_fjord = 3; % used for example_run 5 to 7
 p.fixedthickness = 1;
 
@@ -54,14 +54,14 @@ switch example_run
         fjord_run = load('./input_data_examples/example_benchmark_fjords_bad_3layers.mat').fjords_bad(which_fjord);
         name = ['bad_',fjord_run.m.name];    
     case 8
-        load('boxmodel_example_not_conserving_H_dt0p05.mat');
+        load('boxmodel_example_bad_H_negT_lim.mat');
         fjord_run = cur_fjord;
-        fjord_run.a = [];
-
-
-    fjord_run.p.dt    = 1; % time stepping (units are days)
-fjord_run.p.t_end = 200; % time to end the simulation
-fjord_run.t       = 0:fjord_run.p.dt:fjord_run.p.t_end;
+%         fjord_run.a = [];
+% 
+% 
+%     fjord_run.p.dt    = 1; % time stepping (units are days)
+% fjord_run.p.t_end = 200; % time to end the simulation
+% fjord_run.t       = 0:fjord_run.p.dt:fjord_run.p.t_end;
         name = 'martim_crash';
     otherwise
         fjord_run = test_changes;
@@ -69,7 +69,7 @@ fjord_run.t       = 0:fjord_run.p.dt:fjord_run.p.t_end;
 end
 
 % use the plot runtime at your discretion. It substantially slows down the simulation, because it spends most of the time plotting!
-fjord_run.p.plot_runtime = 1; 
+fjord_run.p.plot_runtime = 0; 
 
 fjord_run.m.name = name;
 if p.fixedthickness == 0
