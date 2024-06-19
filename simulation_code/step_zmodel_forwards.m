@@ -13,7 +13,8 @@ Tr.H = Tr.V/(p.W*p.L);
 Tr.T = Tr.VT./Tr.V;
 Tr.S = Tr.VS./Tr.V;
 
-% Step icebergs forwards.
+% No update to static icebergs.
+Tr.I = s.I(:,i);
 %     I = I+
 %     (1-p.icestatic)*p.dt*p.sid*((D/(p.W*p.L))*f.xi-M.*I-p.uIce/p.L*I);
 

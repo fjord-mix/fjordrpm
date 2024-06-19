@@ -39,5 +39,6 @@ s.S(:,i+1) = Tr.S;
 s.H(:,i+1) = Tr.H;
 s.VT(:,i+1) = Tr.VT;
 s.VS(:,i+1) = Tr.VS;
+s.I(:,i+1) = Tr.I;
 
 end
