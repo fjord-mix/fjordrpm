@@ -1,5 +1,5 @@
-% RUN_BOXMODEL Driver to run the box model simulation in parallel.
-% Example: SGD-driven, constant shelf temp, stratified shelf salinity, vertical mixing.
+% RUN_ZMODEL Driver to run the zmodel simulation in parallel.
+% Examples: SGD-driven, constant shelf temp, stratified shelf salinity.
 
 num_workers=2; % how many processes in parallel will be run
 %% Set up parameter space
@@ -20,11 +20,11 @@ for INDEX = 1:length(parameter_space)
     % Set idealised boundary and initial conditions, if not given, based on input parameters.
     % Boundary conditions:
     if isempty(fjord_par_outputs(INDEX).f)
-        fjord_par_outputs(INDEX).f = get_idealised_forcing(fjord_par_outputs(INDEX).p, t); 
+        fjord_par_outputs(INDEX).f = get_idealised_forcing(fjord_par_outputs(INDEX).p, t);
     end % we cannot use an OR statement here
     % Initial conditions
     if isempty(fjord_par_outputs(INDEX).a)
-        fjord_par_outputs(INDEX).a = get_initial_conditions(fjord_par_outputs(INDEX).p, fjord_par_outputs(INDEX).f); 
+        fjord_par_outputs(INDEX).a = get_initial_conditions(fjord_par_outputs(INDEX).p, fjord_par_outputs(INDEX).f);
     end
 end
 
@@ -36,14 +36,7 @@ if isempty(checkPool) % if there is no pool
 end
 
 parfor INDEX = 1:length(parameter_space)
-    if p.fixedthickness==0
-        % Run the code for variable thickness layers.
-        [fjord_par_outputs(INDEX).s,fjord_par_outputs(INDEX).f] = ...
-        boxmodel(fjord_par_outputs(INDEX).p, fjord_par_outputs(INDEX).t,[],[],[outs_path,'test_parallel/',fjord_par_outputs(INDEX).m.name,'.mat']);
-    elseif p.fixedthickness==1
-        % Run the code for fixed thickness layers.
-        [fjord_par_outputs(INDEX).s,fjord_par_outputs(INDEX).f] = ...
+    [fjord_par_outputs(INDEX).s,fjord_par_outputs(INDEX).f] = ...
         zmodel(fjord_par_outputs(INDEX).p, fjord_par_outputs(INDEX).t,[],[],[outs_path,'test_parallel/',fjord_par_outputs(INDEX).m.name,'.mat']);
-    end
     disp(fjord_par_outputs(INDEX).m.name)
 end
