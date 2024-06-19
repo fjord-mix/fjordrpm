@@ -1,9 +1,11 @@
 function run_output = example_intermediate_circulation
 
-% EXAMPLE_INTERMEDIATE_CIRCULATION  Example to run the z with intermediate circulation.
-%   RUN_OUTPUT = EXAMPLE_INTERMEDIATE_CIRCULATION returns a RUN_OUTPUT structure containing
-%   the user-defined zmodel parameters P and T for the icebergs example,
-%   along with the initial conditions A and boundary conditions F.
+% EXAMPLE_INTERMEDIATE_CIRCULATION  Example to run the zmodel with
+% intermediate circulation.
+%   RUN_OUTPUT = EXAMPLE_INTERMEDIATE_CIRCULATION returns a RUN_OUTPUT
+%   structure containing the user-defined zmodel parameters P and T for the
+%   icebergs example, along with the initial conditions A and boundary
+%   conditions F.
 
 %% Set the model default parameters.
 [p,~] = get_model_default_parameters();
@@ -14,7 +16,6 @@ t  = 0:1:200;
 
 % ZMODEL layer properties.
 p.N = 6; % number of above-sill model layers
-p.fixedthickness = 1; % fixed or variable layer thickness run
 
 % Fjord geometry parameters
 p.sill = 0; % flag for sill (0 = no sill, 1 = sill)
