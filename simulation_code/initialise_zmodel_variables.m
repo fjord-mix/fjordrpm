@@ -6,6 +6,9 @@ function s = initialise_zmodel_variables(p, a, t)
 %   variables using parameters structure P, time T and initial conditions
 %   structure A, and returns solution structure S.
 
+% Set the timestep from the inputted time field.
+s.dt = t(2:end)-t(1:end-1);
+
 % Set and initialise solution structure fields.
 [s.H, s.V, s.T, s.S, s.VT, s.VS,  s.I] = deal(zeros(p.N, length(t)));
 [s.QVg, s.QTg, s.QSg,...
