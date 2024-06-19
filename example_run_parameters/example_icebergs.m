@@ -37,9 +37,9 @@ p.M0 = 7e-7; % iceberg melt efficiency
 p.A0 = 2e9; % scaling of iceberg area
 p.U0 = 0.25; % scale upwelling
 p.nu0 = 25; % iceberg profile coefficient
-% p.E0 = 1e-7; % iceberg export efficiency 
+% p.E0 = 1e-7; % iceberg export efficiency
 % p.uIce = 0.005; % iceberg down-fjord velocity
-p.if = @(NU, H, Z) (NU/H)*exp(NU*Z/H)/(1-exp(-NU)); % functional form of iceberg depth profile    
+p.if = @(NU, H, Z) (NU/H)*exp(NU*Z/H)/(1-exp(-NU)); % functional form of iceberg depth profile
 
 %% Set the run output structure containing the inputted parameters.
 run_output.p = p;
