@@ -1,23 +1,19 @@
 function a = get_initial_conditions(p, f)
 
-% GET_INITIAL_CONDITIONS Obtain the initial conditions.
-%   A = GET_INITIAL_CONDITIONS(P, F) gets the initial conditions A for the fjord for
-%   the given box model parameters P and forcing F.
+% GET_INITIAL_CONDITIONS Obtain idealised initial conditions in functional
+% form.
+%   A = GET_INITIAL_CONDITIONS(P, F) gets the initial conditions A for the
+%   fjord for the given box model parameters P and forcing F.
 
 %% Set the initial fjord layer thicknesses.
 a.H0 = (p.H/p.N)*ones(1,p.N);
 
-
-%% Initial icebergs in fjord
+%% Set the initial surface area of icebergs in the fjord.
 if p.icestatic
-    % a.I0 is the surface area of icebergs in a box
-    % so either use the idealised expression here or load from file
-    a.I0 = p.A0*p.if(p.nu0, abs(p.zgl), -cumsum(a.H0)+a.H0/2);    
+    a.I0 = p.A0*p.if(p.nu0, abs(p.zgl), -cumsum(a.H0)+a.H0/2);
 else
     a.I0 = 0*a.H0;
 end
-
-
 
 %% Set the initial fjord T/S to be in equilibrium with shelf.
 % Interpolate the boundary conditions to the model z-discretisation.
