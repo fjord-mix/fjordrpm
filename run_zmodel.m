@@ -5,21 +5,21 @@ addpath(genpath('./'))
 clearvars
 close all
 % Choose where to save your model outputs
-output_folder='./outputs'; 
+output_folder='./outputs';
 
 %% Choosing the model example
-% Setup for the model run. Load the user-defined run parameters. 
+% Setup for the model run. Load the user-defined run parameters.
 % Examples:
-% 1. Intermediate circulation 
+% 1. Intermediate circulation
 % 2. Icebergs
-% 3. Subglacial discharge 
-% 4. Data-driven example: something 
+% 3. Subglacial discharge
+% 4. Data-driven example: something
 %
-% The data-driven example has 4 fjords ready to be run: 
-% (1) Kangerlussuaq, (2) Sermilik, (3) Kangersuneq, (4) Ilulissat 
+% The data-driven example has 4 fjords ready to be run:
+% (1) Kangerlussuaq, (2) Sermilik, (3) Kangersuneq, (4) Ilulissat
 % The user needs to choose which fjord from the fjord_model array to run.
 
-example_run = 4;
+example_run = 10;
 which_fjord = 3; % used for example_run 4
 
 switch example_run
@@ -70,6 +70,3 @@ save([output_folder,'/model_results/', name, '.mat'], 'fjord_run')
 % Example plots that can be generated from the model outputs
 % plot_outputs(fjord_run);
 % exportgraphics(gcf,[output_folder,'/figures/',name,'.pdf'],'ContentType','vector','BackgroundColor','none')
-
-% plot_TS_boxmodel(fjord_run);
-% exportgraphics(gcf,[output_folder,'/figures/TS_',name,'.pdf'],'ContentType','vector','BackgroundColor','none')
