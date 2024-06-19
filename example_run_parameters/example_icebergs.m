@@ -5,13 +5,10 @@ function run_output = example_icebergs
 %   the user-defined zmodel parameters P and T for the icebergs example,
 %   along with the initial conditions A and boundary conditions F.
 
-%% Set the model default parameters.
-[p,~] = get_model_default_parameters();
+%% Set the model default parameters P, T, F, A
+[p, t, f, a] = get_model_default_parameters();
 
 %% Set the specific parameter for this example.
-% Time values at which to compute the solution (in days)
-t = 0:1:200;
-
 % ZMODEL layer properties
 p.N = 80; % number of above-sill model layers
 
@@ -42,6 +39,9 @@ p.nu0 = 25; % iceberg profile coefficient
 % p.E0 = 1e-7; % iceberg export efficiency 
 % p.uIce = 0.005; % iceberg down-fjord velocity
 p.if = @(NU, H, Z) (NU/H)*exp(NU*Z/H)/(1-exp(-NU)); % functional form of iceberg depth profile
+
+% Time values at which to compute the solution (in days)
+t = 0:1:200;
 
 %% Set the run output structure containing the inputted parameters.
 run_output.p = p;
