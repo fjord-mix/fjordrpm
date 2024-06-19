@@ -9,13 +9,13 @@ function s = get_zmodel_output(p, f, t, s, status)
 
 % Save daily or sparser values, as otherwise high time resolution results
 % in large output files.
-dtdaily = max(1, p.dt);
+dtdaily = max(1, s.dt);
 if status == 0
-    int = round(dtdaily/p.dt);
+    int = round(dtdaily/s.dt);
 else
     % If something went wrong, we want all time steps to properly
     % understand what happened.
-    int = p.dt;
+    int = s.dt;
 end
 s.t = t(1:int:end-1);
 
