@@ -1,59 +1,22 @@
-% RUN_ZMODEL Driver to run the zmodel simulation.
-
-%% Dealing with paths
+% RUN_ZMODEL Driver to run the zmodel simulation with default model
+% parameters, and save and plot the results.
 addpath(genpath('./'))
 clearvars
 close all
-% Choose where to save your model outputs
-output_folder='./outputs/model_results/';
 
-%% Choosing the model example
-% Setup for the model run. Load the user-defined run parameters.
-% Examples:
-% 1. Intermediate circulation
-% 2. Icebergs
-% 3. Subglacial discharge
-% 4. Data-driven example: something
-%
-% The data-driven example has 4 fjords ready to be run:
-% (1) Kangerlussuaq, (2) Sermilik, (3) Kangersuneq, (4) Ilulissat
-% The user needs to choose which fjord from the fjord_model array to run.
+% Get default model inputs.
+[fjord_run.p, fjord_run.t, fjord_run.f, fjord_run.a] = get_model_default_parameters;
+name = 'default_example';
 
-example_run = 3;
-which_fjord = 3; % used for example_run 4
-
-switch example_run
-    case 0 
-        % default parameters 
-    case 1
-        fjord_run = example_intermediate_circulation;
-        name = 'example_intermediate_circulation';
-    case 2
-        fjord_run = example_icebergs;
-        name = 'example_icebergs';
-    case 3
-        fjord_run = example_subglacial_discharge;
-        name = 'example_subglacial_discharge';
-    case 4
-        fjord_run = load('a_file').fjord_ctrl;
-        name = 'data_example';
-    case 10 % debugging
-        load('boxmodel_example_bad_H_negT_lim.mat');
-        fjord_run = cur_fjord;
-        name = 'martim_crash';
-    otherwise
-        fjord_run = test_changes;
-        name = 'test_fjord_model';
-end
-
-%% Running the zmodel
-% Use the plot runtime at your discretion. It substantially slows down the
-% simulation, because it spends most of the time plotting!
+% Choose whether to plot the simulation as it is running.
 fjord_run.p.plot_runtime = 0;
-fjord_run.m.name = name;
+
+% Run the ZMODEL.
 fjord_run.s = zmodel(fjord_run.p, fjord_run.t, fjord_run.f, fjord_run.a);
 
-%% Saving results
+% Choose where to save the model outputs.
+output_folder='./outputs';
+% Save the results.
 if not(isfolder(output_folder))
     mkdir(output_folder)
     mkdir([output_folder,'/model_results']);
@@ -62,13 +25,14 @@ if not(isfolder(output_folder))
 end
 
 % Save the fjord structure, including input parameters, initial conditions,
-% and results
-save([output_folder, name, '.mat'], 'fjord_run')
+% boundary conditions and results
+save([output_folder, '/model_results', name, '.mat'], 'fjord_run')
 
-%% Plotting results
-% Create animation of the fjord run
+% Plot the results.
+plot_outputs(fjord_run);
+exportgraphics(gcf,[output_folder,'/figures/',name,'.pdf'],'ContentType','vector','BackgroundColor','none')
+
+% Create an animation of the fjord run.
 % animate([output_folder,'/model_results/', name, '.mat'],[output_folder,'/animations/'],name,50)
 
-% Example plots that can be generated from the model outputs
-% plot_outputs(fjord_run);
-% exportgraphics(gcf,[output_folder,'/figures/',name,'.pdf'],'ContentType','vector','BackgroundColor','none')
+
