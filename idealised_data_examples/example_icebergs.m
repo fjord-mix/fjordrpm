@@ -1,14 +1,13 @@
-function run_output = example_icebergs
+% EXAMPLE_ICEBERGS  Run the zmodel with example iceberg parameters.
 
-% EXAMPLE_ICEBERGS  Example to run the zmodel with icebergs.
-%   RUN_OUTPUT = EXAMPLE_ICEBERGS returns a RUN_OUTPUT structure containing
-%   the user-defined zmodel parameters P and T for the icebergs example,
-%   along with the initial conditions A and boundary conditions F.
+addpath(genpath('./'))
+clearvars
+close all
 
-%% Set the model default parameters P, T, F, A
-[p, t, f, a] = get_model_default_parameters();
+%% Get default parameters which can be overwritten for this specific example
+[p, t, f, a] = get_model_default_parameters;
 
-%% Set the specific parameter for this example.
+%% Set the input parameters p.
 % ZMODEL layer properties
 p.N = 80; % number of above-sill model layers
 
@@ -40,16 +39,32 @@ p.nu0 = 25; % iceberg profile coefficient
 % p.uIce = 0.005; % iceberg down-fjord velocity
 p.if = @(NU, H, Z) (NU/H)*exp(NU*Z/H)/(1-exp(-NU)); % functional form of iceberg depth profile
 
+%% Set the input time vector t.
 % Time values at which to compute the solution (in days)
 t = 0:1:200;
 
-%% Set the run output structure containing the inputted parameters.
-run_output.p = p;
-run_output.t = t;
+%% Set the boundary conditions f.
 % Boundary conditions for the input parameters at each timestep
-run_output.f = get_idealised_forcing(p, t);
+f = get_idealised_forcing(p, t);
+
+%% Set the initial conditions a. 
 % Initial conditions for the input parameters with the initial boundary
 % conditions.
-run_output.a = get_initial_conditions(p, run_output.f);
+a = get_initial_conditions(p, f);
 
+%% Run the ZMODEL. 
+s = zmodel(p, t, f, a);
+
+%% Save the results.
+% Choose where to save the results and make the directory if it doesn't
+% exist.
+output_folder='./idealised_data_examples/results/';
+if not(isfolder(output_folder))
+    mkdir(output_folder)
 end
+
+name = 'example_icebergs';
+% Save the fjord structure, including input parameters, initial conditions,
+% boundary conditions and solution.
+save([output_folder, name, '.mat'], 'p', 't', 'f', 'a', 's');
+
