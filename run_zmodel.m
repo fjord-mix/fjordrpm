@@ -19,10 +19,12 @@ output_folder='./outputs/model_results/';
 % (1) Kangerlussuaq, (2) Sermilik, (3) Kangersuneq, (4) Ilulissat
 % The user needs to choose which fjord from the fjord_model array to run.
 
-example_run = 10;
+example_run = 3;
 which_fjord = 3; % used for example_run 4
 
 switch example_run
+    case 0 
+        % default parameters 
     case 1
         fjord_run = example_intermediate_circulation;
         name = 'example_intermediate_circulation';
@@ -49,7 +51,7 @@ end
 % simulation, because it spends most of the time plotting!
 fjord_run.p.plot_runtime = 0;
 fjord_run.m.name = name;
-[fjord_run.s,fjord_run.f] = zmodel(fjord_run.p, fjord_run.t, fjord_run.f, fjord_run.a);
+fjord_run.s = zmodel(fjord_run.p, fjord_run.t, fjord_run.f, fjord_run.a);
 
 %% Saving results
 if not(isfolder(output_folder))

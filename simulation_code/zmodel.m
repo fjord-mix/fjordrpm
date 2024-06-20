@@ -1,10 +1,10 @@
-function [s, f] = zmodel(p, t, f, a, path_out)
+function s = zmodel(p, t, f, a, path_out)
 
 % ZMODEL z-model simulation.
 %   [S, F] = ZMODEL(P, T, F, A, PATH_OUT) runs the z-model simulation for
 %   parameters structure P, time T, forcings structure F, initial
-%   conditions structure A, and returns solution structure S and forcing
-%   structure F in the same time steps as S. If PATH_OUT is specified,
+%   conditions structure A, and returns solution structure S which includes
+%   input forcing in the same time steps as S. If PATH_OUT is specified,
 %   ZMODEL will save a file.
 
 %% Check for errors in the given boundary and initial conditions.

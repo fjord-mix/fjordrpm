@@ -48,7 +48,7 @@ end
 
 % Run the zmodel in parallel.
 parfor INDEX = 1:length(parameter_space)
-    [fjord_par_outputs(INDEX).s,fjord_par_outputs(INDEX).f] = ...
+    fjord_par_outputs(INDEX).s = ...
         zmodel(fjord_par_outputs(INDEX).p, fjord_par_outputs(INDEX).t,fjord_par_outputs(INDEX).f,fjord_par_outputs(INDEX).a,[output_folder, fjord_par_outputs(INDEX).m.name, '.mat']);
     disp(fjord_par_outputs(INDEX).m.name)
 end
