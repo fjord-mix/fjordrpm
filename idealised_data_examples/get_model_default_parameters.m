@@ -1,4 +1,4 @@
-function [p, t, f, a] = get_model_default_parameters()
+function [p, t, f, a] = get_model_default_parameters
 
 % GET_MODEL_DEFAULT_PARAMETERS  Loads default parameters for zmodel.
 %   [P, A] = GET_MODEL_DEFAULT_PARAMETERS sets the default box model
