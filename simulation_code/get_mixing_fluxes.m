@@ -1,4 +1,4 @@
-function [QVk0,QTk0,QSk0] = get_zmodel_mixing_fluxes(i, p, s)
+function [QVk0,QTk0,QSk0] = get_mixing_fluxes(i, p, s)
 
 % GET_ZMODEL_MIXING_FLUXES Compute mixing fluxes for the zmodel.
 %   [QVK0, QTK0, QSK0] = GET_ZMODEL_MIXING_FLUXES(I, P, F, S) computes the

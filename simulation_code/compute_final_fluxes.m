@@ -1,4 +1,4 @@
-function s = compute_zmodel_final_fluxes(p, f, s, t)
+function s = compute_final_fluxes(p, f, s, t)
 
 % COMPUTE_ZMODEL_FINAL_FLUXES Compute and store the fluxes for the solution
 % at the final timestep.
@@ -7,7 +7,7 @@ function s = compute_zmodel_final_fluxes(p, f, s, t)
 %   S.
 
 % Compute the fluxes at the final timestep
-[Q, E, I] = compute_zmodel_fluxes(length(t), p, f, s);
+[Q, E, I] = compute_fluxes(length(t), p, f, s);
 
 % Store the fluxes
 % Glacier fluxes

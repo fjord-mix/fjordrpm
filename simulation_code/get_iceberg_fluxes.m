@@ -1,4 +1,4 @@
-function [QIi0, QTi0, QSi0, QVmi0, QTmi0, QSmi0, M0] = get_zmodel_iceberg_fluxes(i, p, s)
+function [QIi0, QTi0, QSi0, QVmi0, QTmi0, QSmi0, M0] = get_iceberg_fluxes(i, p, s)
 
 % GET_ZMODEL_ICEBERG_FLUXES Compute mixing fluxes for the zmodel.
 %   [QII0, QTI0, QSI0, QVMI0, QTMI0, QSMI0, M0] =
@@ -28,7 +28,7 @@ else
 
     % Compute scale factor to account for density stratification between
     % boxes.
-    scalefac = get_zmodel_upwelling_scalefactor(p, H0, T0, S0, I0, meltflux, gmelt);
+    scalefac = get_upwelling_scalefactor(p, H0, T0, S0, I0, meltflux, gmelt);
   
     % Scale the mixing flux.
     QVmI = scalefac.*QVmI;

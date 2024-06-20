@@ -1,4 +1,4 @@
-function [Te0, Se0] = bin_zmodel_ocean_profiles(Tz, Sz, z, H0)
+function [Te0, Se0] = bin_ocean_profiles(Tz, Sz, z, H0)
 
 % BIN_ZMODEL_OCEAN_PROFILES Bins temperature (Tz) and salinity (Sz)
 % profiles to zmodel layers (H0) and returns a  "box profile" for

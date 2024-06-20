@@ -1,4 +1,4 @@
-function Tr = step_zmodel_forwards(i, p, s, Q)
+function Tr = step_solution_forwards(i, p, s, Q)
 
 % STEP_ZMODEL_FOWARDS Euler step for the zmodel simulation.
 %   TR = STEP_ZMODEL_FORWARDS(I, P, S, Q) performs an Euler step for the

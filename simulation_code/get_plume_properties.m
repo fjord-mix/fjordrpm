@@ -1,4 +1,4 @@
-function [kgl, knb, Qp, Sp, Tp] = get_zmodel_plume_properties(p, H0, S0, T0, Qsg0)
+function [kgl, knb, Qp, Sp, Tp] = get_plume_properties(p, H0, S0, T0, Qsg0)
 
 % GET_ZMODEL_PLUME_PROPERTIES Compute plume properties for the zmodel.
 %   [KGL, KNB, QP, SP, TP] = GET_ZMODEL_PLUME_PROPERTIES(P, H0, S0, T0,

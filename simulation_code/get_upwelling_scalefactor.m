@@ -1,4 +1,4 @@
-function scalefac = get_zmodel_upwelling_scalefactor(p, H0, T0, S0, I0, meltflux, gmelt)
+function scalefac = get_upwelling_scalefactor(p, H0, T0, S0, I0, meltflux, gmelt)
 
 % GET_ZMODEL_UPWELLING_SCALEFACTOR Compute the upwelling scalefactor for
 % icebergs.

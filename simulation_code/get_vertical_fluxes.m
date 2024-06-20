@@ -1,4 +1,4 @@
-function [QVv0,QTv0,QSv0] = get_zmodel_vertical_fluxes(i, s, Qnet)
+function [QVv0,QTv0,QSv0] = get_vertical_fluxes(i, s, Qnet)
 
 % GET_ZMODEL_VERTICAL_FLUXES Compute vertical fluxes for the zmodel.
 %   [QVV0, QTV0, QSV0] = GET_ZMODEL_VERTICAL_FLUXES(I, P, S, QNET) computes

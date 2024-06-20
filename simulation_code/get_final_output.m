@@ -1,4 +1,4 @@
-function s = get_zmodel_output(p, f, t, s, status)
+function s = get_final_output(p, f, t, s, status)
 
 % GET_ZMODEL_OUTPUT Get the output of the z-model simulation.
 %   S = GET_ZMODEL_OUTPUT(P, F, T, S, STATUS) gets the zmodel output for

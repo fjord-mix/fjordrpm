@@ -1,4 +1,4 @@
-function [status, a] = check_zmodel_inputs(p, a)
+function [status, a] = check_inputs(p, a)
 
 % CHECK_ZMODEL_INPUTS Check for errors in zmodel inputs.
 %   STATUS = CHECK_ZMODEL_INPUTS(P, A) checks the zmodel inputs P and A,

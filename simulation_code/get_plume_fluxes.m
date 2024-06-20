@@ -1,4 +1,4 @@
-function [QpV0, QpT0, QpS0] = get_zmodel_plume_fluxes(i, p, f, s)
+function [QpV0, QpT0, QpS0] = get_plume_fluxes(i, p, f, s)
 
 % GET_ZMODEL_PLUME_FLUXES Compute plume fluxes for the zmodel.
 %   [QPV0, QPT0, QPS0] = GET_ZMODEL_PLUME_FLUXES(I, P, F, S) computes the
@@ -20,7 +20,7 @@ else
     % Compute the plume properties (flux, salinity, temp) in each zmodel
     % layer and the location of the grounding line and neutral buoyancy
     % box.
-    [kgl, knb, Qp, Sp, Tp] = get_zmodel_plume_properties(p, H0, S0, T0, Qsg0);
+    [kgl, knb, Qp, Sp, Tp] = get_plume_properties(p, H0, S0, T0, Qsg0);
 
     % The flux in boxes below grounding line and above neutral buoyancy are
     % zero, so don't need to be calculated.

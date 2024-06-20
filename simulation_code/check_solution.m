@@ -1,4 +1,4 @@
-function status = check_zmodel(p, H)
+function status = check_solution(p, H)
 
 % CHECK_ZMODEL Check for errors in the layer depths.
 %   STATUS = CHECK_ZMODEL(I, P, S) checks the zmodel layers H at timestep

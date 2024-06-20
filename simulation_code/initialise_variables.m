@@ -1,4 +1,4 @@
-function s = initialise_zmodel_variables(p, a, t)
+function s = initialise_variables(p, a, t)
 
 % INITIALISE_ZMODEL_VARIABLES Initialise zmodel variables with initial
 % conditions.

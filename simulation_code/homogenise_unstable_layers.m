@@ -1,4 +1,4 @@
-function s = homogenise_zmodel_unstable_layers(i, p, s)
+function s = homogenise_unstable_layers(i, p, s)
 
 % HOMOGENISE_ZMODEL_UNSTABLE_LAYERS Homogenise two unstably stratified
 % layers.
