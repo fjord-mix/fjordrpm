@@ -1,10 +1,9 @@
 % EXAMPLE_ICEBERGS  Run the zmodel with example iceberg parameters.
-
 addpath(genpath('./'))
 clearvars
 close all
-
-%% Get default parameters which can be overwritten for this specific example
+% Get default parameters which can be overwritten for this specific
+% example.
 [p, t, f, a] = get_model_default_parameters;
 
 %% Set the input parameters p.
@@ -35,8 +34,8 @@ p.M0 = 7e-7; % iceberg melt efficiency
 p.A0 = 2e9; % scaling of iceberg area
 p.U0 = 0.25; % scale upwelling
 p.nu0 = 25; % iceberg profile coefficient
-% p.E0 = 1e-7; % iceberg export efficiency 
-% p.uIce = 0.005; % iceberg down-fjord velocity
+% p.E0 = 1e-7; % iceberg export efficiency p.uIce = 0.005; % iceberg
+% down-fjord velocity
 p.if = @(NU, H, Z) (NU/H)*exp(NU*Z/H)/(1-exp(-NU)); % functional form of iceberg depth profile
 
 %% Set the input time vector t.
@@ -67,4 +66,3 @@ name = 'example_icebergs';
 % Save the fjord structure, including input parameters, initial conditions,
 % boundary conditions and solution.
 save([output_folder, name, '.mat'], 'p', 't', 'f', 'a', 's');
-
