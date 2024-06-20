@@ -14,7 +14,7 @@ num_workers=2;
 name = 'default_example_zmodel_parallel';
 
 % Choose where to save your model outputs.
-output_folder=fullfile('./outputs/model_results/', name, );
+output_folder=fullfile('./outputs/model_results/', name);
 if not(isfolder(output_folder))
     mkdir(output_folder)
     %mkdir([output_folder,'/model_results']);
