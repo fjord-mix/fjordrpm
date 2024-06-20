@@ -46,6 +46,9 @@ for i = 1:length(t)-1
     
 end
 
+% Compute and store the fluxes at the final timestep.
+s = compute_zmodel_final_fluxes(p, f, s, t);
+
 %% Get the output solution (save daily values to avoid large output files).
 s = get_zmodel_output(p, f, t, s, status);
 

@@ -17,14 +17,14 @@ else
     % understand what happened.
     int = s.dt;
 end
-s.t = t(2:int:end);
+s.t = t(1:int:end);
 
 % Box variables
-s.H = s.H(:,2:int:end);
-s.T = s.T(:,2:int:end);
-s.S = s.S(:,2:int:end);
-s.V = s.V(:,2:int:end);
-s.I = s.I(:,2:int:end);
+s.H = s.H(:,1:int:end);
+s.T = s.T(:,1:int:end);
+s.S = s.S(:,1:int:end);
+s.V = s.V(:,1:int:end);
+s.I = s.I(:,1:int:end);
 
 % Glacier exchanges
 s.QVg = s.QVg(:,1:int:end);
@@ -52,7 +52,7 @@ s.QSv = s.QSv(:,1:int:end);
 % Iceberg fluxes
 s.QIi = s.QIi(:,1:int:end);
 s.QTi = s.QTi(:,1:int:end);
-s.QSi = s.QSi(:,1:int:end);
+s.QSi = s.QSi(:,1:int:end); 
 s.QVmi = s.QVmi(:,1:int:end);
 s.M = s.M(:,1:int:end);
 
@@ -63,10 +63,10 @@ s.MT = sum(s.QIi); % total iceberg melt flux
 
 % Return forcing on same time step as forcings (in results structure to
 % prevent overwriting).
-s.Ss = f.Ss(:,2:int:end);
-s.Ts = f.Ts(:,2:int:end);
-s.Qsg = f.Qsg(2:int:end);
-s.D = f.D(2:int:end);
+s.Ss = f.Ss(:,1:int:end);
+s.Ts = f.Ts(:,1:int:end);
+s.Qsg = f.Qsg(1:int:end);
+s.D = f.D(1:int:end);
 
 s.status = status;
 end
