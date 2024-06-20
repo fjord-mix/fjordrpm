@@ -11,7 +11,7 @@ gk = max(0,[NaN;p.g*(p.betaS*(S0(2:end)-S0(1:end-1))-p.betaT*(T0(2:end)-T0(1:end
 lengthfac = (1/p.alphaI^(2/3))*((meltflux./I0).^2./(gmelt.*H0)).^(1/3).*gmelt./gk;
 scalefac = 1-exp(-lengthfac);
 % Avoid NaN values.
-scalefac(gk==0) = 1; % overcoming unstable stratification
+scalefac(gk==0) = 1; % overcoming unstable stratification if homogenise_unstable_layers didn't work (fudge fix)
 scalefac(I0==0) = 0; % no icebergs
 % Set no upwelling to atmosphere.
 scalefac(1) = 0;
