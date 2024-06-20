@@ -1,10 +1,10 @@
 function [QIi0, QTi0, QSi0, QVmi0, QTmi0, QSmi0, M0] = get_iceberg_fluxes(i, p, s)
 
-% GET_ZMODEL_ICEBERG_FLUXES Compute mixing fluxes for the zmodel.
-%   [QII0, QTI0, QSI0, QVMI0, QTMI0, QSMI0, M0] =
-%   GET_ZMODEL_ICEBERG_FLUXES(I, P, S) computes the iceberg fluxes QII0,
-%   QTI0, QSI0, QVMI0, QTMI0, QSMI0 and iceberg parameter M0 for the given
-%   parameters P and boundary conditions F at timestep I.
+% GET_ICEBERG_FLUXES Compute mixing fluxes for the zmodel.
+%   [QII0, QTI0, QSI0, QVMI0, QTMI0, QSMI0, M0] = GET_ICEBERG_FLUXES(I, P,
+%   S) computes the iceberg fluxes QII0, QTI0, QSI0, QVMI0, QTMI0, QSMI0
+%   and iceberg parameter M0 for the given parameters P and boundary
+%   conditions F at timestep I.
 
 % Get tracer variables at timestep i.
 H0 = s.H(:,i); T0 = s.T(:,i); S0 = s.S(:,i); I0 = s.I(:,i);

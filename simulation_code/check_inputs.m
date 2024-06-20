@@ -1,10 +1,10 @@
 function [status, a] = check_inputs(p, a)
 
-% CHECK_ZMODEL_INPUTS Check for errors in zmodel inputs.
-%   STATUS = CHECK_ZMODEL_INPUTS(P, A) checks the zmodel inputs P and A,
-%   AND returns an error status S with default value 0, or 1 if there was
-%   an error. Also returns an updated A if any changes to e.g. dimensions
-%   were made.
+% CHECK_INPUTS Check for errors in zmodel inputs.
+%   STATUS = CHECK_INPUTS(P, A) checks the zmodel inputs P and A, AND
+%   returns an error status S with default value 0, or 1 if there was an
+%   error. Also returns an updated A if any changes to e.g. dimensions were
+%   made.
 
 status = 0;
 

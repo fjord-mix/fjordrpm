@@ -1,8 +1,8 @@
 function [QVk0,QTk0,QSk0] = get_mixing_fluxes(i, p, s)
 
-% GET_ZMODEL_MIXING_FLUXES Compute mixing fluxes for the zmodel.
-%   [QVK0, QTK0, QSK0] = GET_ZMODEL_MIXING_FLUXES(I, P, F, S) computes the
-%   mixing fluxes QVK0, QTK0, QSSK0 for the given parameters P, boundary
+% GET_MIXING_FLUXES Compute mixing fluxes for the zmodel.
+%   [QVK0, QTK0, QSK0] = GET_MIXING_FLUXES(I, P, F, S) computes the mixing
+%   fluxes QVK0, QTK0, QSSK0 for the given parameters P, boundary
 %   conditions F and solution S at timestep I.
 
 % Get tracer variables at timestep i.

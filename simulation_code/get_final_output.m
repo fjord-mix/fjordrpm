@@ -1,11 +1,11 @@
 function s = get_final_output(p, f, t, s, status)
 
-% GET_ZMODEL_OUTPUT Get the output of the z-model simulation.
-%   S = GET_ZMODEL_OUTPUT(P, F, T, S, STATUS) gets the zmodel output for
-%   input parameters P, forcing structure F, time vector T and solution
-%   structure S, and returns solution structure S on sparser timestepping
-%   if the input timestep is less than one day, including forcing in the
-%   same time steps as S.
+% GET_OUTPUT Get the output of the z-model simulation.
+%   S = GET_OUTPUT(P, F, T, S, STATUS) gets the zmodel output for input
+%   parameters P, forcing structure F, time vector T and solution structure
+%   S, and returns solution structure S on sparser timestepping if the
+%   input timestep is less than one day, including forcing in the same time
+%   steps as S.
 
 % Save daily or sparser values, as otherwise high time resolution results
 % in large output files.

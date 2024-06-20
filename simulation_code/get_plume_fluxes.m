@@ -1,9 +1,9 @@
 function [QpV0, QpT0, QpS0] = get_plume_fluxes(i, p, f, s)
 
-% GET_ZMODEL_PLUME_FLUXES Compute plume fluxes for the zmodel.
-%   [QPV0, QPT0, QPS0] = GET_ZMODEL_PLUME_FLUXES(I, P, F, S) computes the
-%   plume fluxes for the given parameters P, boundary conditions F and
-%   solution S at time I.
+% GET_PLUME_FLUXES Compute plume fluxes for the zmodel.
+%   [QPV0, QPT0, QPS0] = GET_PLUME_FLUXES(I, P, F, S) computes the plume
+%   fluxes for the given parameters P, boundary conditions F and solution S
+%   at time I.
 
 % Get tracer variables at timestep i.
 H0 = s.H(:,i); T0 = s.T(:,i); S0 = s.S(:,i);

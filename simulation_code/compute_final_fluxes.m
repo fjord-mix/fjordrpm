@@ -1,10 +1,9 @@
 function s = compute_final_fluxes(p, f, s, t)
 
-% COMPUTE_ZMODEL_FINAL_FLUXES Compute and store the fluxes for the solution
-% at the final timestep.
-%   S =  COMPUTE_ZMODEL_FINAL_FLUXES(P, F, S) computes the final fluxes for
-%   input parameters P, forcing structure F andreturns solution structure
-%   S.
+% COMPUTE_FINAL_FLUXES Compute and store the fluxes for the solution at the
+% final timestep.
+%   S =  COMPUTE_FINAL_FLUXES(P, F, S) computes the final fluxes for input
+%   parameters P, forcing structure F andreturns solution structure S.
 
 % Compute the fluxes at the final timestep
 [Q, E, I] = compute_fluxes(length(t), p, f, s);

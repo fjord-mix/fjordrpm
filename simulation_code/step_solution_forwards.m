@@ -1,7 +1,7 @@
 function Tr = step_solution_forwards(i, p, s, Q)
 
-% STEP_ZMODEL_FOWARDS Euler step for the zmodel simulation.
-%   TR = STEP_ZMODEL_FORWARDS(I, P, S, Q) performs an Euler step for the
+% STEP_FOWARDS Euler step for the zmodel simulation.
+%   TR = STEP_FORWARDS(I, P, S, Q) performs an Euler step for the
 %   zmodel simulation for parameters structure P and given solution S and
 %   returns updated tracer variables stored in a structure TR.
 

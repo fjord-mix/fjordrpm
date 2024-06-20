@@ -1,8 +1,8 @@
 function save_output(s, f, t, p, a, path_out)
 
-% SAVE_ZMODEL_OUTPUTS Save the outputs of the z-model simulation.
-%   SAVE_ZMODEL_OUTPUTS(S, F, T, P, A, PATH_OUT) saves a file containing S,
-%   F, T, P, A in the location PATH_OUT.
+% SAVE_OUTPUTS Save the outputs of the z-model simulation.
+%   SAVE_OUTPUTS(S, F, T, P, A, PATH_OUT) saves a file containing S, F, T,
+%   P, A in the location PATH_OUT.
 
     fjord_output.s = s;
     fjord_output.f = f;

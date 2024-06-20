@@ -1,6 +1,6 @@
 function [QVs0,QTs0,QSs0,Se0,Te0,phi0] = get_shelf_fluxes(i, p, f, s)
 
-% GET_ZMODEL_SHELF_FLUXES Compute shelf fluxes for the zmodel.
+% GET_SHELF_FLUXES Compute shelf fluxes for the zmodel.
 %   [QVS0,QTS0,QSS0,SE0,TE0,PHI0] = GET_SHELF_FLUXES(I, P, F, S) computes
 %   the shelf fluxes QVS0, QTS0, QSSS0 and shelf variables SE0, TE0, PHI0
 %   for the given parameters P, boundary conditions F and solution S at

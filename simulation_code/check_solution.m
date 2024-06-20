@@ -1,7 +1,7 @@
 function status = check_solution(p, H)
 
-% CHECK_ZMODEL Check for errors in the layer depths.
-%   STATUS = CHECK_ZMODEL(I, P, S) checks the zmodel layers H at timestep
+% CHECK_SOLUTION Check for errors in the layer depths.
+%   STATUS = CHECK_SOLUTION(I, P, S) checks the zmodel layers H at timestep
 %   parameters P and returns an error status S with default value 0, or 1
 %   if there was an error.
 

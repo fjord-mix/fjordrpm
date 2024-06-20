@@ -1,11 +1,11 @@
 function [Q, E, I] = compute_fluxes(i, p, f, s)
 
-% COMPUTE_ZMODEL_FLUXES compute fluxes in the zmodel simulation.
-%   [Q, E, I] = COMPUTE_ZMODEL_FLUZES(I, P, F, S) calls functions to
-%   compute the plume fluxes, shelf fluxes, mixing fluxes, iceberg fluxes
-%   and vertical fluxes for parameters structure P, boundary conditions F,
-%   and solution S at timestep I and returns fluxes Q, exterior variables E
-%   and iceberg variables I.
+% COMPUTE_FLUXES compute fluxes in the zmodel simulation.
+%   [Q, E, I] = COMPUTE_FLUZES(I, P, F, S) calls functions to compute the
+%   plume fluxes, shelf fluxes, mixing fluxes, iceberg fluxes and vertical
+%   fluxes for parameters structure P, boundary conditions F, and solution
+%   S at timestep I and returns fluxes Q, exterior variables E and iceberg
+%   variables I.
 
 % Calculate plume fluxes.
 [Q.QVg, Q.QTg, Q.QSg] = get_plume_fluxes(i, p, f, s);

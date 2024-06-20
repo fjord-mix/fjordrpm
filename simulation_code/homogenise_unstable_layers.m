@@ -1,8 +1,7 @@
 function s = homogenise_unstable_layers(i, p, s)
 
-% HOMOGENISE_ZMODEL_UNSTABLE_LAYERS Homogenise two unstably stratified
-% layers.
-%   S = HOMOGENISE_ZMODEL_UNSTABLE_LAYERS(I, P, S) takes input timestep I,
+% HOMOGENISE_UNSTABLE_LAYERS Homogenise two unstably stratified layers.
+%   S = HOMOGENISE_UNSTABLE_LAYERS(I, P, S) takes input timestep I,
 %   parameters structure P, and solution structure S and computes the
 %   buoyancy jump between layers in the solution for that timestep,
 %   homogenises any layers that are unstably stratified and returns an
