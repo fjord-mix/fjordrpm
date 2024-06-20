@@ -14,7 +14,7 @@ num_workers=2;
 name = 'default_example_zmodel_parallel';
 
 % Choose where to save your model outputs.
-output_folder=fullfile('./outputs/model_results/', name, '/');
+output_folder=fullfile('./outputs/model_results/', name, );
 if not(isfolder(output_folder))
     mkdir(output_folder)
     %mkdir([output_folder,'/model_results']);
@@ -32,8 +32,8 @@ fjord_par_outputs(length(parameter_space)) = struct("p",[],"a",[],"f",[],"t",[],
 % Set up the runs in serial to save memory.
 for INDEX = 1:length(parameter_space)
     fjord_par_outputs(INDEX).m.name = sprintf('Iteration_%d\n', INDEX);
-    fjord_par_outputs(INDEX).t = t;
     fjord_par_outputs(INDEX).p = mod_run_param(parameter_to_vary, parameter_space(INDEX), p0);
+    fjord_par_outputs(INDEX).t = t;
     % Compute new boundary conditions and initial conditions based on the
     % updated parameters p. 
     % Boundary conditions:
