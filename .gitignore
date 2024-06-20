@@ -4,6 +4,9 @@ load_local_paths.m
 # Ignore output files folder
 outputs/
 
+# Ignore idealised data example results.
+idealised_data_examples/results/
+
 # ignore old backup folders
 z_bkp*/
 
