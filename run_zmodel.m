@@ -5,7 +5,7 @@ addpath(genpath('./'))
 clearvars
 close all
 % Choose where to save your model outputs
-output_folder='./outputs';
+output_folder='./outputs/model_results/';
 
 %% Choosing the model example
 % Setup for the model run. Load the user-defined run parameters.
@@ -61,7 +61,7 @@ end
 
 % Save the fjord structure, including input parameters, initial conditions,
 % and results
-save([output_folder,'/model_results/', name, '.mat'], 'fjord_run')
+save([output_folder, name, '.mat'], 'fjord_run')
 
 %% Plotting results
 % Create animation of the fjord run
