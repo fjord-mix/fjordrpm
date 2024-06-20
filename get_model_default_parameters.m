@@ -29,6 +29,8 @@ p.uIce = 0.005;    % iceberg down-fjord velocity (m s^-1)
 p.gamma = 0.5;     % proportion of iceberg melt flux that gets mixed vertically (-)
 p.alphaI = 0.1;    % iceberg plume entrainment coefficient
 p.icestatic = 0;   % whether icebergs are "static" or "dynamic" in the model
+p.A0 = 2e9;        % scaling of iceberg area
+p.U0 = 0.25;       % scale upwelling
 
 %% Idealised fjord geometry
 p.W = 6e3;          % fjord width
