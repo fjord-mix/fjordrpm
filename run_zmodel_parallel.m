@@ -1,22 +1,25 @@
 % RUN_ZMODEL_PARALLEL Driver to run the zmodel simulation in parallel with
 % default parameters example varying the magnitude of the subglacial
 % discharge.
-
-%% Dealing with paths
 addpath(genpath('./'))
 clearvars
 close all
-% Choose where to save your model outputs.
-output_folder='./outputs/model_results/';
-
-%% Set how many processes in parallel will be run.
-num_workers=2;
 
 %% Setup the model run.
-% Get the model parameters, initial conditions and boundary conditions for
-% the chosen example.
+% Set how many processes in parallel will be run.
+num_workers=2;
+
+% Get thed default model inputs.
 [p0, t, f, a] = get_model_default_parameters;
-name = 'example_zmodel_parallel';
+name = 'default_example_zmodel_parallel';
+
+% Choose where to save your model outputs.
+output_folder=fullfile('./outputs/model_results/', name, '/');
+if not(isfolder(output_folder))
+    mkdir(output_folder)
+    %mkdir([output_folder,'/model_results']);
+end
+
 % Choose the parameter to vary and the values it will take (code will run
 % in parallel for different values of this parameter).
 parameter_to_vary = 'Qv0';
@@ -32,7 +35,8 @@ for INDEX = 1:length(parameter_space)
     fjord_par_outputs(INDEX).t = t;
     fjord_par_outputs(INDEX).p = mod_run_param(parameter_to_vary, parameter_space(INDEX), p0);
     % Compute new boundary conditions and initial conditions based on the
-    % updated parameters p. Boundary conditions:
+    % updated parameters p. 
+    % Boundary conditions:
     fjord_par_outputs(INDEX).f = get_idealised_forcing(fjord_par_outputs(INDEX).p, t);
     % Initial conditions:
     fjord_par_outputs(INDEX).a = get_initial_conditions(fjord_par_outputs(INDEX).p, fjord_par_outputs(INDEX).f);
