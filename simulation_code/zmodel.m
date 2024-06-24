@@ -35,9 +35,6 @@ for i = 1:length(t)-1
 
     % Optional runtime plotting (for debugging).
     if p.plot_runtime
-        % hf_track = monitor_boxmodel(hf_track,i,H,T,S,f); hf_track =
-        % show_boxmodel([],i,t,H,T,S,QVs,QVg,QVk,QVb,f);
-        % plot_debug_profile(i,t,f,p,H,S,[],T,[]);
         plot_runtime_profile(i,t,f,p,s.H,s.S,s.T,s.Se,s.QVs)
     end
 
