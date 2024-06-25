@@ -1,4 +1,4 @@
-function s = store_solution(i, s, Q, E, I, Tr)
+function s = store_solution(i, s, Q, E, Tr)
 
 % STORE_ZMODEL_SOLUTION z-model simulation.
 %   S = STORE_ZMODEL_SOLUTION(I, S, Q, E, I, TR) stores the zmodel solution
@@ -26,7 +26,6 @@ s.QSi(:,i) = Q.QSi;
 s.QVmi(:,i) = Q.QVmi;
 s.QTmi(:,i) = Q.QTmi;
 s.Smi(:,i) = Q.QSmi;
-s.M(:,i) = I.M;
 
 s.QVv(:,i) = Q.QVv;
 s.QTv(:,i) = Q.QTv;

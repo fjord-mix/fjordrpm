@@ -50,7 +50,6 @@ s.QIi = s.QIi(:,p.t_save+1);
 s.QTi = s.QTi(:,p.t_save+1);
 s.QSi = s.QSi(:,p.t_save+1); 
 s.QVmi = s.QVmi(:,p.t_save+1);
-s.M = s.M(:,p.t_save+1);
 
 % For iceberg fluxes, also calculate and save fjord-integrated values.
 s.IT = sum(s.I); % fjord iceberg surface area

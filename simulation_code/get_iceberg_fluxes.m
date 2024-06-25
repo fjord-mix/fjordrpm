@@ -1,17 +1,16 @@
-function [QIi0, QTi0, QSi0, QVmi0, QTmi0, QSmi0, M0] = get_iceberg_fluxes(i, p, s)
+function [QIi0, QTi0, QSi0, QVmi0, QTmi0, QSmi0] = get_iceberg_fluxes(i, p, s)
 
 % GET_ICEBERG_FLUXES Compute mixing fluxes for the zmodel.
 %   [QII0, QTI0, QSI0, QVMI0, QTMI0, QSMI0, M0] = GET_ICEBERG_FLUXES(I, P,
 %   S) computes the iceberg fluxes QII0, QTI0, QSI0, QVMI0, QTMI0, QSMI0
-%   and iceberg parameter M0 for the given parameters P and boundary
-%   conditions F at timestep I.
+%   for the given parameters P and boundary conditions F at timestep I.
 
 % Get tracer variables at timestep i.
 H0 = s.H(:,i); T0 = s.T(:,i); S0 = s.S(:,i); I0 = s.I(:,i);
 
 if p.M0==0 
     % If there are no icebergs, the fluxes are zero by default.
-    [QIi0, QTi0, QSi0, QVmi0, QTmi0, QSmi0, M0] = deal(0*H0);
+    [QIi0, QTi0, QSi0, QVmi0, QTmi0, QSmi0] = deal(0*H0);
 else
     % Compute the melt flux into each box.
     zj = cumsum(H0)-H0/2; % Mean depth of boxes.
@@ -47,8 +46,6 @@ else
     QTi0 = -QIi0*p.l/p.cw;
     QSi0 = -QIi0.*S0;
 
-    % Compute the melt rate profile.
-    M0 = 0*H0;
 end
 
 end

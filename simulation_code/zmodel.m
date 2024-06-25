@@ -23,7 +23,7 @@ for i = 1:length(t)-1
 
     % Compute the fluxes Q at the boundaries of each layer at timestep i
     % and associated exterior E and ice I variables.
-    [Q, E, I] = compute_fluxes(i, p, f, s);
+    [Q, E] = compute_fluxes(i, p, f, s);
     
     % Step the fjord forwards to compute the tracer variables at timestep
     % i+1.
@@ -31,7 +31,7 @@ for i = 1:length(t)-1
 
     % Store the fluxes computed at timestep i and the zmodel variables
     % computed at timestep i+1 in s.
-    s = store_solution(i, s, Q, E, I, Tr);
+    s = store_solution(i, s, Q, E, Tr);
 
     % Optional runtime plotting (for debugging).
     if p.plot_runtime
