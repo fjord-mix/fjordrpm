@@ -8,7 +8,7 @@ function s = zmodel(p, t, f, a, path_out)
 %   ZMODEL will save a file.
 
 %% Check for errors in the given boundary and initial conditions.
-[status, a] = check_inputs(p, a);
+[status, a] = check_inputs(p, a, t);
 
 %% Preallocate and initialise variables- fluxes and box tracers-
 % according to the number of layers for each timestep and store in s.
@@ -35,7 +35,7 @@ for i = 1:length(t)-1
 
     % Optional runtime plotting (for debugging).
     if p.plot_runtime
-        plot_runtime_profile(i,t,f,p,s.H,s.S,s.T,s.Se,s.QVs)
+        plot_runtime_profile(i, t, f, p, s);
     end
 
     % Check for errors in the layer depths in the new solution.
