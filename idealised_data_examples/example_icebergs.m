@@ -8,7 +8,7 @@ close all
 
 %% Set the input parameters p.
 % Set ZMODEL layer properties.
-p.N = 80; % number of above-sill model layers
+p.N = 80; % number of model layers
 
 % Set fjord geometry parameters.
 p.sill = 1; % flag for sill (0 = no sill, 1 = sill)
@@ -25,13 +25,13 @@ p.M0 = 7e-7; % iceberg melt efficiency
 p.A0 = 2e9; % scaling of iceberg area
 p.U0 = 0.25; % scale upwelling
 p.nu0 = 25; % iceberg profile coefficient
-% p.E0 = 1e-7; % iceberg export efficiency p.uIce = 0.005; % iceberg
-% down-fjord velocity
 p.if = @(NU, H, Z) (NU/H)*exp(NU*Z/H)/(1-exp(-NU)); % functional form of iceberg depth profile
 
 %% Set the input time vector t.
 % Time values at which to compute the solution (in days)
 t = 0:1:200;
+% Time values at which to save the solution (in days)
+p.t_save = t;
 
 %% Set the boundary conditions f.
 % Boundary conditions for the input parameters at each timestep

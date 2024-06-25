@@ -1,4 +1,4 @@
-function [Q, E, I] = compute_fluxes(i, p, f, s)
+function [Q, E] = compute_fluxes(i, p, f, s)
 
 % COMPUTE_FLUXES compute fluxes in the zmodel simulation.
 %   [Q, E, I] = COMPUTE_FLUZES(I, P, F, S) calls functions to compute the
@@ -17,7 +17,7 @@ function [Q, E, I] = compute_fluxes(i, p, f, s)
 [Q.QVk, Q.QTk, Q.QSk] = get_mixing_fluxes(i, p, s);
 
 % Calculate iceberg fluxes, return fluxes and ice variables.
-[Q.QIi, Q.QTi, Q.QSi, Q.QVmi, Q.QTmi, Q.QSmi, I.M] = get_iceberg_fluxes(i, p, s);
+[Q.QIi, Q.QTi, Q.QSi, Q.QVmi, Q.QTmi, Q.QSmi] = get_iceberg_fluxes(i, p, s);
 
 % Calculate vertical fluxes.
 [Q.QVv, Q.QTv, Q.QSv] = get_vertical_fluxes(i, s, Q.QVg-Q.QVs+Q.QVmi);

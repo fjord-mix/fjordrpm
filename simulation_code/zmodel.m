@@ -8,7 +8,7 @@ function s = zmodel(p, t, f, a, path_out)
 %   ZMODEL will save a file.
 
 %% Check for errors in the given boundary and initial conditions.
-[status, a] = check_inputs(p, a);
+[status, a] = check_inputs(p, a, t);
 
 %% Preallocate and initialise variables- fluxes and box tracers-
 % according to the number of layers for each timestep and store in s.
@@ -23,7 +23,7 @@ for i = 1:length(t)-1
 
     % Compute the fluxes Q at the boundaries of each layer at timestep i
     % and associated exterior E and ice I variables.
-    [Q, E, I] = compute_fluxes(i, p, f, s);
+    [Q, E] = compute_fluxes(i, p, f, s);
     
     % Step the fjord forwards to compute the tracer variables at timestep
     % i+1.
@@ -31,14 +31,11 @@ for i = 1:length(t)-1
 
     % Store the fluxes computed at timestep i and the zmodel variables
     % computed at timestep i+1 in s.
-    s = store_solution(i, s, Q, E, I, Tr);
+    s = store_solution(i, s, Q, E, Tr);
 
     % Optional runtime plotting (for debugging).
     if p.plot_runtime
-        % hf_track = monitor_boxmodel(hf_track,i,H,T,S,f); hf_track =
-        % show_boxmodel([],i,t,H,T,S,QVs,QVg,QVk,QVb,f);
-        % plot_debug_profile(i,t,f,p,H,S,[],T,[]);
-        plot_runtime_profile(i,t,f,p,s.H,s.S,s.T,s.Se,s.QVs)
+        plot_runtime_profile(i, t, f, p, s);
     end
 
     % Check for errors in the layer depths in the new solution.

@@ -1,4 +1,4 @@
-function [status, a] = check_inputs(p, a)
+function [status, a] = check_inputs(p, a, t)
 
 % CHECK_INPUTS Check for errors in zmodel inputs.
 %   STATUS = CHECK_INPUTS(P, A) checks the zmodel inputs P and A, AND
@@ -34,4 +34,11 @@ if size(a.H0, 1) < size(a.H0, 2)
     a.H0 = a.H0';
 end
 
+% Check that the time values where the solution will be saved are a subset
+% of the time values where the solution will be computed.
+if ~all(ismember(p.t_save, t)) 
+    disp("Error: the values where the solution is saved, p.t_save, must be a subset of the values where the solution is computed, t.")
+    status = 1;
+    return
 end
+

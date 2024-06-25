@@ -6,7 +6,7 @@ function s = compute_final_fluxes(p, f, s, t)
 %   parameters P, forcing structure F andreturns solution structure S.
 
 % Compute the fluxes at the final timestep
-[Q, E, I] = compute_fluxes(length(t), p, f, s);
+[Q, E] = compute_fluxes(length(t), p, f, s);
 
 % Store the fluxes
 % Glacier fluxes
@@ -37,6 +37,5 @@ s.QIi(:,end) = Q.QIi;
 s.QTi(:,end) = Q.QTi;
 s.QSi(:,end) = Q.QSi; 
 s.QVmi(:,end) = Q.QVmi;
-s.M(:,end) = I.M;
 
 end

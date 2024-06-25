@@ -9,7 +9,7 @@ close all
 
 %% Set the input parameters p.
 % ZMODEL layer properties
-p.N = 60; % number of above-sill model layers
+p.N = 60; % number of model layers
 
 % Fjord geometry parameters
 p.sill = 0; % flag for sill (0 = no sill, 1 = sill)
@@ -28,6 +28,8 @@ p.M0 = 0; % iceberg melt efficiency, 0 = no icebergs
 %% Set the input time vector t.
 % Time values at which to compute the solution (in days)
 t = 0:1:200;
+% Time values at which to save the solution (in days)
+p.t_save = t;
 
 %% Set the boundary conditions f.
 % Boundary conditions for the input parameters at each timestep

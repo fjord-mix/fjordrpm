@@ -70,6 +70,8 @@ p.plot_runtime=0;
 
 %% Time values at which to compute the solution (in days)
 t = 0:1:200;
+% Time values at which to save the solution (in days)
+p.t_save = t;
 
 %% Set the boundary and initial conditions
 % Boundary conditions
