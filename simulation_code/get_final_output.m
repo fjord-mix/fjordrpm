@@ -10,46 +10,49 @@ function s = get_final_output(p, f, t, s, status)
 % something went wrong, then we want all time steps to properly understand
 % what happened.
 if status == 1
-    p.t_save = t+1; % Indexing must start from 1 not 0
+    p.t_save = t;
 end
 
-s.t = t(p.t_save+1);
+% Get the indices of the timesteps to save at
+inx = find(ismember(t, p.t_save));
+
+s.t = t(inx);
 
 % Box variables
-s.H = s.H(:,p.t_save+1);
-s.T = s.T(:,p.t_save+1);
-s.S = s.S(:,p.t_save+1);
-s.V = s.V(:,p.t_save+1);
-s.I = s.I(:,p.t_save+1);
+s.H = s.H(:,inx);
+s.T = s.T(:,inx);
+s.S = s.S(:,inx);
+s.V = s.V(:,inx);
+s.I = s.I(:,inx);
 
 % Glacier exchanges
-s.QVg = s.QVg(:,p.t_save+1);
-s.QTg = s.QTg(:,p.t_save+1);
-s.QSg = s.QSg(:,p.t_save+1);
+s.QVg = s.QVg(:,inx);
+s.QTg = s.QTg(:,inx);
+s.QSg = s.QSg(:,inx);
 
 % Shelf exchanges
-s.QVs = s.QVs(:,p.t_save+1);
-s.QTs = s.QTs(:,p.t_save+1);
-s.QSs = s.QSs(:,p.t_save+1);
-s.Se = s.Se(:,p.t_save+1);
-s.Te = s.Te(:,p.t_save+1);
-s.phi = s.phi(:,p.t_save+1);
+s.QVs = s.QVs(:,inx);
+s.QTs = s.QTs(:,inx);
+s.QSs = s.QSs(:,inx);
+s.Se = s.Se(:,inx);
+s.Te = s.Te(:,inx);
+s.phi = s.phi(:,inx);
 
 % Vertical mixing
-s.QVk = s.QVk(:,p.t_save+1);
-s.QTk = s.QTk(:,p.t_save+1);
-s.QSk = s.QSk(:,p.t_save+1);
+s.QVk = s.QVk(:,inx);
+s.QTk = s.QTk(:,inx);
+s.QSk = s.QSk(:,inx);
 
 % Vertical fluxes
-s.QVv = s.QVv(:,p.t_save+1);
-s.QTv = s.QTv(:,p.t_save+1);
-s.QSv = s.QSv(:,p.t_save+1);
+s.QVv = s.QVv(:,inx);
+s.QTv = s.QTv(:,inx);
+s.QSv = s.QSv(:,inx);
 
 % Iceberg fluxes
-s.QIi = s.QIi(:,p.t_save+1);
-s.QTi = s.QTi(:,p.t_save+1);
-s.QSi = s.QSi(:,p.t_save+1); 
-s.QVmi = s.QVmi(:,p.t_save+1);
+s.QIi = s.QIi(:,inx);
+s.QTi = s.QTi(:,inx);
+s.QSi = s.QSi(:,inx); 
+s.QVmi = s.QVmi(:,inx);
 
 % For iceberg fluxes, also calculate and save fjord-integrated values.
 s.IT = sum(s.I); % fjord iceberg surface area
@@ -58,10 +61,10 @@ s.MT = sum(s.QIi); % total iceberg melt flux
 
 % Return forcing on same time step as forcings (in results structure to
 % prevent overwriting).
-s.Ss = f.Ss(:,p.t_save+1);
-s.Ts = f.Ts(:,p.t_save+1);
-s.Qsg = f.Qsg(p.t_save+1);
-s.D = f.D(p.t_save+1);
+s.Ss = f.Ss(:,inx);
+s.Ts = f.Ts(:,inx);
+s.Qsg = f.Qsg(inx);
+s.D = f.D(inx);
 
 s.status = status;
 end
