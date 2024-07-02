@@ -38,8 +38,8 @@ for i = 1:length(t)-1
         plot_runtime_profile(i, t, f, p, s);
     end
 
-    % Check for errors in the layer depths in the new solution.
-    status = check_solution(p, s.H(:,i+1));
+    % Check for errors in the new solution.
+    status = check_solution(p, Q);
     
 end
 
