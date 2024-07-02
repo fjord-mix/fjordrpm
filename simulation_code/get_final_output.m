@@ -25,6 +25,10 @@ s.S = s.S(:,inx);
 s.V = s.V(:,inx);
 s.I = s.I(:,inx);
 
+% Vertical grid
+ints = -[0;cumsum(s.H(:,1))];
+s.z = 0.5*(ints(1:end-1)+ints(2:end));
+
 % Glacier exchanges
 s.QVg = s.QVg(:,inx);
 s.QTg = s.QTg(:,inx);
