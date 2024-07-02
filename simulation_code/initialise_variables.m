@@ -32,6 +32,10 @@ else
     s.ksill = p.N;
 end
 
+% Find layer with grounding line and store index.
+ints = cumsum(s.H(:,1));
+s.kgl = find(ints >= abs(p.zgl)-1e-6, 1);
+
 % Redistribute the other given initial conditions according to the new
 % layer boundaries and then initialise the variables.
 ints_old = [0; cumsum(a.H0)];

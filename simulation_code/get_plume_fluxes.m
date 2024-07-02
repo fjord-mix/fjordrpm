@@ -20,16 +20,16 @@ else
     % Compute the plume properties (flux, salinity, temp) in each zmodel
     % layer and the location of the grounding line and neutral buoyancy
     % box.
-    [kgl, knb, Qp, Sp, Tp] = get_plume_properties(p, H0, S0, T0, Qsg0);
+    [knb, Qp, Sp, Tp] = get_plume_properties(p, s, H0, S0, T0, Qsg0);
 
     % The flux in boxes below grounding line and above neutral buoyancy are
     % zero, so don't need to be calculated.
 
     % Compute the flux in boxes from the grounding line to below neutral
     % buoyancy.
-    QpV0(knb+1:kgl) = Qp(knb+1:kgl)-Qp(knb:kgl-1);
-    QpT0(knb+1:kgl) = QpV0(knb+1:kgl).*T0(knb+1:kgl);
-    QpS0(knb+1:kgl) = QpV0(knb+1:kgl).*S0(knb+1:kgl);
+    QpV0(knb+1:s.kgl) = Qp(knb+1:s.kgl)-Qp(knb:s.kgl-1);
+    QpT0(knb+1:s.kgl) = QpV0(knb+1:s.kgl).*T0(knb+1:s.kgl);
+    QpS0(knb+1:s.kgl) = QpV0(knb+1:s.kgl).*S0(knb+1:s.kgl);
 
     % Compute the flux into the neutral buoyancy box.
     QpV0(knb) = Qp(knb);
