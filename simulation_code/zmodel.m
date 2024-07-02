@@ -39,7 +39,7 @@ for i = 1:length(t)-1
     end
 
     % Check for errors in the new solution.
-    status = check_solution(p, Q);
+    status = check_solution(Q);
     
 end
 
