@@ -13,8 +13,8 @@ function [Q, E] = compute_fluxes(i, p, f, s)
 % Calculate shelf fluxes, return fluxes and exterior variables.
 [Q.QVs, Q.QTs, Q.QSs, E.Se, E.Te, E.phi] = get_shelf_fluxes(i, p, f, s);
 
-% Calculate vertical mixing fluxes.
-[Q.QVk, Q.QTk, Q.QSk] = get_mixing_fluxes(i, p, s);
+% Calculate tracer vertical mixing fluxes.
+[Q.QVk, Q.QTk, Q.QSk] = get_mixing_fluxes(i, p, s, Q.QVg, Q.QVs);
 
 % Calculate iceberg fluxes, return fluxes and ice variables.
 [Q.QIi, Q.QTi, Q.QSi, Q.QVmi, Q.QTmi, Q.QSmi] = get_iceberg_fluxes(i, p, s);

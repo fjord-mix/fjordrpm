@@ -34,6 +34,11 @@ if size(a.H0, 1) < size(a.H0, 2)
     a.H0 = a.H0';
 end
 
+% If t_save is not given, it will take t instead
+if ~isfield(p,'t_save')
+    p.t_save=t;
+end
+
 % Check that the time values where the solution will be saved are a subset
 % of the time values where the solution will be computed.
 if ~all(ismember(p.t_save, t)) 
