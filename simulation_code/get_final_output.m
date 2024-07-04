@@ -6,6 +6,9 @@ function s = get_final_output(p, f, t, s, status)
 %   S, and returns solution structure S on timestepping specified by the
 %   user, including forcing in the same time steps as S.
 
+% Compute fluxes one last time to get same number of values as for tracers
+s = compute_fluxes(size(s.T,2), p, f, s);
+
 % Save values to output file as specified by the input parameter, unless
 % something went wrong, then we want all time steps to properly understand
 % what happened.
