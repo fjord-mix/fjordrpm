@@ -55,19 +55,14 @@ s.QSv = s.QSv(:,inx);
 % Iceberg fluxes
 s.QVi = s.QVi(:,inx);
 s.QTi = s.QTi(:,inx);
-s.QSi = s.QSi(:,inx); 
-
-% For iceberg fluxes, also calculate and save fjord-integrated values.
-% s.IT = sum(s.I); % fjord iceberg surface area
-% s.MT = sum(s.QVi); % total iceberg melt flux
-% s.ET = p.W*p.L*trapz(f.zi,p.E0*s.I); % total iceberg export flux
+s.QSi = s.QSi(:,inx);
 
 % Return forcing on same time step as forcings (in results structure to
 % prevent overwriting).
 s.Ss = f.Ss(:,inx);
 s.Ts = f.Ts(:,inx);
 s.Qsg = f.Qsg(inx);
-s.D = f.D(inx);
 
 s.status = status;
+
 end
