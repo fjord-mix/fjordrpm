@@ -1,4 +1,4 @@
-function [QVk0,QTk0,QSk0] = get_mixing_fluxes(i, p, s, QVg0, QVs0)
+function [QVk0,QTk0,QSk0] = get_mixing_fluxes(i, p, s)
 
 % GET_MIXING_FLUXES Compute vertical tracer mixing fluxes.
 %   [QVK0, QTK0, QSK0] = GET_MIXING_FLUXES(i, p, s) computes the
@@ -17,7 +17,7 @@ QVk0 = 0*H0;
 gp = p.g*(p.betaS*(S0(2:end)-S0(1:end-1))-p.betaT*(T0(2:end)-T0(1:end-1)));
 
 % Horizontal velocity of layers
-u = (QVs0+QVg0)./(2*p.W*H0);
+u = (s.QVs(:,i)+s.QVg(:,i))./(2*p.W*H0);
 
 % Richardson number
 du = u(2:end)-u(1:end-1);
