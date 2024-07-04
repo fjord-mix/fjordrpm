@@ -1,25 +1,25 @@
-function [knb, Qp, Sp, Tp] = get_plume_properties(p, s, H0, S0, T0, Qsg0)
+function [knb, Qp, Sp, Tp] = get_plume_properties(p, kgl, H0, S0, T0, Qsg0)
 
 % GET_PLUME_PROPERTIES Compute plume properties.
-%   [knb, Qp, Sp, Tp] = GET_PLUME_PROPERTIES(p, s, H0, S0, T0, Qsg0)
-%   computes the plume fluxes for the given parameters p, tracers
-%   H0, S0, T0 and subglacial discharge flux Qsg0.
+%   [knb, Qp, Sp, Tp] = GET_PLUME_PROPERTIES(p, kgl, H0, S0, T0, Qsg0)
+%   computes the plume fluxes for the given parameters p, grounding line
+%   box kgl, variables H0, S0, T0 and subglacial discharge flux Qsg0.
 
 % Initialise variables
 [Qp, Sp, Tp, gp] = deal(zeros(p.N, 1));
 
 % Set the plume properties at the grounding line
-Qp(s.kgl) = Qsg0;
-Sp(s.kgl) = 0;
-Tp(s.kgl) = 0;
-gp(s.kgl) = p.g*(p.betaS*(S0(s.kgl)-Sp(s.kgl))-p.betaT*(T0(s.kgl)-Tp(s.kgl)));
+Qp(kgl) = Qsg0;
+Sp(kgl) = 0;
+Tp(kgl) = 0;
+gp(kgl) = p.g*(p.betaS*(S0(kgl)-Sp(kgl))-p.betaT*(T0(kgl)-Tp(kgl)));
 
 % If it exists, the properties at the first interface above grounding
 % line need special treatment because the box might be partial if the
 % grounding line does not coincide with a box boundary
 ints = cumsum(H0);
-if s.kgl>1
-    k = s.kgl-1;
+if kgl>1
+    k = kgl-1;
     Qp(k) = Qp(k+1) + p.P0^(2/3)*Qp(k+1)^(1/3)*gp(k+1)^(1/3)*(abs(p.zgl)-ints(k));
     Tp(k) = (Qp(k+1)*Tp(k+1)+(Qp(k)-Qp(k+1))*T0(k+1))/Qp(k);
     Sp(k) = (Qp(k+1)*Sp(k+1)+(Qp(k)-Qp(k+1))*S0(k+1))/Qp(k);
