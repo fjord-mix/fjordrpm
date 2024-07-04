@@ -1,15 +1,14 @@
 function [knb, Qp, Sp, Tp] = get_plume_properties(p, s, H0, S0, T0, Qsg0)
 
-% GET_PLUME_PROPERTIES Compute plume properties for the zmodel.
-%   [KNB, QP, SP, TP] = GET_PLUME_PROPERTIES(P, S, H0, S0, T0, QSG0)
-%   computes the plume fluxes for the given parameters P, zmodel tracers
-%   H0, S0, T0 and subglacial discharge flux QSG0.
-
+% GET_PLUME_PROPERTIES Compute plume properties.
+%   [knb, Qp, Sp, Tp] = GET_PLUME_PROPERTIES(p, s, H0, S0, T0, Qsg0)
+%   computes the plume fluxes for the given parameters p, tracers
+%   H0, S0, T0 and subglacial discharge flux Qsg0.
 
 % Initialise variables
 [Qp, Sp, Tp, gp] = deal(zeros(p.N, 1));
 
-% Set the plume properties at the grounding line.
+% Set the plume properties at the grounding line
 Qp(s.kgl) = Qsg0;
 Sp(s.kgl) = 0;
 Tp(s.kgl) = 0;
@@ -17,7 +16,7 @@ gp(s.kgl) = p.g*(p.betaS*(S0(s.kgl)-Sp(s.kgl))-p.betaT*(T0(s.kgl)-Tp(s.kgl)));
 
 % If it exists, the properties at the first interface above grounding
 % line need special treatment because the box might be partial if the
-% grounding line does not coincide with a box boundary.
+% grounding line does not coincide with a box boundary
 ints = cumsum(H0);
 if s.kgl>1
     k = s.kgl-1;
@@ -27,7 +26,7 @@ if s.kgl>1
     gp(k) = p.g*(p.betaS*(S0(k)-Sp(k))-p.betaT*(T0(k)-Tp(k)));
 end
 
-% Apply to successive interfaces higher provided the plume is still rising.
+% Apply to successive interfaces higher provided the plume is still rising
 while gp(k)>0 && k>1
     k = k-1;
     Qp(k) = Qp(k+1) + p.P0^(2/3)*Qp(k+1)^(1/3)*gp(k+1)^(1/3)*H0(k+1);
@@ -36,7 +35,7 @@ while gp(k)>0 && k>1
     gp(k) = p.g*(p.betaS*(S0(k)-Sp(k))-p.betaT*(T0(k)-Tp(k)));
 end
 
-% Find the neutral buoyancy box, which is set by default to the lowest box.
+% Find the neutral buoyancy box, which is set by default to the lowest box
 knb = find(gp<0);
 if isempty(knb)
     knb=1;

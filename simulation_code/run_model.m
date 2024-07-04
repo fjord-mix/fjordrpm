@@ -1,17 +1,16 @@
-function s = zmodel(p, t, f, a, path_out)
+function s = run_model(p, t, f, a, path_out)
 
-% ZMODEL z-model simulation.
-%   [S, F] = ZMODEL(P, T, F, A, PATH_OUT) runs the z-model simulation for
-%   parameters structure P, time T, forcings structure F, initial
-%   conditions structure A, and returns solution structure S which includes
-%   input forcing in the same time steps as S. If PATH_OUT is specified,
-%   ZMODEL will save a file.
+% RUN_MODEL Run fjordRPM simulation.
+%   s = RUN_MODEL(p, t, f, a, path_out) runs the fjordRPM simulation for
+%   parameters structure p, time vector t, forcings structure f, initial
+%   conditions structure a, and returns solution structure s. If path_out
+%   is specified, RUN_MODEL will save a file.
 
 %% Check for errors in the given boundary and initial conditions
-[status, a] = check_inputs(p, a, t);
+[status, a] = check_inputs(p, t, a);
 
 %% Preallocate and initialise variables
-s = initialise_variables(p, t, f, a);
+s = initialise_variables(p, t, a);
 
 %% The timestepping loop
 for i = 1:length(t)-1
@@ -27,7 +26,7 @@ for i = 1:length(t)-1
 
     % Optional runtime plotting
     if p.plot_runtime
-        plot_runtime_profile(i, t, f, p, s);
+        plot_runtime_profile(i, p, t, f, s);
     end
 
     % Check for errors at this new timestep
@@ -36,11 +35,11 @@ for i = 1:length(t)-1
 end
 
 %% Subsample solution structure to requested output frequency
-s = get_final_output(p, f, t, s, status);
+s = get_final_output(p, t, f, s, status);
 
 %% Save output if a path and file name are provided
 if nargin > 4
-    save_output(s, f, t, p, a, path_out);
+    save_output(p, t, f, a, s, path_out);
 end
 
 end

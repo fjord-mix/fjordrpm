@@ -1,8 +1,8 @@
 function status = check_solution(i, s)
 
 % CHECK_SOLUTION Check for errors in the solution.
-%   STATUS = CHECK_SOLUTION(I, S) checks that the volume of the layers is
-%   conserved and returns an error status S with default value 0, or 1
+%   status = CHECK_SOLUTION(i, s) checks that the volume of the layers is
+%   conserved and returns an error status s with default value 0, or 1
 %   if there was an error.
 
 status = 0;
