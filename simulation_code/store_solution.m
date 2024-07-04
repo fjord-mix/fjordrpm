@@ -29,12 +29,7 @@ s.QTv(:,i) = Q.QTv;
 s.QSv(:,i) = Q.QSv;
 
 % Store zmodel tracer variables at timestep i+1.
-s.V(:,i+1) = Tr.V;
 s.T(:,i+1) = Tr.T;
 s.S(:,i+1) = Tr.S;
-s.H(:,i+1) = Tr.H;
-s.VT(:,i+1) = Tr.VT;
-s.VS(:,i+1) = Tr.VS;
-s.I(:,i+1) = Tr.I;
 
 end

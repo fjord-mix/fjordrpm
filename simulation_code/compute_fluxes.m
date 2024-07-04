@@ -1,7 +1,7 @@
 function [Q, E] = compute_fluxes(i, p, f, s)
 
 % COMPUTE_FLUXES compute fluxes in the zmodel simulation.
-%   [Q, E, I] = COMPUTE_FLUZES(I, P, F, S) calls functions to compute the
+%   [Q, E, I] = COMPUTE_FLUXES(I, P, F, S) calls functions to compute the
 %   plume fluxes, shelf fluxes, mixing fluxes, iceberg fluxes and vertical
 %   fluxes for parameters structure P, boundary conditions F, and solution
 %   S at timestep I and returns fluxes Q, exterior variables E and iceberg

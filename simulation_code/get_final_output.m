@@ -18,12 +18,9 @@ inx = find(ismember(t, p.t_save));
 
 s.t = t(inx);
 
-% Box variables
-s.H = s.H(:,inx);
+% Layer variables
 s.T = s.T(:,inx);
 s.S = s.S(:,inx);
-s.V = s.V(:,inx);
-s.I = s.I(:,inx);
 
 % Vertical grid
 ints = -[0;cumsum(s.H(:,1))];

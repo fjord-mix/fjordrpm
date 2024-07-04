@@ -6,7 +6,7 @@ function [QpV0, QpT0, QpS0] = get_plume_fluxes(i, p, f, s)
 %   at time I.
 
 % Get tracer variables at timestep i.
-H0 = s.H(:,i); T0 = s.T(:,i); S0 = s.S(:,i);
+H0 = s.H; T0 = s.T(:,i); S0 = s.S(:,i);
 % Get boundary conditions at timestep i.
 Qsg0 = f.Qsg(i);
 

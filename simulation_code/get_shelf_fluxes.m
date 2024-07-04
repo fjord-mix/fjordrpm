@@ -7,7 +7,7 @@ function [QVs0,QTs0,QSs0,Se0,Te0,phi0] = get_shelf_fluxes(i, p, f, s)
 %   timestep I.
 
 % Get tracer variables at timestep i.
-H0 = s.H(:,i); T0 = s.T(:,i); S0 = s.S(:,i);
+H0 = s.H; T0 = s.T(:,i); S0 = s.S(:,i);
 % Get boundary conditions at timestep i.
 Qsg0 = f.Qsg(i); zs = f.zs; Ts = f.Ts(:,i); Ss = f.Ss(:,i);
 % Initialise variables.

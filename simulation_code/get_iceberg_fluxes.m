@@ -6,7 +6,7 @@ function [QVi0, QTi0, QSi0] = get_iceberg_fluxes(i, p, s)
 %   for the given parameters P at timestep I.
 
 % Get tracer variables at timestep i.
-H0 = s.H(:,i); T0 = s.T(:,i); S0 = s.S(:,i); I0 = s.I(:,i);
+H0 = s.H; T0 = s.T(:,i); S0 = s.S(:,i); I0 = s.I;
 
 if p.M0==0 
     % If there are no icebergs, the fluxes are zero by default.

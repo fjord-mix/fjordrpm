@@ -6,7 +6,7 @@ function [QVk0,QTk0,QSk0] = get_mixing_fluxes(i, p, s, QVg0, QVs0)
 %   and solution S at timestep I.
 
 % Required variables at timestep i.
-H0 = s.H(:,i);
+H0 = s.H;
 T0 = s.T(:,i);
 S0 = s.S(:,i);
 
