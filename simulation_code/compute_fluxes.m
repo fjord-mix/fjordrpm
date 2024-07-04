@@ -16,10 +16,10 @@ function [Q, E] = compute_fluxes(i, p, f, s)
 % Calculate tracer vertical mixing fluxes.
 [Q.QVk, Q.QTk, Q.QSk] = get_mixing_fluxes(i, p, s, Q.QVg, Q.QVs);
 
-% Calculate iceberg fluxes, return fluxes and ice variables.
-[Q.QIi, Q.QTi, Q.QSi, Q.QVmi, Q.QTmi, Q.QSmi] = get_iceberg_fluxes(i, p, s);
+% Calculate iceberg fluxes.
+[Q.QVi, Q.QTi, Q.QSi] = get_iceberg_fluxes(i, p, s);
 
 % Calculate vertical fluxes.
-[Q.QVv, Q.QTv, Q.QSv] = get_vertical_fluxes(i, s, Q.QVg-Q.QVs+Q.QVmi);
+[Q.QVv, Q.QTv, Q.QSv] = get_vertical_fluxes(i, s, Q.QVg-Q.QVs+Q.QVi);
 
 end

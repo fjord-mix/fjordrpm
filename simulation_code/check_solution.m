@@ -8,7 +8,7 @@ function status = check_solution(Q)
 status = 0;
 
 % Check that volume is conserved
-maxdVdt = max(abs(Q.QVg-Q.QVs+Q.QVk+Q.QVmi+Q.QVv));
+maxdVdt = max(abs(Q.QVg-Q.QVs+Q.QVk+Q.QVi+Q.QVv));
 if maxdVdt>1e-10
     disp(['Warning: volume possibly not conserved, max dV/dt = ',...
            num2str(maxdVdt)]);

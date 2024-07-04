@@ -20,12 +20,9 @@ s.QVk(:,i) = Q.QVk;
 s.QTk(:,i) = Q.QTk;
 s.QSk(:,i) = Q.QSk;
 
-s.QIi(:,i) = Q.QIi;
+s.QVi(:,i) = Q.QVi;
 s.QTi(:,i) = Q.QTi;
 s.QSi(:,i) = Q.QSi;
-s.QVmi(:,i) = Q.QVmi;
-s.QTmi(:,i) = Q.QTmi;
-s.Smi(:,i) = Q.QSmi;
 
 s.QVv(:,i) = Q.QVv;
 s.QTv(:,i) = Q.QTv;

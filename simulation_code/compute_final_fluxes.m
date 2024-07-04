@@ -33,9 +33,8 @@ s.QTv(:,end) = Q.QTv;
 s.QSv(:,end) = Q.QSv;
 
 % Iceberg fluxes
-s.QIi(:,end) = Q.QIi;
+s.QVi(:,end) = Q.QVi;
 s.QTi(:,end) = Q.QTi;
-s.QSi(:,end) = Q.QSi; 
-s.QVmi(:,end) = Q.QVmi;
+s.QSi(:,end) = Q.QSi;
 
 end

@@ -12,8 +12,8 @@ Tr.H = Tr.V/(p.W*p.L);
 
 % Compute the zmodel tracer variables at timestep i+1 using the timestep
 % specified by the input parameters.
-Tr.VT = s.VT(:,i)+s.dt(i)*p.sid*(Q.QTg-Q.QTs+Q.QTk+Q.QTi+Q.QTmi+Q.QTv);
-Tr.VS = s.VS(:,i)+s.dt(i)*p.sid*(Q.QSg-Q.QSs+Q.QSk+Q.QSi+Q.QSmi+Q.QSv);
+Tr.VT = s.VT(:,i)+s.dt(i)*p.sid*(Q.QTg-Q.QTs+Q.QTk+Q.QTi+Q.QTv);
+Tr.VS = s.VS(:,i)+s.dt(i)*p.sid*(Q.QSg-Q.QSs+Q.QSk+Q.QSi+Q.QSv);
 Tr.T = Tr.VT./Tr.V;
 Tr.S = Tr.VS./Tr.V;
 
