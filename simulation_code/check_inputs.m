@@ -8,13 +8,6 @@ function [status, a] = check_inputs(p, a, t)
 
 status = 0;
 
-% Check shelf oscillation parameters have been set up correctly.
-if (isfield(p,'zd') && p.zd > 0) && (isfield(p,'tw') && p.tw  <= 0)
-    disp('Error: must have positive oscillation period if oscillation strength is set.')
-    status = 1;
-    return
-end
-
 % Check inputs are consistent with specified number of layers.
 if any([length(a.H0) ~= p.N,length(a.T0) ~= p.N,length(a.S0) ~= p.N])
     disp('Error: initial conditions not consistent with number of layers');
