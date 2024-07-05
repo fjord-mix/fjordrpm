@@ -30,11 +30,7 @@ end
 Q = p.C0*p.W*H0(1:s.ksill).*phi0(1:s.ksill)/p.L;
 
 % Compute the above-sill fluxes after barotropic compensation, ensuring
-% depth mean = Qsg0 when plume is turned on, and 0 when plume is turned
-% off
-if p.P0==0
-    Qsg0 = 0;
-end
+% depth mean = Qsg0
 QVs0(1:s.ksill) = Q - H0(1:s.ksill)*(Qsg0+sum(Q))/sum(H0(1:s.ksill));
 
 % Compute the resulting heat/salt fluxes

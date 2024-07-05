@@ -9,7 +9,7 @@ function s = compute_fluxes(i, p, f, s)
 % Calculate plume fluxes
 [s.QVp(:,i), s.QTp(:,i), s.QSp(:,i)] = get_plume_fluxes(i, p, f, s);
 
-% Calculate exterior fluxes
+% Calculate shelf fluxes
 [s.QVs(:,i), s.QTs(:,i), s.QSs(:,i), s.Se(:,i), s.Te(:,i), s.phi(:,i)] = get_shelf_fluxes(i, p, f, s);
 
 % Calculate tracer vertical mixing fluxes
