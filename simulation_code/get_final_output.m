@@ -29,12 +29,12 @@ s.S = s.S(:,inx);
 ints = -[0;cumsum(s.H(:,1))];
 s.z = 0.5*(ints(1:end-1)+ints(2:end));
 
-% Glacier exchanges
-s.QVg = s.QVg(:,inx);
-s.QTg = s.QTg(:,inx);
-s.QSg = s.QSg(:,inx);
+% Plume exchange
+s.QVp = s.QVp(:,inx);
+s.QTp = s.QTp(:,inx);
+s.QSp = s.QSp(:,inx);
 
-% Shelf exchanges
+% Shelf exchange
 s.QVs = s.QVs(:,inx);
 s.QTs = s.QTs(:,inx);
 s.QSs = s.QSs(:,inx);
