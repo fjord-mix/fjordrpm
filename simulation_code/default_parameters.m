@@ -22,12 +22,12 @@ p.l3 = -7.53e-4;   % dependence of freezing point on depth (degC m^-1)
 
 %% Controlling parameters
 
-p.P0 = 25;         % entrainment efficiency (m)
+p.wp = 250;        % plume width (m)
 p.C0 = 1e4;        % shelf exchange efficiency (s)
 p.K0 = 5e-3;       % vertical mixing efficiency (-)
 p.Ri0 = 700;       % Richardson number dependency of mixing
-p.M0 = 2e-8;       % iceberg melt efficiency (s^-1 degC^-1)
-p.U0 = 0.25;       % scale iceberg upwelling
+p.M0 = 1e-6;       % iceberg melt efficiency (s^-1 degC^-1)
+p.U0 = 1;          % scale iceberg upwelling
 
 %% Run-time plotting
 p.plot_runtime = 0;
