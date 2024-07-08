@@ -26,7 +26,7 @@ p.wp = 250;        % plume width (m)
 p.C0 = 1e4;        % shelf exchange efficiency (s)
 p.K0 = 5e-3;       % vertical mixing efficiency (-)
 p.Ri0 = 700;       % Richardson number dependency of mixing
-p.M0 = 1e-6;       % iceberg melt efficiency (s^-1 degC^-1)
+p.M0 = 5e-7;       % iceberg melt efficiency (s^-1 degC^-1)
 p.U0 = 1;          % scale iceberg upwelling
 
 %% Run-time plotting
