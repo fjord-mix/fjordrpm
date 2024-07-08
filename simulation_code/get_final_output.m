@@ -63,6 +63,7 @@ s.Qsg = f.Qsg(inx);
 
 % Derived melt rates (m/d)
 s.icebergmeltrate = p.sid*s.QMi./s.I;
+s.icebergmeltrate(s.I==0,:) = 0;
 
 s.status = status;
 
