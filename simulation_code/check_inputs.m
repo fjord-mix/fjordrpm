@@ -7,6 +7,13 @@ function [status, a] = check_inputs(p, t, a)
 
 status = 0;
 
+% Check provided depths are positive
+if any([p.Hsill<0, p.Hgl<0, p.H<0])
+    disp('Error: p.H, p.Hgl and p.Hsill must be positive');
+    status = 1;
+    return
+end
+
 % Check inputs are consistent with specified number of layers
 if any([length(a.H0) ~= p.N,length(a.T0) ~= p.N,length(a.S0) ~= p.N])
     disp('Error: initial conditions not consistent with number of layers');

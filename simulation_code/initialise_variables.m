@@ -24,10 +24,10 @@ if p.sill==1
     % If there is a sill, redistribute the layers so that they are roughly
     % the same thickness above and below sill but a box boundary coincides
     % with the sill depth
-    Nabove = round((abs(p.silldepth)/p.H)*p.N);
+    Nabove = round((p.Hsill/p.H)*p.N);
     Nbelow = p.N-Nabove;
-    s.H = [(abs(p.silldepth)/Nabove)*ones(Nabove,1);...
-        ((p.H-abs(p.silldepth))/Nbelow)*ones(Nbelow,1)];
+    s.H = [(p.Hsill/Nabove)*ones(Nabove,1);...
+           ((p.H-p.Hsill)/Nbelow)*ones(Nbelow,1)];
     % Store the location of the box boundary coinciding with the sill
     s.ksill = Nabove;
 else
@@ -40,7 +40,7 @@ s.V = s.H*p.W*p.L;
 
 % Find layer with grounding line and store index
 ints = cumsum(s.H);
-s.kgl = find(ints >= abs(p.zgl)-1e-6, 1);
+s.kgl = find(ints >= p.Hgl-1e-6, 1);
 
 % Redistribute the other given initial conditions according to the new
 % layer boundaries and then initialise the variables

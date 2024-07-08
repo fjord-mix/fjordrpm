@@ -20,7 +20,7 @@ gp(kgl) = p.g*(p.betaS*(S0(kgl)-Sp(kgl))-p.betaT*(T0(kgl)-Tp(kgl)));
 ints = cumsum(H0);
 if kgl>1
     k = kgl-1;
-    Qp(k) = Qp(k+1) + (p.wp*p.alphap)^(2/3)*Qp(k+1)^(1/3)*gp(k+1)^(1/3)*(abs(p.zgl)-ints(k));
+    Qp(k) = Qp(k+1) + (p.wp*p.alphap)^(2/3)*Qp(k+1)^(1/3)*gp(k+1)^(1/3)*(p.Hgl-ints(k));
     Tp(k) = (Qp(k+1)*Tp(k+1)+(Qp(k)-Qp(k+1))*T0(k+1))/Qp(k);
     Sp(k) = (Qp(k+1)*Sp(k+1)+(Qp(k)-Qp(k+1))*S0(k+1))/Qp(k);
     gp(k) = p.g*(p.betaS*(S0(k)-Sp(k))-p.betaT*(T0(k)-Tp(k)));
