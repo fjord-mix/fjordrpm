@@ -1,4 +1,4 @@
-function [p, t, f, a] = default_parameters
+function [p, t, f, a] = default_parameters_w_idealised
 
 % DEFAULT_PARAMETERS Loads default parameters for fjordRPM.
 %   [p, t, f, a] = DEFAULT_PARAMETERS sets the default box model
