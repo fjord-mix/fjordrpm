@@ -56,9 +56,13 @@ s.QSv = s.QSv(:,inx);
 s.QVi = s.QVi(:,inx);
 s.QTi = s.QTi(:,inx);
 s.QSi = s.QSi(:,inx);
+s.QMi = s.QMi(:,inx);
 
 % Subglacial discharge
 s.Qsg = f.Qsg(inx);
+
+% Derived melt rates (m/d)
+s.icebergmeltrate = p.sid*s.QMi./s.I;
 
 s.status = status;
 
