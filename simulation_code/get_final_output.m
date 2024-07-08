@@ -38,8 +38,8 @@ s.QSp = s.QSp(:,inx);
 s.QVs = s.QVs(:,inx);
 s.QTs = s.QTs(:,inx);
 s.QSs = s.QSs(:,inx);
-s.Se = s.Se(:,inx);
-s.Te = s.Te(:,inx);
+s.Ss = s.Ss(:,inx);
+s.Ts = s.Ts(:,inx);
 s.phi = s.phi(:,inx);
 
 % Vertical mixing
@@ -57,10 +57,7 @@ s.QVi = s.QVi(:,inx);
 s.QTi = s.QTi(:,inx);
 s.QSi = s.QSi(:,inx);
 
-% Return forcing on same time step as forcings (in solution structure to
-% prevent overwriting)
-s.Ss = f.Ss(:,inx);
-s.Ts = f.Ts(:,inx);
+% Subglacial discharge
 s.Qsg = f.Qsg(inx);
 
 s.status = status;
