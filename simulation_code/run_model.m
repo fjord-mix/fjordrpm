@@ -6,8 +6,8 @@ function s = run_model(p, t, f, a, path_out)
 %   conditions structure a, and returns solution structure s. If path_out
 %   is specified, RUN_MODEL will save a file.
 
-%% Check for errors in the given boundary and initial conditions
-[status, a] = check_inputs(p, t, a);
+%% Check for errors in the given inputs
+status = check_inputs(p, t, f, a);
 
 %% Preallocate and initialise variables
 s = initialise_variables(p, t, a);
