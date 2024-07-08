@@ -20,9 +20,9 @@ else
     % Compute velocity scale and entrainment into upwelling
     Teff = -p.l/p.cw; % effective temperature of meltwater   
     gmelt = p.g*(p.betaS*S0-p.betaT*(T0-Teff)); % buoyancy difference
-    vel = (QMi0.*gmelt.*H0./(p.alphaI*I0)).^(1/3);
+    vel = (QMi0.*gmelt.*H0./(p.alphai*I0)).^(1/3);
     vel(I0==0 | gmelt<=0) = 0;
-    Qent = p.alphaI*vel.*I0;    
+    Qent = p.alphai*vel.*I0;    
 
     % Compute length scale and fraction for upwelling
     gk = max(0,[p.g*(p.betaS*(S0(2:end)-S0(1:end-1)) ...

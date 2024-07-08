@@ -17,8 +17,8 @@ p.alphap = 0.1;    % discharge plume entrainment coefficient
 
 % Usual linear freezing point constants
 p.l1 = -5.73e-2;   % dependence of freezing point on salinity (degC ppt^-1)
-p.l2 = 9.32e-2;    % freezing point offset (degC)
-p.l3 = -7.53e-4;   % dependence of freezing point on depth (degC m^-1)
+p.l2 = 8.32e-2;    % freezing point offset (degC)
+p.l3 = -7.61e-4;   % dependence of freezing point on depth (degC m^-1)
 
 %% Controlling parameters
 
