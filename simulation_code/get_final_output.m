@@ -10,9 +10,9 @@ function s = get_final_output(p, t, f, s, status)
 s = compute_fluxes(size(s.T,2), p, f, s);
 
 % Save values to output file as specified by the input parameter, unless
-% something went wrong, then we want all time steps to properly understand
-% what happened
-if status == 1
+% (a) something went wrong, because we want all time steps to properly understand
+% what happened, or (b) we did not specify particular time steps for saving
+if status == 1 || ~isfield(p,'t_save')
     p.t_save = t;
 end
 
