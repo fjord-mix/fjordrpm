@@ -1,25 +1,24 @@
-function [Q, E] = compute_fluxes(i, p, f, s)
+function s = compute_fluxes(i, p, f, s)
 
-% COMPUTE_FLUXES compute fluxes in the zmodel simulation.
-%   [Q, E, I] = COMPUTE_FLUZES(I, P, F, S) calls functions to compute the
-%   plume fluxes, shelf fluxes, mixing fluxes, iceberg fluxes and vertical
-%   fluxes for parameters structure P, boundary conditions F, and solution
-%   S at timestep I and returns fluxes Q, exterior variables E and iceberg
-%   variables I.
+% COMPUTE_FLUXES compute fluxes in the simulation.
+%   s = COMPUTE_FLUXES(i, p, f, s) calls functions to compute the
+%   plume fluxes, exterior fluxes, mixing fluxes, iceberg fluxes and vertical
+%   fluxes for parameters structure p, boundary conditions f, and solution
+%   s at timestep i.
 
-% Calculate plume fluxes.
-[Q.QVg, Q.QTg, Q.QSg] = get_plume_fluxes(i, p, f, s);
+% Calculate plume fluxes
+[s.QVp(:,i), s.QTp(:,i), s.QSp(:,i)] = get_plume_fluxes(i, p, f, s);
 
-% Calculate shelf fluxes, return fluxes and exterior variables.
-[Q.QVs, Q.QTs, Q.QSs, E.Se, E.Te, E.phi] = get_shelf_fluxes(i, p, f, s);
+% Calculate shelf fluxes
+[s.QVs(:,i), s.QTs(:,i), s.QSs(:,i), s.Ss(:,i), s.Ts(:,i), s.phi(:,i)] = get_shelf_fluxes(i, p, f, s);
 
-% Calculate tracer vertical mixing fluxes.
-[Q.QVk, Q.QTk, Q.QSk] = get_mixing_fluxes(i, p, s, Q.QVg, Q.QVs);
+% Calculate tracer vertical mixing fluxes
+[s.QVk(:,i), s.QTk(:,i), s.QSk(:,i)] = get_mixing_fluxes(i, p, s);
 
-% Calculate iceberg fluxes, return fluxes and ice variables.
-[Q.QIi, Q.QTi, Q.QSi, Q.QVmi, Q.QTmi, Q.QSmi] = get_iceberg_fluxes(i, p, s);
+% Calculate iceberg fluxes
+[s.QVi(:,i), s.QTi(:,i), s.QSi(:,i), s.QMi(:,i)] = get_iceberg_fluxes(i, p, s);
 
-% Calculate vertical fluxes.
-[Q.QVv, Q.QTv, Q.QSv] = get_vertical_fluxes(i, s, Q.QVg-Q.QVs+Q.QVmi);
+% Calculate vertical fluxes
+[s.QVv(:,i), s.QTv(:,i), s.QSv(:,i)] = get_vertical_fluxes(i, s);
 
 end

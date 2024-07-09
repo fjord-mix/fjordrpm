@@ -1,16 +1,15 @@
-function save_output(s, f, t, p, a, path_out)
+function save_output(p, t, f, a, s, path_out)
 
-% SAVE_OUTPUTS Save the outputs of the z-model simulation.
-%   SAVE_OUTPUTS(S, F, T, P, A, PATH_OUT) saves a file containing S, F, T,
-%   P, A in the location PATH_OUT.
+% SAVE_OUTPUT Save the outputs of the z-model simulation.
+%   SAVE_OUTPUT(p, t, f, a, s, path_out) saves a file containing s, f, t,
+%   p, a in the location path_out.
 
     fjord_output.s = s;
     fjord_output.f = f;
     fjord_output.t = t;
     fjord_output.p = p;
     fjord_output.a = a;
-    % v7.3 allows large files (> 2GB), which might happen in very long
-    % runs.
+    % v7.3 allows large files (> 2GB), possible in very long runs
     save(path_out,'fjord_output','-v7.3'); 
 
 end

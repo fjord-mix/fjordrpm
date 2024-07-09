@@ -1,4 +1,4 @@
-function plot_runtime_profile(i, t, f, p, s)
+function plot_runtime_profile(i, p, t, f, s)
 
 % Preallocate variables
 H = s.H; S = s.S; Se = s.Se; QVs = s.QVs; z = f.zs;

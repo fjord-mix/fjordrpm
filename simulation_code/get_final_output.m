@@ -1,14 +1,17 @@
-function s = get_final_output(p, f, t, s, status)
+function s = get_final_output(p, t, f, s, status)
 
-% GET_OUTPUT Get the output of the z-model simulation.
-%   S = GET_OUTPUT(P, F, T, S, STATUS) gets the zmodel output for input
-%   parameters P, forcing structure F, time vector T and solution structure
-%   S, and returns solution structure S on timestepping specified by the
-%   user, including forcing in the same time steps as S.
+% GET_FINAL_OUTPUT Get the output of the simulation.
+%   s = GET_FINAL_OUTPUT(p, t, f, s, status) gets the model output for
+%   input parameters p, forcing structure f, time vector t and solution
+%   structure s, and returns solution structure s on timestepping specified
+%   by the user.
+
+% Compute fluxes one last time to get same number of values as for tracers
+s = compute_fluxes(size(s.T,2), p, f, s);
 
 % Save values to output file as specified by the input parameter, unless
 % something went wrong, then we want all time steps to properly understand
-% what happened.
+% what happened
 if status == 1
     p.t_save = t;
 end
@@ -18,24 +21,25 @@ inx = find(ismember(t, p.t_save));
 
 s.t = t(inx);
 
-% Box variables
-s.H = s.H(:,inx);
+% Layer variables
 s.T = s.T(:,inx);
 s.S = s.S(:,inx);
-s.V = s.V(:,inx);
-s.I = s.I(:,inx);
 
-% Glacier exchanges
-s.QVg = s.QVg(:,inx);
-s.QTg = s.QTg(:,inx);
-s.QSg = s.QSg(:,inx);
+% Vertical grid
+ints = -[0;cumsum(s.H(:,1))];
+s.z = 0.5*(ints(1:end-1)+ints(2:end));
 
-% Shelf exchanges
+% Plume exchange
+s.QVp = s.QVp(:,inx);
+s.QTp = s.QTp(:,inx);
+s.QSp = s.QSp(:,inx);
+
+% Shelf exchange
 s.QVs = s.QVs(:,inx);
 s.QTs = s.QTs(:,inx);
 s.QSs = s.QSs(:,inx);
-s.Se = s.Se(:,inx);
-s.Te = s.Te(:,inx);
+s.Ss = s.Ss(:,inx);
+s.Ts = s.Ts(:,inx);
 s.phi = s.phi(:,inx);
 
 % Vertical mixing
@@ -49,22 +53,18 @@ s.QTv = s.QTv(:,inx);
 s.QSv = s.QSv(:,inx);
 
 % Iceberg fluxes
-s.QIi = s.QIi(:,inx);
+s.QVi = s.QVi(:,inx);
 s.QTi = s.QTi(:,inx);
-s.QSi = s.QSi(:,inx); 
-s.QVmi = s.QVmi(:,inx);
+s.QSi = s.QSi(:,inx);
+s.QMi = s.QMi(:,inx);
 
-% For iceberg fluxes, also calculate and save fjord-integrated values.
-s.IT = sum(s.I); % fjord iceberg surface area
-s.MT = sum(s.QIi); % total iceberg melt flux
-% s.ET = p.W*p.L*trapz(f.zi,p.E0*s.I); % total iceberg export flux
-
-% Return forcing on same time step as forcings (in results structure to
-% prevent overwriting).
-s.Ss = f.Ss(:,inx);
-s.Ts = f.Ts(:,inx);
+% Subglacial discharge
 s.Qsg = f.Qsg(inx);
-s.D = f.D(inx);
+
+% Derived melt rates (m/d)
+s.icebergmeltrate = p.sid*s.QMi./s.I;
+s.icebergmeltrate(s.I==0,:) = 0;
 
 s.status = status;
+
 end

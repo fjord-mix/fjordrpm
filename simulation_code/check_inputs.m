@@ -1,49 +1,53 @@
-function [status, a] = check_inputs(p, a, t)
+function status = check_inputs(p, t, f, a)
 
-% CHECK_INPUTS Check for errors in zmodel inputs.
-%   STATUS = CHECK_INPUTS(P, A) checks the zmodel inputs P and A, AND
-%   returns an error status S with default value 0, or 1 if there was an
-%   error. Also returns an updated A if any changes to e.g. dimensions were
-%   made.
+% CHECK_INPUTS Check for errors in model inputs.
+%   status = CHECK_INPUTS(p, t, f, a) checks the model inputs.
 
 status = 0;
 
-% Check shelf oscillation parameters have been set up correctly.
-if (isfield(p,'zd') && p.zd > 0) && (isfield(p,'tw') && p.tw  <= 0)
-    disp('Error: must have positive oscillation period if oscillation strength is set.')
-    status = 1;
-    return
+% Check provided depths are positive
+if any([p.Hsill<0, p.Hgl<0, p.H<0])
+    error('p.H, p.Hgl and p.Hsill must be positive');
 end
 
-% Check inputs are consistent with specified number of layers.
-if any([length(a.H0) ~= p.N,length(a.T0) ~= p.N,length(a.S0) ~= p.N])
-    disp('Error: initial conditions not consistent with number of layers');
-    status = 1; 
-    return
+% Check dimensionality of initial conditions
+if ~isequal([size(a.H0)],[size(a.S0)],[size(a.T0)],[size(a.I0)],[p.N,1])
+    error('Initial conditions (a.H0, a.S0, a.T0, a.I0) must have dimensions p.N x 1');
 end
 
-% Check sum of layer thicknesses is equal to fjord depth.
+% Check sum of layer thicknesses is equal to fjord depth
 if abs(sum(a.H0)-p.H) > 1e-10
-    disp('Error: initial box thicknesses must sum to fjord depth');
-    status = 1; 
-    return
+    error('Layer thicknesses (a.H0) must sum to fjord depth (p.H)');
 end
 
-% Check the dimensions of the initial conditions and transpose if required.
-if size(a.H0, 1) < size(a.H0, 2)
-    a.H0 = a.H0';
+% Check dimensionality of forcings
+nz = length(f.zs);
+nt = length(t);
+% f.zs
+if ~isequal(size(f.zs),[nz,1])
+    error('f.zs must have dimensions nz x 1');
+end
+% f.Ss and f.Ts
+if ~isequal(size(f.Ss),size(f.Ts),[nz,nt])
+    error('f.Ss and f.Ts must have dimensions nz x nt');
+end
+% f.Qsg
+if ~isequal(size(f.Qsg),[1,nt])
+    error('f.Qsg must have dimensions 1 x nt');
 end
 
-% If t_save is not given, it will take t instead
-if ~isfield(p,'t_save')
-    p.t_save=t;
-end
+% % If t_save is not given, it will take t instead
+% if ~isfield(p,'t_save')
+%     p.t_save=t;
+% end
+% 
+% % Check that the time values where the solution will be saved are a subset
+% % of the time values where the solution will be computed
+% if ~all(ismember(p.t_save, t)) 
+%     disp("Error: the values where the solution is saved, p.t_save, must be a subset of the values where the solution is computed, t.")
+%     status = 1;
+%     return
+% end
 
-% Check that the time values where the solution will be saved are a subset
-% of the time values where the solution will be computed.
-if ~all(ismember(p.t_save, t)) 
-    disp("Error: the values where the solution is saved, p.t_save, must be a subset of the values where the solution is computed, t.")
-    status = 1;
-    return
 end
 
