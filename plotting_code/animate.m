@@ -3,6 +3,9 @@ function animate(outputfile,nframes)
 % load data
 load([outputfile,'.mat']);
 
+% delete existing video if exists
+warning off; delete([outputfile,'.mp4']); warning on;
+
 % colour maps from https://uk.mathworks.com/matlabcentral/fileexchange/57773-cmocean-perceptually-uniform-colormaps
 cmap_vel = cmocean('balance');
 cmap_sal = cmocean('haline');
@@ -142,7 +145,6 @@ for k=1:length(inx)
 end
 
 % write video
-warning off; delete([outputfile,'.mp4']); warning on;
 video = VideoWriter([outputfile,'.mp4'],'MPEG-4');
 video.FrameRate = 5;
 open(video);
