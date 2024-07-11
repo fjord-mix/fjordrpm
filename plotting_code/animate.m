@@ -29,6 +29,9 @@ Tplims = [min([s.Ts(:);s.T(:)]),max([s.Ts(:);s.T(:)])];
 Sanomlims = max(abs(s.S(:)-s.Ss(:)))*[-1,1];
 Tanomlims = max(abs(s.T(:)-s.Ts(:)))*[-1,1];
 fluxlims = [min([s.Qsg,sum(s.QMi)]),max([s.Qsg,sum(s.QMi)])];
+if length(unique(fluxlims))==1
+    fluxlims(2)=fluxlims(2)+1;
+end
 tlims = [min(s.t),max(s.t)];
 
 % grids
