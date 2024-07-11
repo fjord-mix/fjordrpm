@@ -1,4 +1,4 @@
-function s = initialise_variables(p, t, a)
+function s = initialise_variables(p, t, f, a)
 
 % INITIALISE_VARIABLES Initialise model variables with initial conditions.
 %   s = INITIALISE_VARIABLES(p, t, a) initialises the model variables
@@ -8,16 +8,18 @@ function s = initialise_variables(p, t, a)
 % Set the timestep from the input time field
 s.dt = t(2:end)-t(1:end-1);
 
-% Set and initialise solution structure fields
-% Static fields
+% Initialise solution structure fields
+% Fields with dimensions p.N x 1
 [s.H, s.V, s.I] = deal(zeros(p.N, 1));
-% Dynamic fields
+% Fields with dimensions p.N x length(t)
 [s.T, s.S, ...
  s.QVp, s.QTp, s.QSp, ...
  s.QVs, s.QTs, s.QSs, s.Ts, s.Ss, s.phi, ...
  s.QVk, s.QTk, s.QSk, ...
  s.QVi, s.QTi, s.QSi, s.QMi, ...
  s.QVv, s.QTv, s.QSv] = deal(zeros(p.N, length(t)));
+% Fields with dimensions 1 x length(t)
+[s.Qsg] = deal(zeros(1, length(t)));
 
 % Initialise the layer depths with the given initial conditions
 if p.sill==1
@@ -37,6 +39,9 @@ end
 
 % Initialise layer volumes
 s.V = s.H*p.W*p.L;
+
+% Get forcings on model layers and at model time steps
+[s.Ts, s.Ss, s.Qsg] = bin_forcings(f, s.H, t);
 
 % Find layer with grounding line and store index
 ints = cumsum(s.H);

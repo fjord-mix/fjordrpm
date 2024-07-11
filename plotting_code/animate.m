@@ -1,194 +1,187 @@
-function animate(input_path,output_path,output_name,nframes)
+function animate(outputfile,nframes)
 
-% ANIMATE Animate the results of a box model simulation.
-%   ANIMATE(INPUT_PATH,OUTPUT_PATH,OUTPUT_NAME, NFRAMES) creates a video mp4 file of a box model
-%   simulation showing the temperature and salinity in each layer, the
-%   potential and the subglacial discharge.
+% load data
+load([outputfile,'.mat']);
 
-%% File setup
-% Load the results of the required box model simulation.
-close all
-if isstruct(input_path)
-    input = input_path;
+% delete existing video if exists
+warning off; delete([outputfile,'.mp4']); warning on;
+
+% colour maps from https://uk.mathworks.com/matlabcentral/fileexchange/57773-cmocean-perceptually-uniform-colormaps
+cmap_vel = cmocean('balance');
+cmap_sal = cmocean('haline');
+cmap_temp = cmocean('thermal');
+cmap_anom = cmocean('delta');
+
+% some nice plotting colours
+cols = [0,0.4470,0.7410;
+        0.8500,0.3250,0.0980;
+        0.3010,0.7450,0.9330];
+
+% limits
+u0 = [s.QVs./(p.W*s.H)];
+ulims = max(abs(u0(:)))*[-1,1];
+w0 = cumsum(s.QVp+s.QVs)/(p.W*p.L);
+wlims = max(abs(w0(:)))*[-1,1];
+Slims = [min(s.S(:)),max(s.S(:))];
+Splims = [min([s.Ss(:);s.S(:)]),max([s.Ss(:);s.S(:)])];
+Tlims = [min(s.T(:)),max(s.T(:))];
+Tplims = [min([s.Ts(:);s.T(:)]),max([s.Ts(:);s.T(:)])];
+Sanomlims = max(abs(s.S(:)-s.Ss(:)))*[-1,1];
+Tanomlims = max(abs(s.T(:)-s.Ts(:)))*[-1,1];
+fluxlims = [min([s.Qsg,sum(s.QMi)]),max([s.Qsg,sum(s.QMi)])];
+tlims = [min(s.t),max(s.t)];
+
+% grids
+nx = 15;
+x = linspace(0,p.L,nx)/1e3;
+xg = linspace(0,p.L,nx+1)/1e3;
+nz = length(s.z);
+zc = s.z;
+zg = -[0;cumsum(s.H)];
+
+% sill patch
+if p.sill==1
+    xsill = [p.L,p.L,0.98*p.L,0.98*p.L]/1e3;
+    zsill = -[p.H,p.Hsill,p.Hsill,p.H];
 else
-    input = load(input_path).fjord_run;
+    xsill = NaN;
+    zsill = NaN;
 end
-names = fieldnames(input);
-for i=1:length(names)
-    eval([names{i} '=input.' names{i},';']);
-end
+scolor = 0.5*[1,1,1];
+swidth = 1;
 
-%% Plotting features
-% Change default plot line width to 1.
-set(0, 'DefaultLineLineWidth', 1);
+% time steps to plot
+inx = round(linspace(1,length(s.t),nframes));
 
-% Change all default interpreters to latex.
-list_factory = fieldnames(get(groot, 'factory'));
-index_interpreter = find(contains(list_factory, 'Interpreter'));
-for i = 1:length(index_interpreter)
-    default_name = strrep(list_factory{index_interpreter(i)}, 'factory', 'default');
-    set(groot, default_name, 'latex');
-end
+% loop over time steps to plot
+for k=1:length(inx)
 
-% Axis limits, legend, subglacial discharge.
-Slims = [min([min(s.S(:)), min(f.Ss(:))]), max([max(s.S(:)), max(f.Ss(:))])];
-Tlims = [min([min(s.T(:)), min(f.Ts(:))]), max([max(s.T(:)), max(f.Ts(:))])];
-zlims = [-p.H, 0];
-x0 = 1500;
-sf = x0*0.2/max([max(abs(s.QVs(:))), max(abs(s.QVg(:))), max(abs(s.QVb(:)))]);
-legstr = cell(1, size(s.H, 1)); 
-for i = 1:size(s.H, 1) 
-    legstr{i} = num2str(i); 
-end
-f_qsg = interp1(linspace(0, max(s.t), length(f.Qsg)), f.Qsg, s.t, 'linear');
+    i = inx(k);
+    figure(); set(gcf,'Visible','off');
+    
+    % plotting data for this timestep
+    u = interp1([0,p.L]/1e3,[s.QVp(:,i),-s.QVs(:,i)]',x)'./(p.W*s.H);
+    w = -[0;cumsum(s.QVp(:,i)+s.QVs(:,i))/(p.W*p.L)];
+    w = 0.5*(w(1:end-1)+w(2:end));
+    w = interp1([0,p.L]/1e3,[w,w]',x)';
+    S = interp1([0,p.L]/1e3,[s.S(:,i),s.S(:,i)]',x)';
+    Ss = interp1([0,p.L]/1e3,[s.Ss(:,i),s.Ss(:,i)]',x)';
+    T = interp1([0,p.L]/1e3,[s.T(:,i),s.T(:,i)]',x)';
+    Ts = interp1([0,p.L]/1e3,[s.Ts(:,i),s.Ts(:,i)]',x)';
+    
+    % pad data to deal with pcolor
+    uplot = [[u,NaN(nz,1)];NaN(1,nx+1)];
+    wplot = [[w,NaN(nz,1)];NaN(1,nx+1)];
+    Splot = [[S,NaN(nz,1)];NaN(1,nx+1)];
+    Sanomplot = [[S-Ss,NaN(nz,1)];NaN(1,nx+1)];
+    Tplot = [[T,NaN(nz,1)];NaN(1,nx+1)];
+    Tanomplot = [[T-Ts,NaN(nz,1)];NaN(1,nx+1)];
+    
+    % plot along-fjord velocity
+    subplot(2,6,1:2); hold on;
+    pcolor(xg,zg,uplot); shading flat;
+    patch(xsill,zsill,scolor,'edgecolor','k','linewidth',swidth);
+    colorbar; colormap(gca,cmap_vel); caxis(ulims);
+    xlim([0,p.L]/1e3); ylim([-p.H,0]);
+    title('along-fjord velocity (m/s)');
+    xlabel('x (km)'); ylabel('depth (m)');
+    set(gca,'box','on','layer','top');
+    
+    % plot vertical velocity
+    subplot(2,6,7:8); hold on;
+    pcolor(xg,zg,wplot); shading flat;
+    patch(xsill,zsill,scolor,'edgecolor','k','linewidth',swidth);
+    colorbar; colormap(gca,cmap_vel); caxis(wlims);
+    xlim([0,p.L]/1e3); ylim([-p.H,0]);
+    title('vertical velocity (m/s)');
+    xlabel('x (km)'); ylabel('depth (m)');
+    set(gca,'box','on','layer','top');
 
-% Plot positions and parameters
-fs = 10;
-fs2 = 6;
-lspace = 0.06;
-hspace1 = 0.03;
-hspace2 = 0.08;
-rspace = 0.02;
-pw1 = 0.14;
-pw2 = pw1/2;
-pw3 = 1-lspace-rspace-2*pw1-2*pw2-3*hspace1-hspace2;
-bspace = 0.12;
-tspace = 0.06;
-vspace = 0.05;
-ph = 1-bspace-tspace;
-ph3 = (1-bspace-tspace-2*vspace)/3;
-cby = 0.075;
-cbh = 0.02;
-cbw = 0.2;
+    % plot temperature
+    subplot(2,6,3:4); hold on;
+    pcolor(xg,zg,Tplot); shading flat;
+    patch(xsill,zsill,scolor,'edgecolor','k','linewidth',swidth);
+    colorbar; colormap(gca,cmap_temp); caxis(Tlims);
+    xlim([0,p.L]/1e3); ylim([-p.H,0]);
+    title('fjord temperature (C)');
+    xlabel('x (km)');
+    set(gca,'box','on','layer','top');
 
-%% Create animation files
-dt = round((length(s.t)-1)/nframes);
-if dt < 1, dt=1; end
-for i = 1:dt:length(s.t)-1
-    figure(); 
-    set(gcf, 'Visible', 'off');
+    % plot temperature profiles
+    ints = -[0;cumsum(s.H)];
+    subplot(2,6,5); hold on;
+    stairs([s.Ts(1,i);s.Ts(:,i)],ints,'k','linewidth',2);
+    stairs([s.T(1,i);s.T(:,i)],ints,'linewidth',2,'color',cols(2,:));
+    xlim(Tplims); ylim([-p.H,0]);
+    set(gca,'box','on'); grid on;
+    xlabel('temperature (C)');
+    
+    % plot salinity
+    subplot(2,6,9:10); hold on;
+    pcolor(xg,zg,Splot); shading flat;
+    patch(xsill,zsill,scolor,'edgecolor','k','linewidth',swidth);
+    colorbar; colormap(gca,cmap_sal); caxis(Slims);
+    xlim([0,p.L]/1e3); ylim([-p.H,0]);
+    title('fjord salinity');
+    xlabel('x (km)');
+    set(gca,'box','on','layer','top');
 
-    ints = [0; cumsum(s.H(:, i))];
-    y = -0.5*(ints(1:end-1)+ints(2:end));
-    y2 = cumsum(s.H(1:end-1, i));
+    % plot salinity profiles
+    ints = -[0;cumsum(s.H)];
+    subplot(2,6,6); hold on;
+    stairs([s.Ss(1,i);s.Ss(:,i)],ints,'k','linewidth',2);
+    stairs([s.S(1,i);s.S(:,i)],ints,'linewidth',2,'color',cols(2,:));
+    xlim(Splims); ylim([-p.H,0]);
+    set(gca,'box','on'); grid on;
+    xlabel('salinity');
+    legend('shelf','fjord','location','southwest');
+    
+    % plot fjord-shelf exchange velocity
+    subplot(2,6,11); hold on;
+    stairs(-[u0(1,i);u0(:,i)],ints,'k','linewidth',2);
+    set(gca,'box','on'); grid on;
+    xlabel('fjord-shelf exchange velocity (m/s)');
+    xlim(ulims); ylim([-p.H,0]);
+    title('positive values out of fjord');
 
-    % Box model plots
-    a1 = axes('position', [lspace, bspace, pw1, ph]); 
-    hold on;
-    pcolor([0, x0], -[0;cumsum(s.H(:, i))], [[s.S(:, i);0], [s.S(:, i);0]]);
-    set(gca, 'xtick', [], 'xticklabel', {});
-    q1 = quiver(0*y+x0, y, sf*s.QVs(:, i), 0*s.QVs(:, i), 'autoscale', 'off');
-    set(q1, 'color', 'k', 'linewidth', 2);
-    q2 = quiver(0*y, y, sf*s.QVg(:, i), 0*s.QVg(:, i), 'autoscale', 'off');
-    set(q2, 'color', 'k', 'linewidth', 2);
-    q3 = quiver(0*y2+x0/2, -y2, 0*y2, sf*cumsum(s.QVk(1:end-1, i)), 'autoscale', 'off');
-    set(q3, 'color', 'k', 'linewidth', 2);
-    q4 = quiver(0*y2+x0/3, -y2, 0*y2, sf*cumsum(s.QVb(1:end-1, i)), 'autoscale', 'off');
-    set(q4, 'color', 'r', 'linewidth', 2);
-    set(gca, 'clipping', 'off', 'box', 'on', 'fontsize', fs);
-    clim(a1, Slims); xlim([0, x0]); ylim(zlims);
-    text(0.02*x0, -800, ['t = ', num2str(0.01*round(100*s.t(i))), ' days'], ...
-        'fontsize', fs, 'VerticalAlignment', 'bottom');
-    title('Salinity: fjord', 'fontsize', fs);
-    ylabel('depth (m)', 'fontsize', fs);
-
-    a2 = axes('position', [lspace+pw1+hspace1, bspace, pw2, ph]);
-    pcolor([0, x0], f.zs, [f.Ss(:, i), f.Ss(:, i)]); 
-    shading flat;
-    xlim([0, x0]); ylim(zlims);
-    set(gca, 'box', 'on', 'fontsize', fs, 'xtick', [], 'ytick', [], 'yticklabel', {});%, 'clipping', 'off');
-    title('shelf', 'fontsize', fs);
-    colorbar(a2, 'southoutside', 'position', [lspace+0.5*(pw1+hspace1+pw2)-cbw/2, cby, cbw, cbh], 'fontsize', fs);
-    clim(a2, Slims);
-
-    a3 = axes('position', [lspace+pw1+2*hspace1+pw2, bspace, pw1, ph]); 
-    hold on;
-    pcolor([0, x0], -[0;cumsum(s.H(:, i))], [[s.T(:, i);0], [s.T(:, i);0]]);
-    set(gca, 'xtick', [], 'xticklabel', {});
-    q1 = quiver(0*y+x0, y, sf*s.QVs(:, i), 0*s.QVs(:, i), 'autoscale', 'off');
-    set(q1, 'color', 'k', 'linewidth', 2);
-    q2 = quiver(0*y, y, sf*s.QVg(:, i), 0*s.QVg(:, i), 'autoscale', 'off');
-    set(q2, 'color', 'k', 'linewidth', 2);
-    q3 = quiver(0*y2+x0/2, -y2, 0*y2, sf*cumsum(s.QVk(1:end-1, i)), 'autoscale', 'off');
-    set(q3, 'color', 'k', 'linewidth', 2);
-    q4 = quiver(0*y2+x0/3, -y2, 0*y2, sf*cumsum(s.QVb(1:end-1, i)), 'autoscale', 'off');
-    set(q4, 'color', 'r', 'linewidth', 2);
-    set(gca, 'clipping', 'off', 'box', 'on', 'fontsize', fs, 'xtick', [], 'ytick', []);
-    clim(gca, Tlims); xlim([0, x0]); ylim(zlims);
-    title('Temperature: fjord', 'fontsize', fs);
-    colormap(a3, jet);
-
-    a4 = axes('position', [lspace+2*pw1+pw2+3*hspace1, bspace, pw2, ph]);
-    pcolor([0, x0], f.zs, [f.Ts(:, i), f.Ts(:, i)]); 
-    shading flat;
-    xlim([0, x0]); ylim(zlims);
-    set(gca, 'box', 'on', 'fontsize', fs, 'xtick', [], 'ytick', [], 'yticklabel', {});%, 'clipping', 'off');
-    title('shelf', 'fontsize', fs);
-    colorbar(a4, 'southoutside', 'position', [lspace+pw1+2*hspace1+pw2+0.5*(pw1+hspace1+pw2)-cbw/2, cby, cbw, cbh], 'fontsize', fs);
-    colormap(a4, jet); 
-    clim(a4, Tlims);
-
-    % Illustration of sill
-    if p.sill==1
-        annotation('line', (lspace+pw1+hspace1/2)*[1, 1], bspace+[0, ph*(1-abs(p.silldepth)/p.H)], ...
-            'color', 'k', 'linewidth', 2);
-        annotation('line', (lspace+2*pw1+pw2+2.5*hspace1)*[1, 1], bspace+[0, ph*(1-abs(p.silldepth)/p.H)], ...
-            'color', 'k', 'linewidth', 2);
-    end
-
-    % Time series
-    axes('position', [lspace+2*pw1+2*pw2+3*hspace1+hspace2, bspace+2*(vspace+ph3), pw3, ph3]); hold on;
-    plot(s.t, f_qsg, 'linewidth', 1);
-    plot(s.t(i), f_qsg(i), 'k.');
-    ylabel('subglacial discharge (m$^3$/s)', 'fontsize', fs2);
-    set(gca, 'box', 'on', 'fontsize', fs2);
-
-    axes('position', [lspace+2*pw1+2*pw2+3*hspace1+hspace2, bspace+1*(vspace+ph3), pw3, ph3]); hold on;
-    plot(s.t, s.H, 'linewidth', 1);
-    plot(s.t(i), s.H(:, i), 'k.');
-    ylabel('$H$ (m)', 'fontsize', fs2);
-    set(gca, 'box', 'on', 'fontsize', fs2);
-    legend(legstr, 'location', 'north', 'orientation', 'horizontal', 'fontsize', 4, 'NumColumns', 2);
-
-    axes('position', [lspace+2*pw1+2*pw2+3*hspace1+hspace2, bspace+0*(vspace+ph3), pw3, ph3]); hold on;
-    plot(s.t, s.phi, 'linewidth', 1);
-    plot(s.t(i), s.phi(:, i), 'k.');
-    xlabel('$t$ (days)', 'fontsize', fs2);
-    ylabel('$\phi$ (shelf-fjord pressure difference)', 'fontsize', fs2);
-    set(gca, 'box', 'on', 'fontsize', fs2);
-
-    % Save files
-    if i < 10
-        savenum = ['00', num2str(i)];
-    elseif i<100
-        savenum = ['0', num2str(i)];
+    % plot subglacial discharge and iceberg melt time series
+    subplot(2,6,12); hold on;
+    l1 = plot(s.t,s.Qsg,'linewidth',2,'color',cols(1,:));
+    plot(s.t(i),s.Qsg(i),'o','color',cols(1,:));
+    l2 = plot(s.t,sum(s.QMi),'linewidth',2,'color',cols(3,:));
+    plot(s.t(i),sum(s.QMi(:,i)),'o','color',cols(3,:));
+    xlabel('time (days)');
+    ylabel('flux (m$^3$/s)');
+    set(gca,'box','on'); grid on;
+    legend([l1,l2],'discharge','iceberg melt','location','northwest');
+    xlim(tlims); ylim(fluxlims);
+     
+    % time step
+    sgtitle(['t = ',num2str(0.01*round(100*s.t(i))),' days']);
+    
+    % save plot
+    if k<10
+        savenum = ['00', num2str(k)];
+    elseif k<100
+        savenum = ['0', num2str(k)];
     else
-        savenum = num2str(i);
+        savenum = num2str(k);
     end
-    saveplot(25, 10, 300, [output_path, output_name, '_', savenum, '.png']);
+    saveplot(40,15,300,[outputfile,'_',savenum,'.png']);
     close all;
 
 end
 
-%% Write video
-video = VideoWriter([output_path, output_name, '.mp4'], 'MPEG-4');
-video.FrameRate = 10;
+% write video
+video = VideoWriter([outputfile,'.mp4'],'MPEG-4');
+video.FrameRate = 5;
 open(video);
-for i = 1:dt:length(s.t)-1
-
-    if i < 10
-        savenum = ['00', num2str(i)];
-    elseif i < 100
-        savenum = ['0', num2str(i)];
-    else
-        savenum = num2str(i);
-    end
-
-    I = imread([output_path, output_name, '_', savenum, '.png']);
+pngs = dir(fullfile([outputfile,'*.png']));
+for k = 1:length(pngs)
+    I = imread(pngs(k).name);
     writeVideo(video, I);
-
 end
 close(video);
-delete([output_path, output_name ,'*.png'])
+delete([outputfile,'*.png']);
 
 end

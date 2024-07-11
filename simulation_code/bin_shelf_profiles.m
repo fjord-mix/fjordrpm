@@ -1,4 +1,4 @@
-function [Ts0, Ss0] = bin_ocean_profiles(Tz, Sz, z, H0)
+function [Ts0, Ss0] = bin_shelf_profiles(Tz, Sz, z, H0)
 
 % BIN_OCEAN_PROFILES Interpolates shelf profile to layers.
 %   [Ts0, Ss0] = BIN_OCEAN_PROFILES(Tz, Sz, z, H0) bins temperature (Tz)

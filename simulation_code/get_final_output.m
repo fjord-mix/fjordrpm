@@ -1,13 +1,12 @@
-function s = get_final_output(p, t, f, s, status)
+function s = get_final_output(p, t, s, status)
 
 % GET_FINAL_OUTPUT Get the output of the simulation.
-%   s = GET_FINAL_OUTPUT(p, t, f, s, status) gets the model output for
-%   input parameters p, forcing structure f, time vector t and solution
-%   structure s, and returns solution structure s on timestepping specified
-%   by the user.
+%   s = GET_FINAL_OUTPUT(p, t, s, status) gets the model output for
+%   input parameters p, time vector t and solution structure s, and 
+%   returns solution structure s on timestepping specified by the user.
 
 % Compute fluxes one last time to get same number of values as for tracers
-s = compute_fluxes(size(s.T,2), p, f, s);
+s = compute_fluxes(size(s.T,2), p, s);
 
 % Save values to output file as specified by the input parameter, unless
 % (a) something went wrong, because we want all time steps to properly understand
@@ -59,7 +58,7 @@ s.QSi = s.QSi(:,inx);
 s.QMi = s.QMi(:,inx);
 
 % Subglacial discharge
-s.Qsg = f.Qsg(inx);
+s.Qsg = s.Qsg(inx);
 
 % Derived melt rates (m/d)
 s.icebergmeltrate = p.sid*s.QMi./s.I;

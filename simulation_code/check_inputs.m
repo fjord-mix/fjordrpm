@@ -20,16 +20,27 @@ if abs(sum(a.H0)-p.H) > 1e-10
     error('Layer thicknesses (a.H0) must sum to fjord depth (p.H)');
 end
 
-% Check dimensionality of forcings
+% Check dimensionality of shelf forcing
 nz = length(f.zs);
-nt = length(t);
+nt = length(f.ts);
+% f.ts
+if ~isequal(size(f.ts),[1,nt])
+    error('f.ts must have dimensions 1 x nt');
+end
 % f.zs
 if ~isequal(size(f.zs),[nz,1])
     error('f.zs must have dimensions nz x 1');
 end
 % f.Ss and f.Ts
 if ~isequal(size(f.Ss),size(f.Ts),[nz,nt])
-    error('f.Ss and f.Ts must have dimensions nz x nt');
+    error('f.Ss and f.Ts must have dimensions length(f.zs) x length(f.ts)');
+end
+
+% Check dimensionality of dischaarge forcing
+nt = length(f.tsg);
+% f.tsg
+if ~isequal(size(f.tsg),[1,nt])
+    error('f.tsg must have dimensions 1 x nt');
 end
 % f.Qsg
 if ~isequal(size(f.Qsg),[1,nt])
