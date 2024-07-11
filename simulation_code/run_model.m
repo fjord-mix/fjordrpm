@@ -10,7 +10,7 @@ function s = run_model(p, t, f, a, path_out)
 status = check_inputs(p, t, f, a);
 
 %% Preallocate and initialise variables
-s = initialise_variables(p, t, a);
+s = initialise_variables(p, t, f, a);
 
 %% The timestepping loop
 for i = 1:length(t)-1
@@ -19,14 +19,14 @@ for i = 1:length(t)-1
     s = homogenise_unstable_layers(i, p, s);
     
     % Compute the fluxes ready for next timestep
-    s = compute_fluxes(i, p, f, s);
+    s = compute_fluxes(i, p, s);
 
     % Step the tracers forward in time
     s = step_solution_forwards(i, p, s);
 
     % Optional runtime plotting
     if p.plot_runtime
-        plot_runtime_profile(i, p, t, f, s);
+        plot_runtime_profile(i, p, t, s);
     end
 
     % Check for errors at this new timestep
@@ -35,7 +35,7 @@ for i = 1:length(t)-1
 end
 
 %% Subsample solution structure to requested output frequency
-s = get_final_output(p, t, f, s, status);
+s = get_final_output(p, t, s, status);
 
 %% Save output if a path and file name are provided
 if nargin > 4

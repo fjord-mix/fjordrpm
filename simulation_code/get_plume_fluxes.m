@@ -1,4 +1,4 @@
-function [QpV0, QpT0, QpS0] = get_plume_fluxes(i, p, f, s)
+function [QpV0, QpT0, QpS0] = get_plume_fluxes(i, p, s)
 
 % GET_PLUME_FLUXES Compute plume fluxes.
 %   [QpV0, QpT0, QpS0] = GET_PLUME_FLUXES(i, p, f, s) computes the plume
@@ -8,7 +8,7 @@ function [QpV0, QpT0, QpS0] = get_plume_fluxes(i, p, f, s)
 % Get tracer variables at timestep i
 H0 = s.H; T0 = s.T(:,i); S0 = s.S(:,i);
 % Get boundary conditions at timestep i
-Qsg0 = f.Qsg(i);
+Qsg0 = s.Qsg(i);
 
 if Qsg0==0
     % If there is no plume, the fluxes are zero by default

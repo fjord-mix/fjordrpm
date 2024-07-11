@@ -1,9 +1,9 @@
-function plot_runtime_profile(i, p, t, f, s)
+function plot_runtime_profile(i, p, t, s)
 
 % Plot temperatures
 ints = -[0;cumsum(s.H)];
 subplot(1,3,1); cla; hold on;
-plot(f.Ts(:,i),f.zs,'linewidth',2);
+stairs([s.Ts(1,i);s.Ts(:,i)],ints,'linewidth',2);
 stairs([s.T(1,i);s.T(:,i)],ints,'linewidth',2);
 set(gca,'box','on'); grid on;
 xlabel('temperature (C)');
@@ -13,7 +13,7 @@ legend('shelf','fjord','location','southwest');
 % Plot salinities
 ints = -[0;cumsum(s.H)];
 subplot(1,3,2); cla; hold on;
-plot(f.Ss(:,i),f.zs,'linewidth',2);
+stairs([s.Ss(1,i);s.Ss(:,i)],ints,'linewidth',2);
 stairs([s.S(1,i);s.S(:,i)],ints,'linewidth',2);
 set(gca,'box','on'); grid on;
 xlabel('salinity');
