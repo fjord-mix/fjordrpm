@@ -12,15 +12,24 @@ cmap_sal = cmocean('haline');
 cmap_temp = cmocean('thermal');
 cmap_anom = cmocean('delta');
 
-% colour limits
+% some nice plotting colours
+cols = [0,0.4470,0.7410;
+        0.8500,0.3250,0.0980;
+        0.3010,0.7450,0.9330];
+
+% limits
 u0 = [s.QVs./(p.W*s.H)];
 ulims = max(abs(u0(:)))*[-1,1];
 w0 = cumsum(s.QVp+s.QVs)/(p.W*p.L);
 wlims = max(abs(w0(:)))*[-1,1];
 Slims = [min(s.S(:)),max(s.S(:))];
+Splims = [min([s.Ss(:);s.S(:)]),max([s.Ss(:);s.S(:)])];
 Tlims = [min(s.T(:)),max(s.T(:))];
+Tplims = [min([s.Ts(:);s.T(:)]),max([s.Ts(:);s.T(:)])];
 Sanomlims = max(abs(s.S(:)-s.Ss(:)))*[-1,1];
 Tanomlims = max(abs(s.T(:)-s.Ts(:)))*[-1,1];
+fluxlims = [min([s.Qsg,sum(s.QMi)]),max([s.Qsg,sum(s.QMi)])];
+tlims = [min(s.t),max(s.t)];
 
 % grids
 nx = 15;
@@ -69,7 +78,7 @@ for k=1:length(inx)
     Tanomplot = [[T-Ts,NaN(nz,1)];NaN(1,nx+1)];
     
     % plot along-fjord velocity
-    subplot(2,3,1); hold on;
+    subplot(2,6,1:2); hold on;
     pcolor(xg,zg,uplot); shading flat;
     patch(xsill,zsill,scolor,'edgecolor','k','linewidth',swidth);
     colorbar; colormap(gca,cmap_vel); caxis(ulims);
@@ -79,7 +88,7 @@ for k=1:length(inx)
     set(gca,'box','on','layer','top');
     
     % plot vertical velocity
-    subplot(2,3,4); hold on;
+    subplot(2,6,7:8); hold on;
     pcolor(xg,zg,wplot); shading flat;
     patch(xsill,zsill,scolor,'edgecolor','k','linewidth',swidth);
     colorbar; colormap(gca,cmap_vel); caxis(wlims);
@@ -87,47 +96,66 @@ for k=1:length(inx)
     title('vertical velocity (m/s)');
     xlabel('x (km)'); ylabel('depth (m)');
     set(gca,'box','on','layer','top');
-    
-    % plot salinity
-    subplot(2,3,2); hold on;
-    pcolor(xg,zg,Splot); shading flat;
-    patch(xsill,zsill,scolor,'edgecolor','k','linewidth',swidth);
-    colorbar; colormap(gca,cmap_sal); caxis(Slims);
-    xlim([0,p.L]/1e3); ylim([-p.H,0]);
-    title('fjord salinity');
-    xlabel('x (km)'); ylabel('depth (m)');
-    set(gca,'box','on','layer','top');
-    
-    % plot salinity anomaly
-    subplot(2,3,5); hold on;
-    pcolor(xg,zg,Sanomplot); shading flat;
-    patch(xsill,zsill,scolor,'edgecolor','k','linewidth',swidth);
-    colorbar; colormap(gca,cmap_anom); caxis(Sanomlims);
-    xlim([0,p.L]/1e3); ylim([-p.H,0]);
-    title('fjord-shelf salinity anomaly');
-    xlabel('x (km)'); ylabel('depth (m)');
-    set(gca,'box','on','layer','top');
-    
+
     % plot temperature
-    subplot(2,3,3); hold on;
+    subplot(2,6,3:4); hold on;
     pcolor(xg,zg,Tplot); shading flat;
     patch(xsill,zsill,scolor,'edgecolor','k','linewidth',swidth);
     colorbar; colormap(gca,cmap_temp); caxis(Tlims);
     xlim([0,p.L]/1e3); ylim([-p.H,0]);
     title('fjord temperature (C)');
-    xlabel('x (km)'); ylabel('depth (m)');
+    xlabel('x (km)');
     set(gca,'box','on','layer','top');
+
+    % plot temperature profiles
+    ints = -[0;cumsum(s.H)];
+    subplot(2,6,5); hold on;
+    stairs([s.Ts(1,i);s.Ts(:,i)],ints,'k','linewidth',2);
+    stairs([s.T(1,i);s.T(:,i)],ints,'linewidth',2,'color',cols(2,:));
+    xlim(Tplims); ylim([-p.H,0]);
+    set(gca,'box','on'); grid on;
+    xlabel('temperature (C)');
     
-    % plot temperature anomaly
-    subplot(2,3,6); hold on;
-    pcolor(xg,zg,Tanomplot); shading flat;
+    % plot salinity
+    subplot(2,6,9:10); hold on;
+    pcolor(xg,zg,Splot); shading flat;
     patch(xsill,zsill,scolor,'edgecolor','k','linewidth',swidth);
-    colorbar; colormap(gca,cmap_anom); caxis(Tanomlims);
+    colorbar; colormap(gca,cmap_sal); caxis(Slims);
     xlim([0,p.L]/1e3); ylim([-p.H,0]);
-    title('fjord-shelf temperature anomaly (C)');
-    xlabel('x (km)'); ylabel('depth (m)');
+    title('fjord salinity');
+    xlabel('x (km)');
     set(gca,'box','on','layer','top');
+
+    % plot salinity profiles
+    ints = -[0;cumsum(s.H)];
+    subplot(2,6,6); hold on;
+    stairs([s.Ss(1,i);s.Ss(:,i)],ints,'k','linewidth',2);
+    stairs([s.S(1,i);s.S(:,i)],ints,'linewidth',2,'color',cols(2,:));
+    xlim(Splims); ylim([-p.H,0]);
+    set(gca,'box','on'); grid on;
+    xlabel('salinity');
+    legend('shelf','fjord','location','southwest');
     
+    % plot fjord-shelf exchange velocity
+    subplot(2,6,11); hold on;
+    stairs(-[u0(1,i);u0(:,i)],ints,'k','linewidth',2);
+    set(gca,'box','on'); grid on;
+    xlabel('fjord-shelf exchange velocity (m/s)');
+    xlim(ulims); ylim([-p.H,0]);
+    title('positive values out of fjord');
+
+    % plot subglacial discharge and iceberg melt time series
+    subplot(2,6,12); hold on;
+    l1 = plot(s.t,s.Qsg,'linewidth',2,'color',cols(1,:));
+    plot(s.t(i),s.Qsg(i),'o','color',cols(1,:));
+    l2 = plot(s.t,sum(s.QMi),'linewidth',2,'color',cols(3,:));
+    plot(s.t(i),sum(s.QMi(:,i)),'o','color',cols(3,:));
+    xlabel('time (days)');
+    ylabel('flux (m$^3$/s)');
+    set(gca,'box','on'); grid on;
+    legend([l1,l2],'discharge','iceberg melt','location','northwest');
+    xlim(tlims); ylim(fluxlims);
+     
     % time step
     sgtitle(['t = ',num2str(0.01*round(100*s.t(i))),' days']);
     
