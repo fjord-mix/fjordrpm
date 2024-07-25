@@ -27,7 +27,7 @@ Ri(Ri>p.Ri0) = p.Ri0;
 Ri(Ri<0) = 0;
 
 % Get diffusivity as a function of the Richardson number
-Kz = (Ri<p.Ri0 & Ri>0)*p.K0.*(1-(Ri/p.Ri0).^2).^3;
+Kz = p.Kb + (Ri<p.Ri0 & Ri>0)*p.K0.*(1-(Ri/p.Ri0).^2).^3;
 
 % Compute the mixing fluxes going in/out of each layer.
 QS = 2*p.W*p.L*Kz.*(S0(2:end)-S0(1:end-1))./(H0(2:end)+H0(1:end-1));
