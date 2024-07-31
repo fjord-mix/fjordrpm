@@ -32,6 +32,8 @@ s.z = 0.5*(ints(1:end-1)+ints(2:end));
 s.QVp = s.QVp(:,inx);
 s.QTp = s.QTp(:,inx);
 s.QSp = s.QSp(:,inx);
+s.QMp = s.QMp(:,inx);
+s.plumemeltrate = p.sid*s.QMp./(p.wp*s.H);
 
 % Shelf exchange
 s.QVs = s.QVs(:,inx);
@@ -51,18 +53,17 @@ s.QVv = s.QVv(:,inx);
 s.QTv = s.QTv(:,inx);
 s.QSv = s.QSv(:,inx);
 
-% Iceberg fluxes
+% Iceberg fluxes and melt rates
 s.QVi = s.QVi(:,inx);
 s.QTi = s.QTi(:,inx);
 s.QSi = s.QSi(:,inx);
 s.QMi = s.QMi(:,inx);
+s.icebergmeltrate = p.sid*s.QMi./s.I;
+s.icebergmeltrate(s.I==0,:) = 0;
 
 % Subglacial discharge
 s.Qsg = s.Qsg(inx);
 
-% Derived melt rates (m/d)
-s.icebergmeltrate = p.sid*s.QMi./s.I;
-s.icebergmeltrate(s.I==0,:) = 0;
 
 s.status = status;
 
