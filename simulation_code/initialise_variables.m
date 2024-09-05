@@ -13,11 +13,12 @@ s.dt = t(2:end)-t(1:end-1);
 [s.H, s.V, s.I] = deal(zeros(p.N, 1));
 % Fields with dimensions p.N x length(t)
 [s.T, s.S, ...
- s.QVp, s.QTp, s.QSp, s.QMp, ...
  s.QVs, s.QTs, s.QSs, s.Ts, s.Ss, s.phi, ...
  s.QVk, s.QTk, s.QSk, ...
  s.QVi, s.QTi, s.QSi, s.QMi, ...
  s.QVv, s.QTv, s.QSv] = deal(zeros(p.N, length(t)));
+% Fields with dimensions num plumes x p.N x length(t)
+[s.QVp, s.QTp, s.QSp, s.QMp] = deal(zeros(length(p.wp), p.N, length(t)));
 % Fields with dimensions 1 x length(t)
 [s.Qsg] = deal(zeros(1, length(t)));
 
@@ -45,7 +46,9 @@ s.V = s.H*p.W*p.L;
 
 % Find layer with grounding line and store index
 ints = cumsum(s.H);
-s.kgl = find(ints >= p.Hgl-1e-6, 1);
+for j=1:length(p.Hgl)
+    s.kgl(j) = find(ints >= p.Hgl(j)-1e-6, 1);
+end
 
 % Redistribute the other given initial conditions according to the new
 % layer boundaries and then initialise the variables

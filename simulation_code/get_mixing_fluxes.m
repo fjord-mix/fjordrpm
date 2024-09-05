@@ -17,7 +17,11 @@ QVk0 = 0*H0;
 gp = p.g*(p.betaS*(S0(2:end)-S0(1:end-1))-p.betaT*(T0(2:end)-T0(1:end-1)));
 
 % Horizontal velocity of layers
-u = (s.QVp(:,i)-s.QVs(:,i))./(2*p.W*H0);
+if size(s.QVp,1)==1
+    u = (s.QVp(:,:,i)'-s.QVs(:,i))./(2*p.W*H0);
+else
+    u = (sum(s.QVp(:,:,i))'-s.QVs(:,i))./(2*p.W*H0);
+end
 
 % Richardson number
 du = u(2:end)-u(1:end-1);

@@ -7,34 +7,37 @@ function [QVp0, QTp0, QSp0, QMp0] = get_plume_fluxes(i, p, s)
 
 % Get tracer variables at timestep i
 H0 = s.H; T0 = s.T(:,i); S0 = s.S(:,i);
-% Get boundary conditions at timestep i
-Qsg0 = s.Qsg(i);
 
-if Qsg0==0 % if there is no plume, the fluxes are zero
+% Initialise outputs
+[QVp0, QTp0, QSp0, QMp0] = deal(zeros(length(p.wp),p.N));
+
+% Loop over number of plumes
+for j = 1:length(p.wp)
+
+    % Get subglacial discharge at timestep i
+    Qsg0 = s.Qsg(j,i);
+    kgl = s.kgl(j);
     
-    [QVp0, QTp0, QSp0, QMp0] = deal(0*H0);
-
-else % if Qsg is non-zero, run plume model
-
-    % Initialise variables
-    [QVp0, QTp0, QSp0, QMp0] = deal(zeros(p.N, 1));
+    if Qsg0~=0 % if there is a plume
+        
+        % Compute the plume properties
+        [Qent, Qmelt, knb, Qnb, Snb, Tnb] = run_discreteplume(j, p, kgl, H0, S0, T0, Qsg0);
     
-    % Compute the plume properties
-    [Qent, Qmelt, knb, Qnb, Snb, Tnb] = run_discreteplume(p, s.kgl, H0, S0, T0, Qsg0);
-
-    % Compute the flux in boxes from the grounding line to below neutral
-    % buoyancy
-    QVp0(knb+1:s.kgl) = -Qent(knb+1:s.kgl);
-    QTp0(knb+1:s.kgl) = QVp0(knb+1:s.kgl).*T0(knb+1:s.kgl);
-    QSp0(knb+1:s.kgl) = QVp0(knb+1:s.kgl).*S0(knb+1:s.kgl);
-
-    % Compute the flux into the neutral buoyancy box
-    QVp0(knb) = Qnb;
-    QTp0(knb) = Qnb*Tnb;
-    QSp0(knb) = Qnb*Snb;
-
-    % Store submarine melt flux in solution
-    QMp0 = Qmelt;
+        % Compute the flux in boxes from the grounding line to below neutral
+        % buoyancy
+        QVp0(j,knb+1:kgl) = -Qent(knb+1:kgl);
+        QTp0(j,knb+1:kgl) = QVp0(j,knb+1:kgl).*T0(knb+1:kgl)';
+        QSp0(j,knb+1:kgl) = QVp0(j,knb+1:kgl).*S0(knb+1:kgl)';
+    
+        % Compute the flux into the neutral buoyancy box
+        QVp0(j,knb) = Qnb;
+        QTp0(j,knb) = Qnb*Tnb;
+        QSp0(j,knb) = Qnb*Snb;
+    
+        % Store submarine melt flux in solution
+        QMp0(j,:) = Qmelt;
+    
+    end
 
 end
 

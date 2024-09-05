@@ -1,4 +1,4 @@
-function [Qent, Qmelt, knb, Qnb, Snb, Tnb] = run_discreteplume(p, kgl, H0, S0, T0, Qsg0);
+function [Qent, Qmelt, knb, Qnb, Snb, Tnb] = run_discreteplume(j, p, kgl, H0, S0, T0, Qsg0);
 
 % orient properties deepest first
 Ta = flipud(T0);
@@ -11,17 +11,17 @@ Qent = zeros(length(H0),1);
 Qmelt = zeros(length(H0),1);
 
 % initialise plume model variables
-Tp(kgl) = p.l2+p.l3*p.Hgl;
+Tp(kgl) = p.l2+p.l3*p.Hgl(j);
 Sp(kgl) = 0;
 gp(kgl) = p.g*(p.betaS*(Sa(kgl)-Sp(kgl))-p.betaT*(Ta(kgl)-Tp(kgl)));
-b(kgl) = (p.alphap*(Qsg0/p.wp)^2/gp(kgl))^(1/3);
-u(kgl) = Qsg0/(p.wp*b(kgl));
+b(kgl) = (p.alphap*(Qsg0/p.wp(j))^2/gp(kgl))^(1/3);
+u(kgl) = Qsg0/(p.wp(j)*b(kgl));
 edot(kgl) = p.alphap*u(kgl);
 QV(kgl) = u(kgl)*b(kgl);
 QM(kgl) = u(kgl)^2*b(kgl);
 QT(kgl) = b(kgl)*u(kgl)*Tp(kgl);
 QS(kgl) = b(kgl)*u(kgl)*Sp(kgl);
-[mdot(kgl),Tb(kgl),Sb(kgl)] = meltrate(p,u(kgl),Tp(kgl),Sp(kgl),p.Hgl);
+[mdot(kgl),Tb(kgl),Sb(kgl)] = meltrate(p,u(kgl),Tp(kgl),Sp(kgl),p.Hgl(j));
 
 % loop over layers
 k = kgl;
@@ -30,7 +30,7 @@ while gp(k)>0 & k<length(H0)
     % advance the fluxes
     k = k+1;
     if k==kgl+1
-        dz = p.Hgl-(p.H-sum(H0(1:kgl)));
+        dz = p.Hgl(j)-(p.H-sum(H0(1:kgl)));
     else
         dz = H0(k-1);
     end
@@ -48,17 +48,17 @@ while gp(k)>0 & k<length(H0)
 	Sp(k) = QS(k)/QV(k);
     gp(k) = p.g*(p.betaS*(Sa(k)-Sp(k))-p.betaT*(Ta(k)-Tp(k)));
     edot(k) = p.alphap*u(k);
-    [mdot(k),Tb(k),Sb(k)] = meltrate(p,u(k),Tp(k),Sp(k),p.Hgl-sum(H0(kgl:k-1)));
+    [mdot(k),Tb(k),Sb(k)] = meltrate(p,u(k),Tp(k),Sp(k),p.Hgl(j)-sum(H0(kgl:k-1)));
 
 end
 
 % scale vol fluxes for plume width and orient shallowest first
-Qent = flipud(Qent)*p.wp;
-Qmelt = flipud(Qmelt)*p.wp;
+Qent = flipud(Qent)*p.wp(j);
+Qmelt = flipud(Qmelt)*p.wp(j);
 
 % properties at neutral buoyancy
 knb = length(H0)-length(gp)+1;
-Qnb = QV(end)*p.wp;
+Qnb = QV(end)*p.wp(j);
 Snb = Sp(end);
 Tnb = Tp(end);
 

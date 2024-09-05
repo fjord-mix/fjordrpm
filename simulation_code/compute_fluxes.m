@@ -6,7 +6,7 @@ function s = compute_fluxes(i, p, s)
 %   fluxes for parameters structure p and solution s at timestep i.
 
 % Calculate plume fluxes
-[s.QVp(:,i), s.QTp(:,i), s.QSp(:,i), s.QMp(:,i)] = get_plume_fluxes(i, p, s);
+[s.QVp(:,:,i), s.QTp(:,:,i), s.QSp(:,:,i), s.QMp(:,:,i)] = get_plume_fluxes(i, p, s);
 
 % Calculate shelf fluxes
 [s.QVs(:,i), s.QTs(:,i), s.QSs(:,i), s.phi(:,i)] = get_shelf_fluxes(i, p, s);

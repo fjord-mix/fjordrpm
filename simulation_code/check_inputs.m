@@ -36,15 +36,19 @@ if ~isequal(size(f.Ss),size(f.Ts),[nz,nt])
     error('f.Ss and f.Ts must have dimensions length(f.zs) x length(f.ts)');
 end
 
-% Check dimensionality of dischaarge forcing
+% Check dimensionality of discharge forcing
 nt = length(f.tsg);
 % f.tsg
 if ~isequal(size(f.tsg),[1,nt])
     error('f.tsg must have dimensions 1 x nt');
 end
 % f.Qsg
-if ~isequal(size(f.Qsg),[1,nt])
-    error('f.Qsg must have dimensions 1 x nt');
+if ~isequal(size(f.Qsg,2),nt)
+    error('Second dimension of f.Qsg must have length nt');
+end
+% number of plumes
+if ~isequal(size(f.Qsg,1),length(p.wp),length(p.Hgl))
+    error('Check num plumes=size(f.Qsg,1)=length(p.wp)=length(p.Hgl)');
 end
 
 % % If t_save is not given, it will take t instead
