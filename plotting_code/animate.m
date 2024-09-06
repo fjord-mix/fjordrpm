@@ -1,8 +1,15 @@
 function animate(outputfile,nframes)
-
+unpackStruct = @(s) cellfun(@(name) assignin('base',name,getfield(s,name)),fieldnames(s));
 % load data
 load([outputfile,'.mat']);
 
+if exist('cur_fjord','var')
+    t = cur_fjord.t;
+    f = cur_fjord.f;
+    a = cur_fjord.a;
+    p = cur_fjord.p;
+    s = cur_fjord.s;
+end
 % delete existing video if exists
 warning off; delete([outputfile,'.mp4']); warning on;
 
@@ -178,7 +185,7 @@ video.FrameRate = 5;
 open(video);
 pngs = dir(fullfile([outputfile,'*.png']));
 for k = 1:length(pngs)
-    I = imread(pngs(k).name);
+    I = imread([pngs(k).folder,'/',pngs(k).name]);
     writeVideo(video, I);
 end
 close(video);
