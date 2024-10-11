@@ -30,7 +30,7 @@ p.C0 = 1e4;        % shelf exchange efficiency (s)
 p.K0 = 5e-3;       % vertical mixing scale
 p.Kb = 1e-5;       % background vertical mixing
 p.Ri0 = 700;       % Richardson number dependency of mixing
-p.M0 = 5e-7;       % iceberg melt efficiency (s^-1 degC^-1)
+p.M0 = 5e-7;       % iceberg melt efficiency (m s^-1 degC^-1)
 p.U0 = 1;          % scale iceberg upwelling
 
 %% Run-time plotting
