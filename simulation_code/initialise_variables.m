@@ -18,7 +18,9 @@ s.dt = t(2:end)-t(1:end-1);
  s.QVi, s.QTi, s.QSi, s.QMi, ...
  s.QVv, s.QTv, s.QSv] = deal(zeros(p.N, length(t)));
 % Fields with dimensions num plumes x p.N x length(t)
-[s.QVp, s.QTp, s.QSp, s.QMp] = deal(zeros(length(p.wp), p.N, length(t)));
+[s.QVp, s.QTp, s.QSp, s.QMp, s.QEp] = deal(zeros(length(p.wp), p.N, length(t)));
+% Fields with dimensions num plumes x length(t)
+s.knb = zeros(length(p.wp), length(t));
 % Fields with dimensions 1 x length(t)
 [s.Qsg] = deal(zeros(1, length(t)));
 

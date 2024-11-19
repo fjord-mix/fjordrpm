@@ -1,4 +1,4 @@
-function [Qent, Qmelt, knb, Qnb, Snb, Tnb, up, mp] = run_discreteplume(j, p, kgl, H0, S0, T0, Qsg0);
+function [Qent, Qmelt, knb] = run_plume(j, p, kgl, H0, S0, T0, Qsg0);
 
 % orient properties deepest first
 Ta = flipud(T0);
@@ -58,11 +58,5 @@ Qmelt = flipud(Qmelt)*p.wp(j);
 
 % properties at neutral buoyancy
 knb = length(H0)-length(gp)+1;
-Qnb = QV(end)*p.wp(j);
-Snb = Sp(end);
-Tnb = Tp(end);
-
-up = fliplr(u);
-mp = fliplr(mdot);
 
 end
