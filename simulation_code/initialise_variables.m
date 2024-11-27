@@ -23,7 +23,20 @@ s.dt = t(2:end)-t(1:end-1);
 s.knb = zeros(length(p.wp), length(t));
 s.Qsg = zeros(length(p.wp), length(t));
 
-% Initialise the layer depths with the given initial conditions
+% Initialise layer depths
+% first deal with case where sill is so shallow or so deep that it would
+% result in less than half a layer at top or bottom, by tweaking the
+% sill depth itself
+if p.Hsill<p.H/p.N % avoid very thin layers at top
+    p.Hsill = p.H/p.N;
+elseif p.Hsill>=p.H-0.5*p.H/p.N % if very deep, round to no sill
+    p.Hsill = p.H; 
+    p.sill = 0;
+elseif p.Hsill>=p.H-p.H/p.N % avoid very thin layers at bottom
+    p.Hsill = p.H-p.H/p.N;
+end
+
+% make sill depth coincide with layer boundary
 if p.sill==1
     % If there is a sill, redistribute the layers so that they are roughly
     % the same thickness above and below sill but a box boundary coincides
@@ -32,7 +45,7 @@ if p.sill==1
     Nbelow = p.N-Nabove;
     s.H = [(p.Hsill/Nabove)*ones(Nabove,1);...
            ((p.H-p.Hsill)/Nbelow)*ones(Nbelow,1)];
-    % Store the location of the box boundary coinciding with the sill
+    % Store the location of the layer boundary coinciding with the sill
     s.ksill = Nabove;
 else
     s.H = a.H0;
