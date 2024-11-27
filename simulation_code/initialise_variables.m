@@ -21,8 +21,7 @@ s.dt = t(2:end)-t(1:end-1);
 [s.QVp, s.QTp, s.QSp, s.QMp, s.QEp] = deal(zeros(length(p.wp), p.N, length(t)));
 % Fields with dimensions num plumes x length(t)
 s.knb = zeros(length(p.wp), length(t));
-% Fields with dimensions 1 x length(t)
-[s.Qsg] = deal(zeros(1, length(t)));
+s.Qsg = zeros(length(p.wp), length(t));
 
 % Initialise the layer depths with the given initial conditions
 if p.sill==1
