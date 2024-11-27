@@ -22,7 +22,7 @@ for j = 1:length(p.wp)
     if Qsg0~=0 % if there is a plume
         
         % Plume dynamics
-        if ~mod(i-1,p.run_plume_every) % if a plume update timestep
+        if ~mod(i-1,p.run_plume_every) || s.Qsg(j,i-1)==0 % if a plume update timestep
 
             [Qent, Qmelt, knb] = run_plume(j, p, kgl, H0, S0, T0, Qsg0);
 
