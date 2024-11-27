@@ -46,6 +46,10 @@ s.V = s.H*p.W*p.L;
 % Get forcings on model layers and at model time steps
 [s.Ts, s.Ss, s.Qsg] = bin_forcings(f, s.H, t);
 
+% Set any discharge values less than 1e-3 to 0, because the plume
+% model struggles to deal with small values
+s.Qsg(s.Qsg<1e-3) = 0;
+
 % Find layer with grounding line and store index
 ints = cumsum(s.H);
 for j=1:length(p.Hgl)
