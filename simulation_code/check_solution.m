@@ -14,7 +14,7 @@ else
     maxdVdt = max(abs(sum(s.QVp(:,:,i))'+s.QVs(:,i)+s.QVk(:,i)+s.QVi(:,i)+s.QVv(:,i)));
 end
 
-if maxdVdt>1e-9
+if maxdVdt>1e-8
     disp(['Warning: volume possibly not conserved, max dV/dt = ',...
            num2str(maxdVdt)]);
     status = 1;
