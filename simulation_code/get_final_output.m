@@ -36,6 +36,7 @@ s.QMp = s.QMp(:,:,inx);
 for j=1:length(p.wp)
     s.plumemeltrate(j,:,:) = p.sid*squeeze(s.QMp(j,:,:))./(p.wp(j)*s.H);
 end
+s.knb = s.knb(inx);
 
 % Shelf exchange
 s.QVs = s.QVs(:,inx);
