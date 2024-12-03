@@ -1,54 +1,35 @@
-function [QVs0,QTs0,QSs0,Se0,Te0,phi0] = get_shelf_fluxes(H0,T0,S0,zs,Ts,Ss,Qsg0,p)
+function [QVs0,QTs0,QSs0,phi0] = get_shelf_fluxes(i, p, s)
 
-% GET_SHELF_FLUXES Compute shelf fluxes.
-%   [QVS0,QTS0,QSS0,SE0,TE0,PHI0] = GET_SHELF_FLUXES(H0,T0,S0,ZS,TS,SS,QSG0,P)
-%   computes the shelf fluxes for the given parameters. 
+% GET_SHELF_FLUXES Compute shelf fluxes for the zmodel.
+%   [QVs0,QTs0,QSs0,Ss0,Ts0,phi0] = GET_SHELF_FLUXES(i, p, f, s) computes
+%   the shelf fluxes QVs0, QTs0, QSs0 and shelf variables Ss0, Ts0, phi0
+%   for the given parameters p, boundary conditions f and solution s at
+%   timestep i.
 
-if p.C0==0
-    QVs0 = 0*H0;
-    QTs0 = 0*H0;
-    QSs0 = 0*H0;
-    Se0 = NaN*H0;
-    Te0 = NaN*H0;
-    phi0 = NaN*H0;
+% Get tracer variables at timestep i
+H0 = s.H; T0 = s.T(:,i); S0 = s.S(:,i); Ts0 = s.Ts(:,i); Ss0 = s.Ss(:,i);
+% Initialise variables
+[phi0, QVs0] = deal(zeros(p.N, 1));
 
-else
-    % calculate mean shelf T/S over box model layers above sill
-    [gp, phi0] = deal(zeros(1, p.N));
-    [Te0, Se0] = bin_ocean_profiles(Ts,Ss,zs,H0',p);
+% Compute the fjord-to-shelf reduced gravity
+gp = p.g*(p.betaS*(Ss0(1:s.ksill)-S0(1:s.ksill))-p.betaT*(Ts0(1:s.ksill)-T0(1:s.ksill)));
 
-    % get fjord to shelf reduced gravity
-    for k=1:p.N
-        gp(k) = p.g*(p.betaS*(S0(k)-Se0(k))-p.betaT*(T0(k)-Te0(k)));
-    end
-
-    % calculate potentials over above-sill layers
-    for k=1:p.N
-        if k==1
-            phi0(k) = gp(k)*H0(k)/2;
-        else
-            phi0(k) = phi0(k-1)+gp(k-1)*H0(k-1)/2+gp(k)*H0(k)/2;
-        end
-    end
-
-    % fluxes before barotropic compensation
-    Q = p.C0*p.W*H0(1:p.N).*phi0'/p.L;
-
-    % fluxes after ensuring depth mean = QSg0 when plume is turned on,
-    % and 0 when plume is turned off
-    if p.P0==0
-        Qsg0 = 0;
-    end
-    QVs0 = Q + H0(1:p.N)*(Qsg0-sum(Q))/sum(H0(1:p.N));
-    if p.sill==1
-        QVs0(p.N+p.sill) = 0;
-        Se0(p.N+p.sill) = 0;
-        Te0(p.N+p.sill) = 0;
-    end
-
-    % resulting heat/salt fluxes
-    QTs0 = (QVs0>0).*QVs0.*T0 + (QVs0<0).*QVs0.*Te0;
-    QSs0 = (QVs0>0).*QVs0.*S0 + (QVs0<0).*QVs0.*Se0;
+% Calculate the potentials over above-sill layers
+phi0(1) = gp(1)*H0(1)/2;
+for k=2:s.ksill
+    phi0(k) = phi0(k-1)+gp(k-1)*H0(k-1)/2+gp(k)*H0(k)/2;
 end
+
+% Compute the above-sill fluxes before barotropic compensation; these are
+% zero if the controlling parameter p.C0 = 0
+Q = p.C0*p.W*H0(1:s.ksill).*phi0(1:s.ksill)/p.L;
+
+% Compute the above-sill fluxes after barotropic compensation, ensuring
+% depth mean = Qsg0+submarine melt flux
+QVs0(1:s.ksill) = Q - H0(1:s.ksill)*(sum(s.Qsg(:,i))+sum(sum(s.QMp(:,:,i)))+sum(Q))/sum(H0(1:s.ksill));
+
+% Compute the resulting heat/salt fluxes
+QTs0 = (QVs0>=0).*QVs0.*Ts0 + (QVs0<0).*QVs0.*T0;
+QSs0 = (QVs0>=0).*QVs0.*Ss0 + (QVs0<0).*QVs0.*S0;
 
 end

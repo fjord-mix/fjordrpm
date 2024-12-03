@@ -1,67 +1,58 @@
-function [QpV0,QpT0,QpS0] = get_plume_fluxes(H0,T0,S0,Qsg0,p)
+function [QVp0, QTp0, QSp0, QEp0, QMp0, knb0] = get_plume_fluxes(i, p, s)
 
 % GET_PLUME_FLUXES Compute plume fluxes.
-%   [QPV0,QPT0,QPS0] = GET_PLUME_FLUXES(H0,T0,S0,QSG0,P)
-%   computes the plume fluxes for the given parameters.
-if Qsg0==0 || p.P0==0 % i.e. if no plume
-    QpV0 = 0*H0;
-    QpT0 = 0*H0;
-    QpS0 = 0*H0;
-else
-    % find box model layer containing grounding line
-    ints = cumsum(H0);
-    kgl = find(ints>=abs(p.zgl)-1e-6, 1 );
+%   [QVp0, QTp0, QSp0, QMp0] = GET_PLUME_FLUXES(i, p, f, s) computes the
+%   plume fluxes for the given parameters p, boundary conditions f and
+%   solution s at timestep i.
 
-    % plume properties at grounding line
-    k = kgl;
-    Qp(k) = Qsg0;
-    Sp(k) = 0;
-    Tp(k) = 0;
-    gp(k) = p.g*(p.betaS*(S0(k)-Sp(k))-p.betaT*(T0(k)-Tp(k)));
+% Get tracer variables at timestep i
+H0 = s.H; T0 = s.T(:,i); S0 = s.S(:,i);
 
-    % properties at first interface above grounding line
-    % need special treatment because box might be partial if
-    % grounding line does not coincide with box boundaries
-    if kgl>1 % check there is a box above grounding line
-        k = k-1;
-        Qp(k) = Qp(k+1) + p.P0^(2/3)*Qp(k+1)^(1/3)*gp(k+1)^(1/3)*(abs(p.zgl)-ints(k));
-        Tp(k) = (Qp(k+1)*Tp(k+1)+(Qp(k)-Qp(k+1))*T0(k+1))/Qp(k);
-        Sp(k) = (Qp(k+1)*Sp(k+1)+(Qp(k)-Qp(k+1))*S0(k+1))/Qp(k);
-        gp(k) = p.g*(p.betaS*(S0(k)-Sp(k))-p.betaT*(T0(k)-Tp(k)));
-    end
+% Initialise outputs
+[QVp0, QTp0, QSp0, QEp0, QMp0] = deal(zeros(length(p.wp),p.N));
+knb0 = zeros(length(p.wp),1);
 
-    % apply to successive interfaces higher provided plume is still rising
-    while gp(k)>0 && k>1
-        k = k-1;
-        Qp(k) = Qp(k+1) + p.P0^(2/3)*Qp(k+1)^(1/3)*gp(k+1)^(1/3)*H0(k+1);
-        Tp(k) = (Qp(k+1)*Tp(k+1)+(Qp(k)-Qp(k+1))*T0(k+1))/Qp(k);
-        Sp(k) = (Qp(k+1)*Sp(k+1)+(Qp(k)-Qp(k+1))*S0(k+1))/Qp(k);
-        gp(k) = p.g*(p.betaS*(S0(k)-Sp(k))-p.betaT*(T0(k)-Tp(k)));
-    end
+% Loop over number of plumes
+for j = 1:length(p.wp)
 
-    % now calculate the resulting box fluxes
-    knb = find(gp<0); 
-    if isempty(knb)
-        knb=1; 
-    end % find neutral buoyancy box
-    % flux in boxes below grounding line and above neutral buoyancy are 0    
-    inds = find((1:length(H0))>kgl | (1:length(H0))<knb);
+    % Get subglacial discharge at timestep i
+    Qsg0 = s.Qsg(j,i);
+    kgl = s.kgl(j);
     
-    QpV0(inds) = 0;
-    QpT0(inds) = 0;
-    QpS0(inds) = 0;
-    % flux in boxes from grounding line to below neutral buoyancy
-    for k=kgl:-1:knb+1
-        QpV0(k) = Qp(k)-Qp(k-1);
-        QpT0(k) = QpV0(k)*T0(k);
-        QpS0(k) = QpV0(k)*S0(k);
+    if Qsg0~=0 % if there is a plume
+        
+        % Plume dynamics
+        if ~mod(i-1,p.run_plume_every) || s.Qsg(j,i-1)==0 % if a plume update timestep
+
+            [Qent, Qmelt, knb] = run_plume(j, p, kgl, H0, S0, T0, Qsg0);
+
+        else % otherwise use dynamics from previous time step
+
+            Qent = s.QEp(j,:,i-1);
+            Qmelt = s.QMp(j,:,i-1);
+            knb = s.knb(j,i-1);
+
+        end
+    
+        % Compute fluxes in layers from grounding line to neutral buoyancy
+        QVp0(j,knb+1:kgl) = -Qent(knb+1:kgl);
+        QTp0(j,knb+1:kgl) = QVp0(j,knb+1:kgl).*T0(knb+1:kgl)';
+        QSp0(j,knb+1:kgl) = QVp0(j,knb+1:kgl).*S0(knb+1:kgl)';
+    
+        % Compute fluxes into the neutral buoyancy layer
+        Tsg0 = p.l2+p.l3*p.Hgl(j);
+        Teff = -p.l/p.cw;
+        QVp0(j,knb) = Qsg0 + sum(Qmelt(knb+1:kgl)) - sum(QVp0(j,knb+1:kgl));
+        QTp0(j,knb) = Qsg0*Tsg0 + sum(Qmelt(knb+1:kgl))*Teff - sum(QTp0(j,knb+1:kgl));
+        QSp0(j,knb) = -sum(QSp0(j,knb+1:kgl));
+    
+        % Store entrainment, submarine melt flux and neutral buoyancy
+        QEp0(j,:) = Qent;
+        QMp0(j,:) = Qmelt;
+        knb0(j) = knb;
+    
     end
-    % flux into neutral buoyancy box
-    QpV0(knb) = Qp(knb);
-    QpT0(knb) = Qp(knb)*Tp(knb);
-    QpS0(knb) = Qp(knb)*Sp(knb);
+
 end
 
-% Transpose vectors before outputting
-QpV0 = QpV0'; QpT0 = QpT0'; QpS0 = QpS0';
 end
