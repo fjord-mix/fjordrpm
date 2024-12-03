@@ -40,6 +40,8 @@ Ss = interp1(f.ts,Ss',t,'linear')';
 Ts = interp1(f.ts,Ts',t,'linear')';
 
 % Subglacial discharge
-Qsg = interp1(f.tsg,f.Qsg,t,'linear');
+for j=1:size(f.Qsg,1)
+    Qsg(j,:) = interp1(f.tsg,f.Qsg(j,:),t,'linear');
+end
       
 end

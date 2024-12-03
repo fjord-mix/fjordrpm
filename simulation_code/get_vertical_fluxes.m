@@ -8,7 +8,11 @@ function [QVv0,QTv0,QSv0] = get_vertical_fluxes(i, s)
 T0 = s.T(:,i); S0 = s.S(:,i);
 
 % Net flux imbalance
-Qnet = s.QVp(:,i)+s.QVs(:,i)+s.QVi(:,i);
+if size(s.QVp,1)==1
+    Qnet = s.QVp(:,:,i)'+s.QVs(:,i)+s.QVi(:,i);
+else
+    Qnet = sum(s.QVp(:,:,i))'+s.QVs(:,i)+s.QVi(:,i);
+end
 
 % The vertical flux required for no net volume change is the sum of the
 % flux imbalances above

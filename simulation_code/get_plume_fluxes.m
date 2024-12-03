@@ -1,40 +1,58 @@
-function [QpV0, QpT0, QpS0] = get_plume_fluxes(i, p, s)
+function [QVp0, QTp0, QSp0, QEp0, QMp0, knb0] = get_plume_fluxes(i, p, s)
 
 % GET_PLUME_FLUXES Compute plume fluxes.
-%   [QpV0, QpT0, QpS0] = GET_PLUME_FLUXES(i, p, f, s) computes the plume
-%   fluxes for the given parameters p, boundary conditions f and solution s
-%   at timestep i.
+%   [QVp0, QTp0, QSp0, QMp0] = GET_PLUME_FLUXES(i, p, f, s) computes the
+%   plume fluxes for the given parameters p, boundary conditions f and
+%   solution s at timestep i.
 
 % Get tracer variables at timestep i
 H0 = s.H; T0 = s.T(:,i); S0 = s.S(:,i);
-% Get boundary conditions at timestep i
-Qsg0 = s.Qsg(i);
 
-if Qsg0==0
-    % If there is no plume, the fluxes are zero by default
-    [QpV0, QpT0, QpS0] = deal(0*H0);
-else
-    % Initialise variables
-    [QpV0, QpT0, QpS0] = deal(zeros(p.N, 1));
+% Initialise outputs
+[QVp0, QTp0, QSp0, QEp0, QMp0] = deal(zeros(length(p.wp),p.N));
+knb0 = zeros(length(p.wp),1);
+
+% Loop over number of plumes
+for j = 1:length(p.wp)
+
+    % Get subglacial discharge at timestep i
+    Qsg0 = s.Qsg(j,i);
+    kgl = s.kgl(j);
     
-    % Compute the plume properties (flux, salinity, temp) in each zmodel
-    % layer and the location of the grounding line and neutral buoyancy
-    % box
-    [knb, Qp, Sp, Tp] = get_plume_properties(p, s.kgl, H0, S0, T0, Qsg0);
+    if Qsg0~=0 % if there is a plume
+        
+        % Plume dynamics
+        if ~mod(i-1,p.run_plume_every) || s.Qsg(j,i-1)==0 % if a plume update timestep
 
-    % The flux in boxes below grounding line and above neutral buoyancy are
-    % zero, so don't need to be calculated
+            [Qent, Qmelt, knb] = run_plume(j, p, kgl, H0, S0, T0, Qsg0);
 
-    % Compute the flux in boxes from the grounding line to below neutral
-    % buoyancy
-    QpV0(knb+1:s.kgl) = Qp(knb+1:s.kgl)-Qp(knb:s.kgl-1);
-    QpT0(knb+1:s.kgl) = QpV0(knb+1:s.kgl).*T0(knb+1:s.kgl);
-    QpS0(knb+1:s.kgl) = QpV0(knb+1:s.kgl).*S0(knb+1:s.kgl);
+        else % otherwise use dynamics from previous time step
 
-    % Compute the flux into the neutral buoyancy box
-    QpV0(knb) = Qp(knb);
-    QpT0(knb) = Qp(knb)*Tp(knb);
-    QpS0(knb) = Qp(knb)*Sp(knb);
+            Qent = s.QEp(j,:,i-1);
+            Qmelt = s.QMp(j,:,i-1);
+            knb = s.knb(j,i-1);
+
+        end
+    
+        % Compute fluxes in layers from grounding line to neutral buoyancy
+        QVp0(j,knb+1:kgl) = -Qent(knb+1:kgl);
+        QTp0(j,knb+1:kgl) = QVp0(j,knb+1:kgl).*T0(knb+1:kgl)';
+        QSp0(j,knb+1:kgl) = QVp0(j,knb+1:kgl).*S0(knb+1:kgl)';
+    
+        % Compute fluxes into the neutral buoyancy layer
+        Tsg0 = p.l2+p.l3*p.Hgl(j);
+        Teff = -p.l/p.cw;
+        QVp0(j,knb) = Qsg0 + sum(Qmelt(knb+1:kgl)) - sum(QVp0(j,knb+1:kgl));
+        QTp0(j,knb) = Qsg0*Tsg0 + sum(Qmelt(knb+1:kgl))*Teff - sum(QTp0(j,knb+1:kgl));
+        QSp0(j,knb) = -sum(QSp0(j,knb+1:kgl));
+    
+        % Store entrainment, submarine melt flux and neutral buoyancy
+        QEp0(j,:) = Qent;
+        QMp0(j,:) = Qmelt;
+        knb0(j) = knb;
+    
+    end
+
 end
 
 end

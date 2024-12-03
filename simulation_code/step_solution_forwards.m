@@ -5,7 +5,12 @@ function s = step_solution_forwards(i, p, s)
 %   simulation for parameters structure p and given solution s.
 
 % Compute the zmodel tracer variables at timestep i+1
-s.T(:,i+1) = s.T(:,i)+s.dt(i)*p.sid*(s.QTp(:,i)+s.QTs(:,i)+s.QTk(:,i)+s.QTi(:,i)+s.QTv(:,i))./s.V;
-s.S(:,i+1) = s.S(:,i)+s.dt(i)*p.sid*(s.QSp(:,i)+s.QSs(:,i)+s.QSk(:,i)+s.QSi(:,i)+s.QSv(:,i))./s.V;
+if size(s.QTp,1)==1
+    s.T(:,i+1) = s.T(:,i)+s.dt(i)*p.sid*(s.QTp(:,:,i)'+s.QTs(:,i)+s.QTk(:,i)+s.QTi(:,i)+s.QTv(:,i))./s.V;
+    s.S(:,i+1) = s.S(:,i)+s.dt(i)*p.sid*(s.QSp(:,:,i)'+s.QSs(:,i)+s.QSk(:,i)+s.QSi(:,i)+s.QSv(:,i))./s.V;
+else
+    s.T(:,i+1) = s.T(:,i)+s.dt(i)*p.sid*(sum(s.QTp(:,:,i))'+s.QTs(:,i)+s.QTk(:,i)+s.QTi(:,i)+s.QTv(:,i))./s.V;
+    s.S(:,i+1) = s.S(:,i)+s.dt(i)*p.sid*(sum(s.QSp(:,:,i))'+s.QSs(:,i)+s.QSk(:,i)+s.QSi(:,i)+s.QSv(:,i))./s.V;
+end
 
 end
