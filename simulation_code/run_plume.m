@@ -14,8 +14,8 @@ Qmelt = zeros(length(H0),1);
 Tp(kgl) = p.l2+p.l3*p.Hgl(j);
 Sp(kgl) = 0;
 gp(kgl) = p.g*(p.betaS*(Sa(kgl)-Sp(kgl))-p.betaT*(Ta(kgl)-Tp(kgl)));
-b(kgl) = (p.alphap*(Qsg0/p.wp(j))^2/gp(kgl))^(1/3);
-u(kgl) = Qsg0/(p.wp(j)*b(kgl));
+b(kgl) = (p.alphap*(Qsg0/p.Wp(j))^2/gp(kgl))^(1/3);
+u(kgl) = Qsg0/(p.Wp(j)*b(kgl));
 edot(kgl) = p.alphap*u(kgl);
 QV(kgl) = u(kgl)*b(kgl);
 QM(kgl) = u(kgl)^2*b(kgl);
@@ -53,8 +53,8 @@ while gp(k)>0 & k<length(H0)
 end
 
 % scale vol fluxes for plume width and orient shallowest first
-Qent = flipud(Qent)*p.wp(j);
-Qmelt = flipud(Qmelt)*p.wp(j);
+Qent = flipud(Qent)*p.Wp(j);
+Qmelt = flipud(Qmelt)*p.Wp(j);
 
 % properties at neutral buoyancy
 knb = length(H0)-length(gp)+1;

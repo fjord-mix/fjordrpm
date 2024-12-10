@@ -33,8 +33,8 @@ s.QVp = s.QVp(:,:,inx);
 s.QTp = s.QTp(:,:,inx);
 s.QSp = s.QSp(:,:,inx);
 s.QMp = s.QMp(:,:,inx);
-for j=1:length(p.wp)
-    s.plumemeltrate(j,:,:) = p.sid*squeeze(s.QMp(j,:,:))./(p.wp(j)*s.H);
+for j=1:length(p.Wp)
+    s.plumemeltrate(j,:,:) = p.sid*squeeze(s.QMp(j,:,:))./(p.Wp(j)*s.H);
 end
 s.knb = s.knb(inx);
 

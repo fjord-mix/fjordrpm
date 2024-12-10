@@ -47,8 +47,8 @@ if ~isequal(size(f.Qsg,2),nt)
     error('Second dimension of f.Qsg must have length nt');
 end
 % number of plumes
-if ~isequal(size(f.Qsg,1),length(p.wp),length(p.Hgl))
-    error('Check num plumes=size(f.Qsg,1)=length(p.wp)=length(p.Hgl)');
+if ~isequal(size(f.Qsg,1),length(p.Wp),length(p.Hgl))
+    error('Check num plumes=size(f.Qsg,1)=length(p.Wp)=length(p.Hgl)');
 end
 
 % % If t_save is not given, it will take t instead

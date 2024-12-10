@@ -25,7 +25,7 @@ p.sid = 86400;     % seconds in a day (useful to have)
 
 %% Controlling parameters
 
-p.wp = 250;        % plume width (m)
+p.Wp = 250;        % plume width (m)
 p.C0 = 1e5;        % shelf exchange efficiency (s)
 p.K0 = 5e-3;       % vertical mixing scale
 p.Kb = 1e-6;       % background vertical mixing

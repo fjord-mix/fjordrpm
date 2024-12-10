@@ -9,11 +9,11 @@ function [QVp0, QTp0, QSp0, QEp0, QMp0, knb0] = get_plume_fluxes(i, p, s)
 H0 = s.H; T0 = s.T(:,i); S0 = s.S(:,i);
 
 % Initialise outputs
-[QVp0, QTp0, QSp0, QEp0, QMp0] = deal(zeros(length(p.wp),p.N));
-knb0 = zeros(length(p.wp),1);
+[QVp0, QTp0, QSp0, QEp0, QMp0] = deal(zeros(length(p.Wp),p.N));
+knb0 = zeros(length(p.Wp),1);
 
 % Loop over number of plumes
-for j = 1:length(p.wp)
+for j = 1:length(p.Wp)
 
     % Get subglacial discharge at timestep i
     Qsg0 = s.Qsg(j,i);
