@@ -8,10 +8,14 @@ function [QVi0, QTi0, QSi0, QMi0] = get_iceberg_fluxes(i, p, s)
 % get tracer variables at timestep i
 H0 = s.H; T0 = s.T(:,i); S0 = s.S(:,i); I0 = s.I;
 
-if p.M0==0 
-    % if there are no icebergs, the fluxes are zero
+% if there are no icebergs or melt parameter is 0, the fluxes are zero
+if sum(I0~=0)==0 | p.M0==0 
+
     [QVi0, QTi0, QSi0, QMi0] = deal(0*H0);
+
+% otherwise there will be non-zero fluxes
 else
+
     % compute the melt flux into each box
     zj = cumsum(H0)-H0/2; % mean depth of boxes
     Tf = p.l1*S0 + p.l2 + p.l3*zj; % local freezing point
