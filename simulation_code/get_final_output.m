@@ -35,7 +35,7 @@ s.QTp = s.QTp(:,:,inx);
 s.QSp = s.QSp(:,:,inx);
 s.QMp = s.QMp(:,:,inx);
 for j=1:length(p.Wp)
-    s.plumemeltrate(j,:,:) = p.sid*squeeze(s.QMp(j,:,:))./(p.Wp(j)*s.H);
+    s.mp(j,:,:) = p.sid*squeeze(s.QMp(j,:,:))./(p.Wp(j)*s.H);
 end
 s.knb = s.knb(inx);
 
@@ -62,8 +62,8 @@ s.QVi = s.QVi(:,inx);
 s.QTi = s.QTi(:,inx);
 s.QSi = s.QSi(:,inx);
 s.QMi = s.QMi(:,inx);
-s.icebergmeltrate = p.sid*s.QMi./s.I;
-s.icebergmeltrate(s.I==0,:) = 0;
+s.mi = p.sid*s.QMi./s.I;
+s.mi(s.I==0,:) = 0;
 
 % subglacial discharge
 s.Qsg = s.Qsg(:,inx);
