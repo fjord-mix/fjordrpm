@@ -9,31 +9,31 @@ Just download or clone the GitHub repository by using `git clone https://github.
 
 ## Directory structure
 
-- `simulation_code` contains the source code for FjordRPM
-- `plotting_code` contains basic routines for plotting the raw results.
-- `examples` is a folder containing example simulations for the model, and are good templates to start your own simulations from
+- [`simulation_code`](https://github.com/fjord-mix/fjordrpm/tree/readme_update/simulation_code) contains the source code for FjordRPM
+- [`plotting_code`](https://github.com/fjord-mix/fjordrpm/tree/readme_update/plotting_code) contains basic routines for plotting the raw results.
+- [`examples`](https://github.com/fjord-mix/fjordrpm/tree/readme_update/examples) is a folder containing example simulations for the model, and are good templates to start your own simulations from
 
 ## Model usage
 
 The model can be run by calling the function `s = run_model(p,t,f,a)`, which takes the following arguments:
 
 - `t` the time axis for the simulation
-    - `t[1]` should have the first time (usually, but not necessarily zero)	
-    - `t[end]` should be the last time
+    - `t(1)` should have the first time (usually, but not necessarily zero)	
+    - `t(end)` should be the last time
     - the model time step is calculated as `t(j+1) - t(j)`
 
 - `p`: the structure containing all model parameters. 
 	- Default values for all physical parameters are provided in `default_parameters`, e.g., `p = default_parameters();`
 	- Model geometry variables also need to go in p, e.g.:
 	```
-	p.Hgl = 500;   # grounding line depth (m, positive)
-	p.Hsill = 650; # sill depth (m, positive)
-	p.H = 1000;    # fjord depth (m, positive)
-	p.L = 90e3;    # fjord length (m)
-	p.W = 3e3;     # fjord width
+	p.Hgl = 500;   % grounding line depth (m, positive)
+	p.Hsill = 650; % sill depth (m, positive)
+	p.H = 1000;    % fjord depth (m, positive)
+	p.L = 90e3;    % fjord length (m)
+	p.W = 3e3;     % fjord width
 	```
-	- **Note 1:** `p.sill=1` tells the model the fjord has a sill, and `p.sill=0` tells the model the fjord doesn't. However, if `p.Hsill >= p.H` the model will automatically adjust to no sill. If `p.sill` is set to zero, `p.Hsill` will be ignored.
-	- **Note 2:** the user can define `p.t_save` as a subset of the original time axis `t` to reduce the number of time steps solved. If not specified, the model will save all time steps.
+	- **Note 1:** `p.sill==1` tells the model the fjord has a sill, and `p.sill==0` tells the model the fjord doesn't. However, if `p.Hsill >= p.H` the model will automatically adjust to no sill. If `p.sill==0`, `p.Hsill` will be ignored.
+	- **Note 2:** the user can define `p.t_save` as a subset of the original time axis `t` to reduce the number of time steps saved. If not specified, the model will save all time steps.
 	
 - `f`: the structure containing all model forcings
     - `f.Ts` is the shelf temperature (in $^oC$)
@@ -56,3 +56,5 @@ The model can be run by calling the function `s = run_model(p,t,f,a)`, which tak
 	- the variable `s.z` contains the depth axis of the fjord itself
 	- the variable `s.t` contains the time axis at the time steps specified in `p.t_save`
 	- dimensions of all variables are `[length(s.z),length(s.t)]`
+	
+**Note:** if a directory string is provided such as `s = run_model(p,t,f,a,'directory_path/filename.mat')`, then all inputs and outputs will be saved in `directory_path/filename.mat`
