@@ -7,7 +7,7 @@ function plotrpm(p, s, nplot)
 %   is the number of time snapshots to plot.
 
 % time indices to plot
-ip = [1:round(length(s.t)/nplot):length(s.t)];
+ip = [1:max(1,round(length(s.t)/nplot)):length(s.t)];
 
 % colourmaps
 cmapt = parula(length(ip));
