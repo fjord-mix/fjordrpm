@@ -1,59 +1,87 @@
-% EXAMPLE_ICEBERGS  Run the zmodel with example iceberg parameters.
-addpath(genpath('./'))
-clearvars
-close all
-% Get default parameters which can be overwritten for this specific
-% example.
-[p, t, f, a] = get_model_default_parameters;
+% Script to demonstrate a FjordRPM simulation of fjord response to
+% the presence of icebergs. The shelf conditions are 
+% constant in time and depth and there is no subglacial discharge. Since
+% all the forcings are constant in time the simulation will reach a steady
+% state.
 
-%% Set the input parameters p.
-% Set ZMODEL layer properties.
-p.N = 80; % number of model layers
+% clear workspace and close any figures to ensure clean environment
+clear; close all;
 
-% Set fjord geometry parameters.
-p.sill = 1; % flag for sill (0 = no sill, 1 = sill)
+% put FjordRPM code on path - need to update to the location of your code
+path2sourcecode = '~/OneDrive - University of Edinburgh/fjordMIX/code/box-model/';
+addpath(genpath(path2sourcecode));
 
-% Set shelf oscillation to zero.
-p.zd = 0; % sets strength of shelf oscillation, zero if no oscillation in shelf
+% get basic constants and default controlling parameters
+p = default_parameters;
 
-% Set plume forcing to zero.
-p.Qv0 = 0; % volumetric flow rate of subglacial discharge
+% can adjust any of the default parameters afterwards if needed
+% p.C0 = 5e4; % for example adjust shelf exchange parameter
+% p.run_plume_every = 10; % or update plume model only every 10 time steps
 
-% Set iceberg forcing.
-p.icestatic = 1; % 1 for static icebergs, 0 for evolving
-p.M0 = 7e-7; % iceberg melt efficiency
-p.A0 = 2e9; % scaling of iceberg area
-p.U0 = 0.25; % scale upwelling
-p.nu0 = 25; % iceberg profile coefficient
-p.if = @(NU, H, Z) (NU/H)*exp(NU*Z/H)/(1-exp(-NU)); % functional form of iceberg depth profile
+% set up fjord geometry
+p.W = 6e3; % fjord width (m)
+p.L = 60e3; % fjord length (m)
+p.H = 800; % fjord depth (m)
+p.sill = 0; % p.sill=1 for presence of sill, p.sill=0 for no sill
+p.Hsill = 400; % sill depth below surface (m), only used if p.sill=1
 
-%% Set the input time vector t.
-% Time values at which to compute the solution (in days)
-t = 0:1:200;
-% Time values at which to save the solution (in days)
-p.t_save = t;
+% set up glacier geometry
+% (not actually used in this case because there is no subglacial discharge)
+p.Hgl = 800; % grounding line depth (m)
+p.Wp = 250; % subglacial discharge plume width (m)
 
-%% Set the boundary conditions f.
-% Boundary conditions for the input parameters at each timestep
-f = get_idealised_forcing(p, t);
+% set up model layers
+p.N = 40; % number of layers
+a.H0 = (p.H/p.N)*ones(p.N,1); % layer thicknesses, here taken to be equal
 
-%% Set the initial conditions a. 
-% Initial conditions for the input parameters with the initial boundary
-% conditions.
-a = get_initial_conditions(p, f);
+% set up time stepping
+dt = 0.2; % time step (in days)
+t_end = 100; % time to end the simulation (in days)
+t = 0:dt:t_end; % resulting time vector for simulation
+p.t_save = 0:1:t_end; % times on which to save output
 
-%% Run the ZMODEL. 
-s = zmodel(p, t, f, a);
+% set up shelf forcing - here constant in time and depth
+% for more complexity see other examples
+% f.ts must have dimensions 1 x nt
+% f.zs must have dimensions nz x 1
+% f.Ss and f.Ts must have dimensions nz x nt
+f.ts = [0,t_end]; % time vector for shelf forcing
+f.zs = [-p.H;0]; % depth vector for shelf forcing (negative below surface)
+f.Ss = 34*ones(length(f.zs),length(f.ts)); % shelf salinity on (zs,ts)
+f.Ts = 3*ones(length(f.zs),length(f.ts)); % shelf temperature on (zs,ts)
 
-%% Save the results.
-% Choose where to save the results and make the directory if it doesn't
-% exist.
-output_folder='./idealised_data_examples/results/';
-if not(isfolder(output_folder))
-    mkdir(output_folder)
-end
+% set up subglacial discharge forcing
+% in this example there is no subglacial discharge
+% f.tsg must have dimensions 1 x nt
+% f.Qsg must have dimensions num plumes x nt
+f.tsg = t; % time vector for subglacial discharge
+f.Qsg = 0*t; % subglacial discharge on tsg
 
-name = 'example_icebergs';
-% Save the fjord structure, including input parameters, initial conditions,
-% boundary conditions and solution.
-save([output_folder, name, '.mat'], 'p', 't', 'f', 'a', 's');
+% fjord initial conditions
+% set up to be same as initial shelf profiles
+[a.T0, a.S0] = bin_shelf_profiles(f.Ts(:,1), f.Ss(:,1), f.zs, a.H0);
+
+% set up icebergs
+% need to specify the iceberg-ocean surface area in each layer. assume an 
+% exponential profile with total surface area 200 km^2 = 2e8 m^2
+zc = cumsum(a.H0)-a.H0/2; % depth of centre of layers
+iceprofile = exp(-zc/100); % profile before scaling
+a.I0 = (2e8/sum(iceprofile))*iceprofile; % surface area profile used by FjordRPM (m^2)
+
+% run the model
+% p.plot_runtime = 1; % plot while simulation runs - fun but quite slow
+s = run_model(p, t, f, a);
+
+% save the output
+save example_icebergs.mat s p t f a
+
+% make an animation of the output (takes a few minutes)
+animate(p,s,50,'example_icebergs');
+
+% make basic plots of the output
+plotrpm(p,s);
+
+
+
+
+
