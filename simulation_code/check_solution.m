@@ -8,11 +8,7 @@ function status = check_solution(i, s)
 status = 0;
 
 % get max volume change
-if size(s.QVp,1)==1
-    maxdVdt = max(abs(s.QVp(:,:,i)'+s.QVs(:,i)+s.QVk(:,i)+s.QVi(:,i)+s.QVv(:,i)));
-else
-    maxdVdt = max(abs(sum(s.QVp(:,:,i))'+s.QVs(:,i)+s.QVk(:,i)+s.QVi(:,i)+s.QVv(:,i)));
-end
+maxdVdt = max(abs(sum(s.QVp(:,:,i),1)'+s.QVs(:,i)+s.QVk(:,i)+s.QVi(:,i)+s.QVv(:,i)));
 
 % change error status and display warning if above tolerance
 if maxdVdt>1e-8
