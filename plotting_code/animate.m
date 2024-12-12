@@ -10,17 +10,6 @@ function animate(p,s,nframes,outputname)
 %   number of frames to include in the animation nframes and the output
 %   file name outputname.
 
-% unpackStruct = @(s) cellfun(@(name) assignin('base',name,getfield(s,name)),fieldnames(s));
-% % load data
-% % load([outputname,'.mat']);
-% 
-% if exist('cur_fjord','var')
-%     t = cur_fjord.t;
-%     f = cur_fjord.f;
-%     a = cur_fjord.a;
-%     p = cur_fjord.p;
-%     s = cur_fjord.s;
-% end
 % delete existing video if exists
 warning off; delete([outputname,'.mp4']); warning on;
 
