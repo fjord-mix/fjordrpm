@@ -34,6 +34,7 @@ s.QVp = s.QVp(:,:,inx);
 s.QTp = s.QTp(:,:,inx);
 s.QSp = s.QSp(:,:,inx);
 s.QMp = s.QMp(:,:,inx);
+s.QEp = s.QEp(:,:,inx);
 for j=1:length(p.Wp)
     s.mp(j,:,:) = p.sid*squeeze(s.QMp(j,:,:))./(p.Wp(j)*s.H);
 end
