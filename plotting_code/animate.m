@@ -1,26 +1,28 @@
-function animate(outputfile,nframes)
+function animate(p,s,nframes,outputname)
 
 % ANIMATE makes an animation of a FjordRPM run.
-%   ANIMATE(outputfile,nframes) makes a number nframes of snapshots of the
-%   model output, equally spaced in time from the start to the end of the
-%   run. Each plot contains circulation, temperature, salinity, fjord-shelf
-%   exchange and freshwater fluxes. These plots are combined into a mp4
-%   animation and the individual plotting files are then deleted.
+%   ANIMATE(p,s,nframes,outputname) makes a number nframes of snapshots of
+%   the model output, equally spaced in time from the start to the end of
+%   the run. Each plot contains circulation, temperature, salinity,
+%   fjord-shelf exchange and freshwater fluxes. These plots are combined
+%   into a mp4 animation and the individual plotting files are then
+%   deleted. Input are the parameters structure p, solution structure s,
+%   number of frames to include in the animation nframes and the output
+%   file name outputname.
 
-
-unpackStruct = @(s) cellfun(@(name) assignin('base',name,getfield(s,name)),fieldnames(s));
-% load data
-load([outputfile,'.mat']);
-
-if exist('cur_fjord','var')
-    t = cur_fjord.t;
-    f = cur_fjord.f;
-    a = cur_fjord.a;
-    p = cur_fjord.p;
-    s = cur_fjord.s;
-end
+% unpackStruct = @(s) cellfun(@(name) assignin('base',name,getfield(s,name)),fieldnames(s));
+% % load data
+% % load([outputname,'.mat']);
+% 
+% if exist('cur_fjord','var')
+%     t = cur_fjord.t;
+%     f = cur_fjord.f;
+%     a = cur_fjord.a;
+%     p = cur_fjord.p;
+%     s = cur_fjord.s;
+% end
 % delete existing video if exists
-warning off; delete([outputfile,'.mp4']); warning on;
+warning off; delete([outputname,'.mp4']); warning on;
 
 % colour maps from https://uk.mathworks.com/matlabcentral/fileexchange/57773-cmocean-perceptually-uniform-colormaps
 cmap_vel = cmocean('balance');
@@ -190,21 +192,21 @@ for k=1:length(inx)
     else
         savenum = num2str(k);
     end
-    saveplot(40,15,300,[outputfile,'_',savenum,'.png']);
+    saveplot(40,15,300,[outputname,'_',savenum,'.png']);
     close all;
 
 end
 
 % write video
-video = VideoWriter([outputfile,'.mp4'],'MPEG-4');
+video = VideoWriter([outputname,'.mp4'],'MPEG-4');
 video.FrameRate = 5;
 open(video);
-pngs = dir(fullfile([outputfile,'*.png']));
+pngs = dir(fullfile([outputname,'*.png']));
 for k = 1:length(pngs)
     I = imread([pngs(k).folder,'/',pngs(k).name]);
     writeVideo(video, I);
 end
 close(video);
-delete([outputfile,'*.png']);
+delete([outputname,'*.png']);
 
 end
