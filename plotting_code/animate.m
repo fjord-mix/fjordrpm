@@ -1,4 +1,13 @@
 function animate(outputfile,nframes)
+
+% ANIMATE makes an animation of a FjordRPM run.
+%   ANIMATE(outputfile,nframes) makes a number nframes of snapshots of the
+%   model output, equally spaced in time from the start to the end of the
+%   run. Each plot contains circulation, temperature, salinity, fjord-shelf
+%   exchange and freshwater fluxes. These plots are combined into a mp4
+%   animation and the individual plotting files are then deleted.
+
+
 unpackStruct = @(s) cellfun(@(name) assignin('base',name,getfield(s,name)),fieldnames(s));
 % load data
 load([outputfile,'.mat']);
@@ -20,11 +29,15 @@ cmap_temp = cmocean('thermal');
 cmap_anom = cmocean('delta');
 
 % some nice plotting colours
-cols = [0,0.4470,0.7410;
-        0.8500,0.3250,0.0980;
-        0.3010,0.7450,0.9330];
+cols = [0.000,0.447,0.741;
+        0.850,0.325,0.098;
+        0.301,0.745,0.933];
 
-% limits
+% deal with potential multiple plumes by summing the volume fluxes
+% as if multiples plume were one plume
+s.QVp = squeeze(sum(s.QVp,1));
+
+% axis limits
 u0 = [s.QVs./(p.W*s.H)];
 ulims = max(abs(u0(:)))*[-1,1];
 w0 = cumsum(s.QVp+s.QVs)/(p.W*p.L);
