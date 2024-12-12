@@ -35,10 +35,11 @@ s.QTp = s.QTp(:,:,inx);
 s.QSp = s.QSp(:,:,inx);
 s.QMp = s.QMp(:,:,inx);
 s.QEp = s.QEp(:,:,inx);
+s.knb = s.knb(inx);
+% calculate plume melt rate in m/d
 for j=1:length(p.Wp)
     s.mp(j,:,:) = p.sid*squeeze(s.QMp(j,:,:))./(p.Wp(j)*s.H);
 end
-s.knb = s.knb(inx);
 
 % shelf fluxes
 s.QVs = s.QVs(:,inx);
@@ -63,6 +64,7 @@ s.QVi = s.QVi(:,inx);
 s.QTi = s.QTi(:,inx);
 s.QSi = s.QSi(:,inx);
 s.QMi = s.QMi(:,inx);
+% calculate iceberg melt rates in m/d
 s.mi = p.sid*s.QMi./s.I;
 s.mi(s.I==0,:) = 0;
 
