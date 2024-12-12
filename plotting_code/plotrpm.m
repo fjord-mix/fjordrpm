@@ -113,16 +113,13 @@ figure();
 tcl = tiledlayout(2,2);
 title(tcl,'VOLUME FLUXES');
 
+% deal with potential for multiple plumes by summing volume fluxes
+s.QVp = squeeze(sum(s.QVp,1));
+
 % plume
 nexttile; hold on;
-if size(s.QVp,1)==1
-    for i=1:length(ip)
-        plot(squeeze(s.QVp(1,:,ip(i))),s.z,'color',cmapt(i,:),'linewidth',lw);
-    end
-else
-    for i=1:length(ip)
-        plot(squeeze(sum(s.QVp(:,:,ip(i)))),s.z,'color',cmapt(i,:),'linewidth',lw);
-    end
+for i=1:length(ip)
+    plot(s.QVp(:,ip(i)),s.z,'color',cmapt(i,:),'linewidth',lw);
 end
 xlabel('volume flux (m$^3$/s)'); ylabel('depth (m)');
 h = colorbar; colormap(cmapt); caxis([min(s.t),max(s.t)]);
@@ -171,10 +168,10 @@ set(gca,'box','on'); grid on; title('VERTICAL ADVECTIVE');
 figure();
 
 tcl = tiledlayout(2,3);
-title(tcl,'FRESHWATER MELT');
+title(tcl,'FRESHWATER');
 
 % iceberg melt rate
-nexttile; hold on;
+nexttile(1); hold on;
 for i=1:length(ip)
     plot(s.mi(:,ip(i)),s.z,'color',cmapt(i,:),'linewidth',lw);
 end
@@ -184,7 +181,7 @@ ylabel(h,'time (days)');
 set(gca,'box','on'); grid on;
 
 % iceberg melt flux
-nexttile; hold on;
+nexttile(2); hold on;
 for i=1:length(ip)
     plot(s.QMi(:,ip(i)),s.z,'color',cmapt(i,:),'linewidth',lw);
 end
@@ -193,20 +190,16 @@ h = colorbar; colormap(cmapt); caxis([min(s.t),max(s.t)]);
 ylabel(h,'time (days)');
 set(gca,'box','on'); grid on;
 
-% total iceberg melt flux
-nexttile; hold on;
-plot(s.t,sum(s.QMi),'k','linewidth',lw);
-xlabel('time (days)'); ylabel('total iceberg melt flux (m$^3$/s)');
-set(gca,'box','on'); grid on;
+% deal with potential for multiple plumes by taking mean over melt rate
+% but sum over melt flux
+s.mp = squeeze(mean(s.mp,1));
+s.QMp = squeeze(sum(s.QMp,1));
+s.Qsg = squeeze(sum(s.Qsg,1));
 
 % plume melt rate
-nexttile; hold on;
+nexttile(4); hold on;
 for i=1:length(ip)
-    if size(s.QVp,1)==1
-        plot(s.mp(1,:,ip(i)),s.z,'color',cmapt(i,:),'linewidth',lw);
-    else
-        plot(mean(s.mp(:,:,ip(i))),s.z,'color',cmapt(i,:),'linewidth',lw);
-    end
+    plot(s.mp(:,ip(i)),s.z,'color',cmapt(i,:),'linewidth',lw);
 end
 xlabel('plume melt rate (m/d)'); ylabel('depth (m)');
 h = colorbar; colormap(cmapt); caxis([min(s.t),max(s.t)]);
@@ -214,27 +207,23 @@ ylabel(h,'time (days)');
 set(gca,'box','on'); grid on;
 
 % plume melt flux
-nexttile; hold on;
+nexttile(5); hold on;
 for i=1:length(ip)
-    if size(s.QVp,1)==1
-        plot(s.QMp(1,:,ip(i)),s.z,'color',cmapt(i,:),'linewidth',lw);
-    else
-        plot(sum(s.QMp(:,:,ip(i))),s.z,'color',cmapt(i,:),'linewidth',lw);
-    end
+    plot(s.QMp(:,ip(i)),s.z,'color',cmapt(i,:),'linewidth',lw);
 end
 xlabel('plume melt flux (m$^3$/s)'); ylabel('depth (m)');
 h = colorbar; colormap(cmapt); caxis([min(s.t),max(s.t)]);
 ylabel(h,'time (days)');
 set(gca,'box','on'); grid on;
 
-% total plume melt flux
-nexttile; hold on;
-if size(s.QVp,1)==1
-    plot(s.t,squeeze(sum(s.QMp)),'k','linewidth',lw);
-else
-    plot(s.t,squeeze(sum(sum(s.QMp))),'k','linewidth',lw);
-end
-xlabel('time (days)'); ylabel('total plume melt flux (m$^3$/s)');
+% total fluxes
+nexttile(6); hold on;
+plot(s.t,sum(s.QMi),'linewidth',lw);
+plot(s.t,sum(s.QMp),'linewidth',lw);
+plot(s.t,s.Qsg,'linewidth',lw);
+xlabel('time (days)'); ylabel('total flux (m$^3$/s)');
+legend('iceberg melt','plume sub. melt','sub. discharge','location','best');
+title('freshwater inputs');
 set(gca,'box','on'); grid on;
 
 end
