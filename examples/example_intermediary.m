@@ -80,10 +80,10 @@ s = run_model(p, t, f, a);
 save example_intermediary.mat s p t f a
 
 % make an animation of the output (takes a few minutes)
-animate(p,s,50,'example_intermediary');
+% animate(p,s,50,'example_intermediary');
 
 % make basic plots of the output
-plotrpm(p,s);
+plotrpm(p,s,50);
 
 
 

@@ -1,12 +1,13 @@
-function plotrpm(p, s)
+function plotrpm(p, s, nplot)
 
 % PLOTRPM makes summary plots after the model has run.
-%   PLOTRPM(p, s) makes example plots of temperature, salinity,
+%   PLOTRPM(p, s, nplot) makes example plots of temperature, salinity,
 %   fluxes and melt rates to show the sort of thing that can be done.
-%   Inputs are the parameters structure p and solution structure s.
+%   Inputs are the parameters structure p, solution structure s and nplot
+%   is the number of time snapshots to plot.
 
 % time indices to plot
-ip = [1:round(length(s.t)/50):length(s.t)];
+ip = [1:round(length(s.t)/nplot):length(s.t)];
 
 % colourmaps
 cmapt = parula(length(ip));

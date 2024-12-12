@@ -88,7 +88,7 @@ save example_subglacial_discharge.mat s p t f a
 % animate(p,s,50,'example_subglacial_discharge');
 
 % make basic plots of the output
-plotrpm(p,s);
+plotrpm(p,s,50);
 
 
 
