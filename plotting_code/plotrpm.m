@@ -1,11 +1,9 @@
-function plotrpm(outputfile)
+function plotrpm(p, s)
 
 % PLOTRPM makes summary plots after the model has run.
-%   PLOTRPM(outputfile) makes example plots of temperature, salinity,
+%   PLOTRPM(p, s) makes example plots of temperature, salinity,
 %   fluxes and melt rates to show the sort of thing that can be done.
-
-% load data
-load(outputfile);
+%   Inputs are the parameters structure p and solution structure s.
 
 % time indices to plot
 ip = [1:round(length(s.t)/50):length(s.t)];
