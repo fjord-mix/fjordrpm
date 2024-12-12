@@ -62,7 +62,7 @@ f.Ts = 3*ones(length(f.zs),length(f.ts)); % shelf temperature on (zs,ts)
 % f.tsg must have dimensions 1 x nt
 % f.Qsg must have dimensions num plumes x nt
 f.tsg = t; % time vector for subglacial discharge
-f.Qsg = 300*exp(-((mod(t,365)-200)/30).^2); % subglacial discharge on tsg
+f.Qsg = 300*exp(-((mod(f.tsg,365)-200)/30).^2); % subglacial discharge on tsg
 
 % in the case of multiple plumes we add more rows to f.Qsg
 % for example for three plumes with the same subglacial discharge

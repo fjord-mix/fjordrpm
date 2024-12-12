@@ -55,7 +55,7 @@ f.Ts = 3*ones(length(f.zs),length(f.ts)); % shelf temperature on (zs,ts)
 % f.tsg must have dimensions 1 x nt
 % f.Qsg must have dimensions num plumes x nt
 f.tsg = t; % time vector for subglacial discharge
-f.Qsg = 0*t; % subglacial discharge on tsg
+f.Qsg = 0*f.tsg; % subglacial discharge on tsg
 
 % fjord initial conditions
 % set up to be same as initial shelf profiles

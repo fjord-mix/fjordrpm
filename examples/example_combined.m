@@ -46,16 +46,16 @@ p.t_save = 0:1:t_end; % times on which to save output
 % f.ts must have dimensions 1 x nt
 % f.zs must have dimensions nz x 1
 % f.Ss and f.Ts must have dimensions nz x nt
-f.ts = t; % time vector for shelf forcing
+f.ts = 0:1:t_end; % time vector for shelf forcing
 f.zs = [-p.H:0]'; % depth vector for shelf forcing (negative below surface)
 Sbottom = 35; % salinity at bottom
 Stop = 30; % salinity at top
 Tbottom = 4; % temperature at bottom
 Ttop = 0; % temperature at top
 tw = 10; % period of oscillation (days)
-zi = 50+(30/2)*sin(2*pi*t/tw); % 'pycnocline' oscillation
-zi(mod(t,365)>120 & mod(t,365)<280) = 50; % no oscillation in summer
-for k=1:length(t),
+zi = 50+(30/2)*sin(2*pi*f.ts/tw); % 'pycnocline' oscillation
+zi(mod(f.ts,365)>120 & mod(f.ts,365)<280) = 50; % no oscillation in summer
+for k=1:length(f.ts),
     f.Ss(:,k) = Sbottom-(Sbottom-Stop)*exp(f.zs/zi(k)); % shelf salinity
     f.Ts(:,k) = Tbottom-(Tbottom-Ttop)*exp(f.zs/zi(k)); % shelf temperature
 end
@@ -65,7 +65,7 @@ end
 % f.tsg must have dimensions 1 x nt
 % f.Qsg must have dimensions num plumes x nt
 f.tsg = t; % time vector for subglacial discharge
-f.Qsg = 300*exp(-((mod(t,365)-200)/30).^2); % subglacial discharge on tsg
+f.Qsg = 300*exp(-((mod(f.tsg,365)-200)/30).^2); % subglacial discharge on tsg
 
 % fjord initial conditions
 % set up to be same as initial shelf profiles
@@ -86,7 +86,7 @@ s = run_model(p, t, f, a);
 save example_combined.mat s p t f a
 
 % make an animation of the output (takes a few minutes)
-% animate(p,s,50,'example_combined');
+% animate(p,s,100,'example_combined');
 
 % make basic plots of the output
 plotrpm(p,s,50);

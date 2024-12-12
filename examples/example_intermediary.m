@@ -52,8 +52,8 @@ Stop = 30; % salinity at top
 Tbottom = 4; % temperature at bottom
 Ttop = 0; % temperature at top
 tw = 10; % period of oscillation (days)
-zi = 50+(30/2)*sin(2*pi*t/tw); % 'pycnocline' oscillation
-for k=1:length(t),
+zi = 50+(30/2)*sin(2*pi*f.ts/tw); % 'pycnocline' oscillation
+for k=1:length(f.ts),
     f.Ss(:,k) = Sbottom-(Sbottom-Stop)*exp(f.zs/zi(k)); % shelf salinity
     f.Ts(:,k) = Tbottom-(Tbottom-Ttop)*exp(f.zs/zi(k)); % shelf temperature
 end
@@ -63,7 +63,7 @@ end
 % f.tsg must have dimensions 1 x nt
 % f.Qsg must have dimensions num plumes x nt
 f.tsg = t; % time vector for subglacial discharge
-f.Qsg = 0*t; % subglacial discharge on tsg
+f.Qsg = 0*f.tsg; % subglacial discharge on tsg
 
 % fjord initial conditions
 % set up to be same as initial shelf profiles
