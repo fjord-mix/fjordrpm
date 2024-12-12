@@ -1,4 +1,4 @@
-# Fjord box model repository
+# FjordRPM 1.5D-model repository
 
 
 About the model...
