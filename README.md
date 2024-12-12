@@ -1,4 +1,4 @@
-# FjordRPM 1.5D-model repository donald edit
+# FjordRPM 1.5D-model repository
 
 
 About the model...
