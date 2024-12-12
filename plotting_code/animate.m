@@ -28,9 +28,10 @@ cols = [0.000,0.447,0.741;
 fs = 10;
 
 % deal with potential multiple plumes by summing the volume fluxes
-% as if multiples plume were one plume
+% as if multiple plumes were one plume
 s.QVp = squeeze(sum(s.QVp,1));
 s.QMp = squeeze(sum(s.QMp,1));
+s.Qsg = squeeze(sum(s.Qsg,1));
 
 % axis limits
 u0 = [s.QVs./(p.W*s.H)];
