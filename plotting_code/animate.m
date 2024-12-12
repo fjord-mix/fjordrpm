@@ -105,6 +105,8 @@ for k=1:length(inx)
     title('along-fjord velocity (m/s)','fontsize',fs);
     xlabel('x (km)','fontsize',fs); ylabel('depth (m)','fontsize',fs);
     set(gca,'box','on','layer','top','fontsize',fs);
+    text(0.03*p.L/1e3,-0.88*p.H,'glacier at left, shelf at right','fontsize',fs);
+    text(0.03*p.L/1e3,-0.94*p.H,'positive velocities are left to right','fontsize',fs);
     
     % plot vertical velocity
     subplot(2,6,7:8); hold on;
