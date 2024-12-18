@@ -9,7 +9,7 @@
 clear; close all;
 
 % put FjordRPM code on path - need to update to the location of your code
-path2sourcecode = '~/OneDrive - University of Edinburgh/fjordMIX/code/box-model/';
+path2sourcecode = '~/OneDrive - University of Edinburgh/fjordMIX/code/fjordrpm/';
 addpath(genpath(path2sourcecode));
 
 % get basic constants and default controlling parameters
