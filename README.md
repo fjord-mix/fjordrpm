@@ -1,4 +1,4 @@
-# FjordRPM model repository
+# Fjord Reduced Physics Model (FjordRPM)
 
 This is the official repository for the Fjord Reduced Physics Model (FjordRPM). 
 A very brief explanation of the model is provided below, but all details can be read in the model description paper: [Slater et al., 2025 (dummy link)](https://github.com/fjord-mix/fjordrpm/)
