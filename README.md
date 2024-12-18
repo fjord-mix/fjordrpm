@@ -49,11 +49,12 @@ The model is run by executing (in Matlab) `s = run_model(p,t,f,a)`, in which the
     - If `n_plumes > 1`, then `p.Hgl` and `p.Wp` both need to be arrays containing the potentially different grounding line depths and plume widths for each plume (for an example, see comments in `examples/example1_subglacial_discharge`).
     - `f.ts` and `f.tsg` do not need to be the same as each other or the same as `t`, but they do need to all be consistent and the forcing needs to specified for the full duration of the simulation. Similarly `f.zs` does not need to coincide with the model layers. When the time/depth axes for the specification of the forcing do not coincide with the model time stepping and layers, the forcings are interpolated in time and depth to coincide with the model time stepping and layers.
     
-- `a`: the structure containing the initial conditions
-    - `a.T0` contains the initial temperature profile
-    - `a.S0` contains the initial salinity profile
-    - `a.I0` contains the iceberg area profile for each layer
-    - **Note:** all structures should have dimensions `[length(f.zs),1]`
+- `a` is a structure containing the desired layer thicknesses, the initial conditions and the iceberg surface area profile. 
+    - `a.H0` contains the desired layer thickness (m), which do not need to be uniform. They must sum to the depth of the fjord. The word "desired" is used here because the model will adjust the thicknesses slightly to ensure that the sill depth coincides with a layer boundary, making the treatment of the shelf exchange fluxes simpler. The actual layer thicknesses used are output in the solution structure as `s.H`.
+    - `a.T0` contains the initial conditions for fjord temperature ($^{\circ}$C) - i.e., the initial temperature of the layers having thickness `a.H0`.
+    - `a.S0` contains the initial conditions for fjord salinity (unitless).
+    - `a.I0` contains the surface area of icebergs (m$^2$) in each of the layers having thickness `a.H0`.
+    - All initial conditions should have dimensions `[p.N,1]`
     
 - `s` is the output structure containing all variables
     - the variable `s.z` contains the depth axis of the fjord itself
