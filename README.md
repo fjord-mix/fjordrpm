@@ -1,41 +1,43 @@
 
 # Fjord Reduced Physics Model (FjordRPM)
 
-This is the official repository for the Fjord Reduced Physics Model (FjordRPM), an efficient "1.5-dimensional" model for simulating the dynamics of glacial fjords. The model splits a fjord into a number of vertically-stacked layers and solves for the evolution of layer properties due to processes that currently include (i) plumes driven by subglacial discharge, (ii) exchange with the continental shelf, (iii) iceberg melt and upwelling, (iv) vertical mixing and advection within the fjord. The model can represent multiple plumes and also the presence of a sill. Full details on the physics, numerical implementation and validation of the model can be found in the model description paper. 
+The Fjord Reduced Physics Model (FjordRPM) is an efficient "1.5-dimensional" model for simulating the dynamics of glacial fjords. The model splits a fjord into a number of vertically-stacked layers and solves for the evolution of layer properties due to processes that currently include (i) plumes driven by subglacial discharge, (ii) exchange with the continental shelf, (iii) iceberg melt and upwelling, (iv) vertical mixing and advection within the fjord. The model can represent multiple plumes and also the presence of a sill. Full details on the physics, numerical implementation and validation of the model can be found in the model description paper. 
 
-Here we provide instructions for downloading and running the model, together with a brief overview of the inputs/outputs and the provided examples. The model is written in Matlab and was tested mostly in R2022b but we do not expect difficulities with different versions of Matlab.
+Here we provide instructions for downloading and running the model, together with a brief overview of the inputs/outputs and the provided examples. The model is written in Matlab and was tested mostly in R2022b but we do not expect difficulties with different versions of Matlab.
 
 ## Installation
 
-Just download directly from GitHub/Zenodo or clone the GitHub repository by using `git clone https://github.com/fjord-mix/fjordrpm.git`. Ensure the code is on your Matlab path using `addpath(genpath(path2sourcecode))` in Matlab, where path2sourcecode is the location of the code on your machine. This is also done at the start of the code for the examples below but you will need to update for the location of the code on your machine.
+Just download directly from GitHub/Zenodo or clone the GitHub repository by using `git clone https://github.com/fjord-mix/fjordrpm.git`. Ensure the code is on your Matlab path by executing `addpath(genpath(path2sourcecode))` in Matlab, where `path2sourcecode` is the location of the code on your machine. This is also done at the start of the code for the examples below but you will need to update for the location of the code on your machine.
 
 ## Directory structure
 
 - `simulation_code` contains the source code for FjordRPM.
 - `plotting_code` contains scripts giving examples of plotting and animating the results.
-- `examples` contains example simulations that could be good to adapt to your own simulations.
+- `examples` contains example simulations that are a good place to start and to adapt to your own simulations.
 
 ## Model usage
 
 The model is run by executing (in Matlab) `s = run_model(p,t,f,a)`, in which the arguments are
 
-- `t` the time axis for the simulation
-    - `t(1)` should have the first time (usually, but not necessarily zero) 
-    - `t(end)` should be the last time
-    - the model time step is calculated as `t(j+1) - t(j)`
-
-- `p`: the structure containing all model parameters. 
-    - Default values for all physical parameters are provided in `default_parameters`, e.g., `p = default_parameters();`
-    - Model geometry variables also need to go in p, e.g.:
+- `p` is a structure containing all the model parameters. 
+    - Default values for most of the parameters are provided in `simulation_code/default_parameters` and can be loaded by executing `p = default_parameters()`
+    - `p.N` defines the number of model layers.
+    - The geometry of the glacier-fjord system is also specified in this structure, for example:
     ```
-    p.Hgl = 500;   % grounding line depth (m, positive)
+    p.Hgl = 500;   % glacier grounding line depth (m, positive)
     p.Hsill = 650; % sill depth (m, positive)
     p.H = 1000;    % fjord depth (m, positive)
     p.L = 90e3;    % fjord length (m)
-    p.W = 3e3;     % fjord width
+    p.W = 3e3;     % fjord width (m)
     ```
-    - **Note 1:** `p.sill==1` tells the model the fjord has a sill, and `p.sill==0` tells the model the fjord doesn't. However, if `p.Hsill >= p.H` the model will automatically adjust to no sill. If `p.sill==0`, `p.Hsill` will be ignored.
-    - **Note 2:** the user can define `p.t_save` as a subset of the original time axis `t` to reduce the number of time steps saved. If not specified, the model will save all time steps.
+    - Setting `p.sill==1` is needed to tell the model that the fjord has a sill. If we define `p.sill==0` then the model will assume there is no sill (even if `p.Hsill` is defined).
+    - `p.run_plume_every` defines how often the plume model sitting inside FjordRPM is run. For example, `p.run_plume_every=20` means that the subglacial discharge plume dynamics are updated every 20 model time steps. Since the plume model is the most time-consuming aspect of the code, this can speed up the model.
+    - The user can define `p.t_save` as a subset of the original time axis `t` to reduce the number of time steps that appear in the output (to avoid the output becoming large). If `p.t_save` is not specified, the model will output all time steps.
+
+- `t` is the time axis for the simulation, in units of days.
+    - `t(1)` is the start of the simulation.
+    - `t(end)` is the end of the simulation.
+    - The model time step is calculated as `t(i+1) - t(i)` (so doesn't have to be the same at every time step).
     
 - `f`: the structure containing all model forcings
     - `f.Ts` is the shelf temperature (in $^oC$)
@@ -63,10 +65,10 @@ The model is run by executing (in Matlab) `s = run_model(p,t,f,a)`, in which the
 
 ## Examples
 
-# Example 1 - subglacial discharge
+### Example 1 - subglacial discharge
 
-# Example 2 - intermediary circulation driven by shelf variability
+### Example 2 - intermediary circulation driven by shelf variability
 
-# Example 3 - icebergs
+### Example 3 - icebergs
 
-# Example 4 - combined simulation
+### Example 4 - combined simulation
