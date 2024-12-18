@@ -1,21 +1,23 @@
+
 # Fjord Reduced Physics Model (FjordRPM)
 
-This is the official repository for the Fjord Reduced Physics Model (FjordRPM). 
-A very brief explanation of the model is provided below, but all details can be read in the model description paper: [Slater et al., 2025 (dummy link)](https://github.com/fjord-mix/fjordrpm/)
+This is the official repository for the Fjord Reduced Physics Model (FjordRPM), an efficient "1.5-dimensional" model for simulating the dynamics of glacial fjords. The model splits a fjord into a number of vertically-stacked layers and solves for the evolution of layer properties due to processes that currently include (i) plumes driven by subglacial discharge, (ii) exchange with the continental shelf, (iii) iceberg melt and upwelling, (iv) vertical mixing and advection within the fjord. The model can represent multiple plumes and also the presence of a sill. Full details on the physics, numerical implementation and validation of the model can be found in the model description paper. 
+
+Here we provide instructions for downloading and running the model, together with a brief overview of the inputs/outputs and the provided examples. The model is written in Matlab and was tested mostly in R2022b but we do not expect difficulities with different versions of Matlab.
 
 ## Installation
 
-Just download or clone the GitHub repository by using `git clone https://github.com/fjord-mix/fjordrpm.git`
+Just download directly from GitHub/Zenodo or clone the GitHub repository by using `git clone https://github.com/fjord-mix/fjordrpm.git`. Ensure the code is on your Matlab path using `addpath(genpath(path2sourcecode))` in Matlab, where path2sourcecode is the location of the code on your machine. This is also done at the start of the code for the examples below but you will need to update for the location of the code on your machine.
 
 ## Directory structure
 
-- [`simulation_code`](https://github.com/fjord-mix/fjordrpm/tree/readme_update/simulation_code) contains the source code for FjordRPM
-- [`plotting_code`](https://github.com/fjord-mix/fjordrpm/tree/readme_update/plotting_code) contains basic routines for plotting the raw results.
-- [`examples`](https://github.com/fjord-mix/fjordrpm/tree/readme_update/examples) is a folder containing example simulations for the model, and are good templates to start your own simulations from
+- `simulation_code` contains the source code for FjordRPM.
+- `plotting_code` contains scripts giving examples of plotting and animating the results.
+- `examples` contains example simulations that could be good to adapt to your own simulations.
 
 ## Model usage
 
-The model can be run by calling the function `s = run_model(p,t,f,a)`, which takes the following arguments:
+The model is run by executing (in Matlab) `s = run_model(p,t,f,a)`, in which the arguments are
 
 - `t` the time axis for the simulation
     - `t(1)` should have the first time (usually, but not necessarily zero) 
@@ -58,3 +60,13 @@ The model can be run by calling the function `s = run_model(p,t,f,a)`, which tak
     - dimensions of all variables are `[length(s.z),length(s.t)]`
     
 **Note:** if a directory string is provided such as `s = run_model(p,t,f,a,'directory_path/filename.mat')`, then all inputs and outputs will be saved in `directory_path/filename.mat`
+
+## Examples
+
+# Example 1 - subglacial discharge
+
+# Example 2 - intermediary circulation driven by shelf variability
+
+# Example 3 - icebergs
+
+# Example 4 - combined simulation
