@@ -37,13 +37,14 @@ The model is run by executing (in Matlab) `s = run_model(p,t,f,a)`, in which the
 - `t` is the time axis for the simulation, in units of days.
     - `t(1)` is the start of the simulation.
     - `t(end)` is the end of the simulation.
-    - The model time step is calculated as `t(i+1) - t(i)` (so doesn't have to be the same at every time step).
+    - The model time step is calculated as `t(i+1) - t(i)` (so the time step can vary through the simulation if desired).
     
-- `f`: the structure containing all model forcings
-    - `f.Ts` is the shelf temperature (in $^oC$)
-    - `f.Ss` is the shelf salinity (in PSU)
-    - `f.zs` is the depths (in m) at which `Ts` and `Ss` are defined
-    - `f.ts` is the time axis (usually in days, just like `t`) at which `Ts` and `Ss` are defined
+- `f` is a structure containing all the model forcings. The shelf properties are specified using
+    - `f.Ts` is the shelf temperature (in $^oC$).
+    - `f.Ss` is the shelf salinity (dimensionless).
+    - `f.zs` is a vector of depths (m, negative below sea level) on which `f.Ts` and `f.Ss` are defined.
+    - `f.ts` is a vector of times (days) on which `f.Ts` and `f.Ss` are defined.
+The subglacial discharge forcing is specified using
     - `f.Qsg` is the subglacial discharge (in $m^3 s^{-1}$)
     - `f.tsg` is the time axis at which `Qsg` is defined, following the same reasoning as `f.ts`
     - **Note 1:** `f.Ts` and `f.Ss` must have dimensions `[length(f.zs), length(f.ts)]`
