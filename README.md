@@ -39,17 +39,15 @@ The model is run by executing (in Matlab) `s = run_model(p,t,f,a)`, in which the
     - `t(end)` is the end of the simulation.
     - The model time step is calculated as `t(i+1) - t(i)` (so the time step can vary through the simulation if desired).
     
-- `f` is a structure containing all the model forcings. The shelf properties are specified using
-    - `f.Ts` is the shelf temperature (in $^oC$).
-    - `f.Ss` is the shelf salinity (dimensionless).
-    - `f.zs` is a vector of depths (m, negative below sea level) on which `f.Ts` and `f.Ss` are defined.
-    - `f.ts` is a vector of times (days) on which `f.Ts` and `f.Ss` are defined.
-The subglacial discharge forcing is specified using
-    - `f.Qsg` is the subglacial discharge (in $m^3 s^{-1}$)
-    - `f.tsg` is the time axis at which `Qsg` is defined, following the same reasoning as `f.ts`
-    - **Note 1:** `f.Ts` and `f.Ss` must have dimensions `[length(f.zs), length(f.ts)]`
-    - **Note 2:** `f.Qsg` must have dimensions `[n_plumes, length(f.tsg)]`. If `n_plumes > 1`, then `p.Hgl` needs to be an array containing the different grounding-line depths for each plume, such as `n_plumes == length(p.Hgl)`
-    - **Note 3:** the model will automatically interpolate the forcing variables into the model's simulation time axis through the provided inputs `f.ts` and `f.tsg`
+- `f` is a structure containing all the model forcings.
+    - `f.ts` is a vector, dimensions `[1,length(f.ts)]`, of times (in days) on which the shelf properties are defined.
+    - `f.zs` is a vector, dimensions `[length(f.zs),1]`, of depths (m, negative below sea level) on which the shelf properties are defined.
+    - `f.Ts` is an array, dimensions `[length(f.zs),length(f.ts)]`, of the shelf temperature ($^{\circ}$C) at the times `f.ts` and depths `f.zs`.
+    - `f.Ss` is an array, dimensions `[length(f.zs),length(f.ts)]`, of the shelf salinity (unitless) at the times `f.ts` and depths `f.zs`.
+    - `f.tsg` is a vector, dimensions `[1,length(f.tsg)]`, of times (in days) at which the subglacial discharge is defined.
+    - `f.Qsg` is an array, dimensions `[n_plumes,length(f.tsg)]`, of the subglacial discharge (m$^3$/s) at the times `f.tsg` for each of the number `n_plumes` of subglacial discharge-driven plumes.
+    - If `n_plumes > 1`, then `p.Hgl` and `p.Wp` both need to be arrays containing the potentially different grounding line depths and plume widths for each plume (for an example, see comments in `examples/example1_subglacial_discharge`).
+    - `f.ts` and `f.tsg` do not need to be the same as each other or the same as `t`, but they do need to all be consistent and the forcing needs to specified for the full duration of the simulation. Similarly `f.zs` does not need to coincide with the model layers. When the time/depth axes for the specification of the forcing do not coincide with the model time stepping and layers, the forcings are interpolated in time and depth to coincide with the model time stepping and layers.
     
 - `a`: the structure containing the initial conditions
     - `a.T0` contains the initial temperature profile
