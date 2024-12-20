@@ -7,17 +7,18 @@ function s = homogenise_unstable_layers(i, p, s)
 %   homogenises any layers that are unstably stratified and returns an
 %   updated solution structure s.
 
-% Required variables
+% required variables
 V = s.V;
 T = s.T(:,i);
 S = s.S(:,i);
 
-% Conmpute the buoyancy jump between boxes
+% compute the buoyancy jump between boxes
 B = p.g*(p.betaS*(S(2:end)-S(1:end-1))-p.betaT*(T(2:end)-T(1:end-1)));
 
 if any(B < 0)
-    % Find the indicies of negative buoyancy entries
-    inx = find(B < 0); 
+    % find the indices of negative buoyancy entries
+    inx = find(B < 0);
+    % homogenise any two such layers
     for k = 1:length(inx)
         inds = [inx(k), inx(k)+1];
         T(inds) = sum(T(inds).*V(inds))./sum(V(inds));
@@ -25,7 +26,7 @@ if any(B < 0)
     end
 end
 
-% Put homogenised solution into output stucture
+% put homogenised solution into output stucture
 s.T(:,i) = T;
 s.S(:,i) = S;
 

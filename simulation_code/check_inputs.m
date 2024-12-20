@@ -5,22 +5,22 @@ function status = check_inputs(p, t, f, a)
 
 status = 0;
 
-% Check provided depths are positive
+% check provided depths are positive
 if any([p.Hsill<0, p.Hgl<0, p.H<0])
     error('p.H, p.Hgl and p.Hsill must be positive');
 end
 
-% Check dimensionality of initial conditions
+% check dimensionality of initial conditions
 if ~isequal([size(a.H0)],[size(a.S0)],[size(a.T0)],[size(a.I0)],[p.N,1])
     error('Initial conditions (a.H0, a.S0, a.T0, a.I0) must have dimensions p.N x 1');
 end
 
-% Check sum of layer thicknesses is equal to fjord depth
+% check sum of layer thicknesses is equal to fjord depth
 if abs(sum(a.H0)-p.H) > 1e-10
     error('Layer thicknesses (a.H0) must sum to fjord depth (p.H)');
 end
 
-% Check dimensionality of shelf forcing
+% check dimensionality of shelf forcing
 nz = length(f.zs);
 nt = length(f.ts);
 % f.ts
@@ -36,7 +36,7 @@ if ~isequal(size(f.Ss),size(f.Ts),[nz,nt])
     error('f.Ss and f.Ts must have dimensions length(f.zs) x length(f.ts)');
 end
 
-% Check dimensionality of discharge forcing
+% check dimensionality of subglacial discharge forcing
 nt = length(f.tsg);
 % f.tsg
 if ~isequal(size(f.tsg),[1,nt])
@@ -47,22 +47,9 @@ if ~isequal(size(f.Qsg,2),nt)
     error('Second dimension of f.Qsg must have length nt');
 end
 % number of plumes
-if ~isequal(size(f.Qsg,1),length(p.wp),length(p.Hgl))
-    error('Check num plumes=size(f.Qsg,1)=length(p.wp)=length(p.Hgl)');
+if ~isequal(size(f.Qsg,1),length(p.Wp),length(p.Hgl))
+    error('Check num plumes=size(f.Qsg,1)=length(p.Wp)=length(p.Hgl)');
 end
-
-% % If t_save is not given, it will take t instead
-% if ~isfield(p,'t_save')
-%     p.t_save=t;
-% end
-% 
-% % Check that the time values where the solution will be saved are a subset
-% % of the time values where the solution will be computed
-% if ~all(ismember(p.t_save, t)) 
-%     disp("Error: the values where the solution is saved, p.t_save, must be a subset of the values where the solution is computed, t.")
-%     status = 1;
-%     return
-% end
 
 end
 

@@ -1,8 +1,8 @@
 function saveplot(fw, fh, res, filename)
 
-% SAVEPLOT Save a plot.
-%   SAVEPLOT(FW, FH, RES, FILENAME) saves a plot with paper size FW, FH,
-%   resolution RES and filename FILENAME.
+% SAVEPLOT Save a plot to png file.
+%   SAVEPLOT(FW, FH, RES, FILENAME) saves a plot with width fw (cm),
+%   height fh (cm), resolution res (in dpi) and file name filename.
 
 set(gcf, 'PaperUnits', 'centimeters');
 set(gcf, 'inverthardcopy', 'off');
