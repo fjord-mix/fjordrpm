@@ -73,12 +73,32 @@ In the `examples` directory we provide 4 idealised examples illustrating the var
 
 ### Example 1 - subglacial discharge
 
-This is a simulation of the fjord response to seasonal variability in subglacial discharge. The fjord is 60 km long, 6 km wide, 800 m deep and has a sill of depth 400 m. There is a single glacier with grounding line depth 800 m and a single plume of width 250 m (though there is commented code to have multiple plumes/glaciers). The shelf conditions are uniform in depth and time with a temperature of 3 $^{\circ}$C and salinity of 34. Within each year, the subglacial discharge is Gaussian in time with a peak of 300 m$^3$/s on the 200th day of the year. There are no icebergs. The simulation runs for 3 years with a time step of 0.2 days and 40 model layers of equal, 20 m, thickness. The output is saved once a day.
+This is a simulation of the fjord response to seasonal variability in subglacial discharge. The fjord is 60 km long, 6 km wide, 800 m deep and has a sill of depth 400 m. There is a single glacier with grounding line depth 800 m and a single plume of width 250 m (though there is commented code to have multiple plumes/glaciers). The shelf conditions are uniform in depth and time with a temperature of 3 $^{\circ}$C and salinity of 34. Within each year, the subglacial discharge is Gaussian in time with a peak of 300 m$^3$/s on the 200th day of the year. There are no icebergs. The simulation runs for 3 years with a time step of 0.2 days and 40 model layers of equal, 20 m, thickness. The output is saved once a day. All parameters not mentioned take their default values from `simulation_code/default_parameters.m`.
 
 The solution (run simulation to generate plots or see `examples/example1_subglacial_discharge.mp4`) shows the subglacial discharge-driven plume reaching the surface or close to the surface before intruding into the fjord. This intrusion results in seasonal cooling and freshening of the top 100 m of the fjord, which sets up an exchange with the shelf over the sill, whereby the top ~100 m flows from fjord to shelf, reaching a maximum of 0.15 m/s, and the ~100-400 m flows from shelf to fjord. When the subglacial discharge is active, there is some downwelling in the fjord where deep waters entrained by the plume have to be replaced by waters coming in over the sill. There is also seasonal plume-induced submarine melting reaching 6 m/d.
 
 ### Example 2 - intermediary circulation driven by shelf variability
 
+This is a simulation of the fjord response to synoptic variability on the continental shelf. The geometry is identical to example 1, however this time there is no subglacial discharge. The shelf properties vary in time according to
+```math
+S^s(z,t) = S_{bottom}-\left(S_{bottom}-S_{top}\right)\,\exp\left[z/z_i(t)\right]
+```
+with
+```math
+z_i(t) = z_0 + \frac{\delta z}{2}\,\sin\left(2\pi t/t_w\right)
+```
+where $S_{bottom}=34$ is the salinity at the bottom, $S_{top}=30$ is the salinity at the surface, $z_0=50$ m is the average depth of the "pycnocline", $\delta z=30$ m is the deviation of the pycnocline in each "wind event" and $t_w=10$ days is the return time of the wind events. There is an equivalent expression for temperature. This gives a ~realistic exponential stratification on the shelf that varies sinusoidally over the course of a wind event. The numerical set-up is as for example 1, but the simulation only runs for 100 days (i.e., 10 wind events).
+
+The solution (run simulation to generate plots or see `examples/example2_intermediary.mp4`) shows that variability in the shelf sets up density gradients with the fjord that drive oscillatory inflow and outflow at different depths reaching 0.2 m/s. In response, the fjord undergoes oscillatory cooling/freshening and warming/salinification. There is also oscillatory upwelling and downwelling in the fjord (i.e., shoaling/deepening of the pycnocline in the fjord) to close the loop of the volume fluxes.
+
 ### Example 3 - icebergs
 
+This is a simulation of the fjord response to the presence of icebergs. The geometry is the same as examples 1 and 2 but this time there is no sill. The shelf stratification are the depth and time-independent properties from example 1. There is no subglacial discharge. The iceberg surface area profile is proportional to $\exp(z/100)$, with a total iceberg surface area of 200 km$^2$. The simulation is run for 100 days.
+
+The solution (run simulation to generate plots or see `examples/example3_icebergs.mp4`) shows that the simulation quickly reaches a steady in which icebergs melt rates are 0.15-0.25 m/d with resulting iceberg melt flux around 450 m$^3$/s. This melt flux drives upwelling in the fjord and results in cooling/freshening of the upper layers. This then sets up pressure gradients with the shelf giving an exchange flow that is directed from fjord to shelf over the top ~200 m and from shelf to fjord below. 
+
 ### Example 4 - combined simulation
+
+This is a simulation of the fjord response to the combined effects of subglacial discharge, icebergs and shelf variability. The geometry is as in example 1. The subglacial discharge is the same as example 1. The shelf variability is the same as example 2, but it is held constant during the summer (days 120 to 280 in each year). The iceberg surface area is half what it is in example 3. The numerical set-up is the same as the previous example but the duration of the simulation is 2 years.
+
+The solution (run simulation to generate plots or see `examples/example4_combined.mp4`) shows a combination of the behaviour from the previous examples. Outside of summer the behaviour is similar to example 2. During summer, the behaviour is similar to example 1 but the plume intrudes in the subsurface because the fjord is more stratified. Throughout the year the iceberg-driven circulation is superimposed.
