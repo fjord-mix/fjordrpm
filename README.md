@@ -42,18 +42,18 @@ The model is run by executing (in Matlab) `s = run_model(p,t,f,a)`, in which the
 - `f` is a structure containing all the model forcings.
     - `f.ts` is a vector, dimensions `[1,length(f.ts)]`, of times (in days) on which the shelf properties are defined.
     - `f.zs` is a vector, dimensions `[length(f.zs),1]`, of depths (m, negative below sea level) on which the shelf properties are defined.
-    - `f.Ts` is an array, dimensions `[length(f.zs),length(f.ts)]`, of the shelf temperature ($^{\circ}$C) at the times `f.ts` and depths `f.zs`.
+    - `f.Ts` is an array, dimensions `[length(f.zs),length(f.ts)]`, of the shelf temperature (<sup>o</sup>C) at the times `f.ts` and depths `f.zs`.
     - `f.Ss` is an array, dimensions `[length(f.zs),length(f.ts)]`, of the shelf salinity (unitless) at the times `f.ts` and depths `f.zs`.
     - `f.tsg` is a vector, dimensions `[1,length(f.tsg)]`, of times (in days) at which the subglacial discharge is defined.
-    - `f.Qsg` is an array, dimensions `[n_plumes,length(f.tsg)]`, of the subglacial discharge (m$^3$/s) at the times `f.tsg` for each of the number `n_plumes` of subglacial discharge-driven plumes.
+    - `f.Qsg` is an array, dimensions `[n_plumes,length(f.tsg)]`, of the subglacial discharge (m<sup>3</sup>/s) at the times `f.tsg` for each of the number `n_plumes` of subglacial discharge-driven plumes.
     - If `n_plumes > 1`, then `p.Hgl` and `p.Wp` both need to be arrays containing the potentially different grounding line depths and plume widths for each plume (for an example, see comments in `examples/example1_subglacial_discharge`).
     - `f.ts` and `f.tsg` do not need to be the same as each other or the same as `t`, but they do need to all be consistent and the forcing needs to specified for the full duration of the simulation. Similarly `f.zs` does not need to coincide with the model layers. When the time/depth axes for the specification of the forcing do not coincide with the model time stepping and layers, the forcings are interpolated in time and depth to coincide with the model time stepping and layers.
     
 - `a` is a structure containing the desired layer thicknesses, the initial conditions and the iceberg surface area profile. 
     - `a.H0` contains the desired layer thickness (m), which do not need to be uniform. They must sum to the depth of the fjord. The word "desired" is used here because the model will adjust the thicknesses slightly to ensure that the sill depth coincides with a layer boundary, making the treatment of the shelf exchange fluxes simpler. The actual layer thicknesses used are output in the solution structure as `s.H`.
-    - `a.T0` contains the initial conditions for fjord temperature ($^{\circ}$C) - i.e., the initial temperature of the layers having thickness `a.H0`.
+    - `a.T0` contains the initial conditions for fjord temperature (<sup>o</sup>C) - i.e., the initial temperature of the layers having thickness `a.H0`.
     - `a.S0` contains the initial conditions for fjord salinity (unitless).
-    - `a.I0` contains the surface area of icebergs (m$^2$) in each of the layers having thickness `a.H0`.
+    - `a.I0` contains the surface area of icebergs (m<sup>2</sup>) in each of the layers having thickness `a.H0`.
     - All initial conditions should have dimensions `[p.N,1]`
     
 - `s` is the output structure containing all solution variables. There are many such variables and we only summarise and pick out some key ones here, grouped by dimension.
@@ -73,7 +73,7 @@ In the `examples` directory we provide 4 idealised examples illustrating the var
 
 ### Example 1 - subglacial discharge
 
-This is a simulation of the fjord response to seasonal variability in subglacial discharge. The fjord is 60 km long, 6 km wide, 800 m deep and has a sill of depth 400 m. There is a single glacier with grounding line depth 800 m and a single plume of width 250 m (though there is commented code to have multiple plumes/glaciers). The shelf conditions are uniform in depth and time with a temperature of 3 $^{\circ}$C and salinity of 34. Within each year, the subglacial discharge is Gaussian in time with a peak of 300 m$^3$/s on the 200th day of the year. There are no icebergs. The simulation runs for 3 years with a time step of 0.2 days and 40 model layers of equal, 20 m, thickness. The output is saved once a day. All parameters not mentioned take their default values from `simulation_code/default_parameters.m`.
+This is a simulation of the fjord response to seasonal variability in subglacial discharge. The fjord is 60 km long, 6 km wide, 800 m deep and has a sill of depth 400 m. There is a single glacier with grounding line depth 800 m and a single plume of width 250 m (though there is commented code to have multiple plumes/glaciers). The shelf conditions are uniform in depth and time with a temperature of 3 <sup>o</sup>C and salinity of 34. Within each year, the subglacial discharge is Gaussian in time with a peak of 300 m<sup>3</sup>/s on the 200th day of the year. There are no icebergs. The simulation runs for 3 years with a time step of 0.2 days and 40 model layers of equal, 20 m, thickness. The output is saved once a day. All parameters not mentioned take their default values from `simulation_code/default_parameters.m`.
 
 The solution (run simulation to generate plots or see `examples/example1_subglacial_discharge.mp4`) shows the subglacial discharge-driven plume reaching the surface or close to the surface before intruding into the fjord. This intrusion results in seasonal cooling and freshening of the top 100 m of the fjord, which sets up an exchange with the shelf over the sill, whereby the top ~100 m flows from fjord to shelf, reaching a maximum of 0.15 m/s, and the ~100-400 m flows from shelf to fjord. When the subglacial discharge is active, there is some downwelling in the fjord where deep waters entrained by the plume have to be replaced by waters coming in over the sill. There is also seasonal plume-induced submarine melting reaching 6 m/d.
 
@@ -93,9 +93,9 @@ The solution (run simulation to generate plots or see `examples/example2_interme
 
 ### Example 3 - icebergs
 
-This is a simulation of the fjord response to the presence of icebergs. The geometry is the same as examples 1 and 2 but this time there is no sill. The shelf stratification are the depth and time-independent properties from example 1. There is no subglacial discharge. The iceberg surface area profile is proportional to $\exp(z/100)$, with a total iceberg surface area of 200 km$^2$. The simulation is run for 100 days.
+This is a simulation of the fjord response to the presence of icebergs. The geometry is the same as examples 1 and 2 but this time there is no sill. The shelf stratification are the depth and time-independent properties from example 1. There is no subglacial discharge. The iceberg surface area profile is proportional to $\exp(z/100)$, with a total iceberg surface area of 200 km<sup>2</sup>. The simulation is run for 100 days.
 
-The solution (run simulation to generate plots or see `examples/example3_icebergs.mp4`) shows that the simulation quickly reaches a steady in which icebergs melt rates are 0.15-0.25 m/d with resulting iceberg melt flux around 450 m$^3$/s. This melt flux drives upwelling in the fjord and results in cooling/freshening of the upper layers. This then sets up pressure gradients with the shelf giving an exchange flow that is directed from fjord to shelf over the top ~200 m and from shelf to fjord below. 
+The solution (run simulation to generate plots or see `examples/example3_icebergs.mp4`) shows that the simulation quickly reaches a steady in which icebergs melt rates are 0.15-0.25 m/d with resulting iceberg melt flux around 450 m<sup>3</sup>/s. This melt flux drives upwelling in the fjord and results in cooling/freshening of the upper layers. This then sets up pressure gradients with the shelf giving an exchange flow that is directed from fjord to shelf over the top ~200 m and from shelf to fjord below. 
 
 ### Example 4 - combined simulation
 
