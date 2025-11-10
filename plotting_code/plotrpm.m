@@ -222,8 +222,9 @@ nexttile(6); hold on;
 plot(s.t,sum(s.QMi),'linewidth',lw);
 plot(s.t,sum(s.QMp),'linewidth',lw);
 plot(s.t,s.Qsg,'linewidth',lw);
+plot(s.t,s.Qr,'linewidth',lw);
 xlabel('time (days)'); ylabel('total flux (m$^3$/s)');
-legend('iceberg melt','plume sub. melt','sub. discharge','location','best');
+legend('iceberg melt','plume sub. melt','sub. discharge','river','location','best');
 title('freshwater inputs');
 set(gca,'box','on'); grid on;
 

@@ -12,7 +12,7 @@ addpath(genpath(path2sourcecode));
 
 % get basic constants and default controlling parameters
 p = default_parameters;
-p.Kb = 1e-4; % vertical mixing
+p.Kb = 1e-5; % vertical mixing
 
 % can adjust any of the default parameters afterwards if needed
 % p.C0 = 5e4; % for example adjust shelf exchange parameter
@@ -23,7 +23,7 @@ p.W = 6e3; % fjord width (m)
 p.L = 60e3; % fjord length (m)
 p.H = 800; % fjord depth (m)
 p.sill = 1; % p.sill=1 for presence of sill, p.sill=0 for no sill
-p.Hsill = 100; % sill depth below surface (m), only used if p.sill=1
+p.Hsill = 200; % sill depth below surface (m), only used if p.sill=1
 
 % set up glacier geometry
 % (only used if there is non-zero subglacial discharge)
@@ -53,6 +53,8 @@ f.tsurf = t; % time vector for surface forcing
 f.Qr = 300*exp(-((mod(f.tsurf,365)-200)/30).^2); % riverine input on ta
 f.Tr = 0*t; % temperature of riverine input
 f.Sr = 0*t; % salinity of riverine input
+f.Ta = 0*t; % air temperature
+p.kairsea = 0; % to turn off surface heat fluxes
 
 % set up shelf forcing - here constant in time and depth
 % for more complexity see other examples
@@ -85,7 +87,7 @@ s = run_model(p, t, f, a);
 save example5_riverine_input.mat s p t f a
 
 % make an animation of the output (takes a few minutes)
-% animate(p,s,50,'example5_riverine_input');
+animate(p,s,50,'example5_riverine_input');
 
 % make basic plots of the output
 plotrpm(p,s,50);

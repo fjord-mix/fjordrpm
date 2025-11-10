@@ -23,7 +23,7 @@ p.W = 6e3; % fjord width (m)
 p.L = 60e3; % fjord length (m)
 p.H = 800; % fjord depth (m)
 p.sill = 1; % p.sill=1 for presence of sill, p.sill=0 for no sill
-p.Hsill = 100; % sill depth below surface (m), only used if p.sill=1
+p.Hsill = 200; % sill depth below surface (m), only used if p.sill=1
 
 % set up glacier geometry
 % (only used if there is non-zero subglacial discharge)
@@ -38,7 +38,7 @@ p.Wp = 250; % subglacial discharge plume width (m)
 % p.Wp = [300,200,300];
 
 % set up model layers
-p.N = 40; % number of layers
+p.N = 80; % number of layers
 a.H0 = (p.H/p.N)*ones(p.N,1); % layer thicknesses, here taken to be equal
 
 % set up time stepping
