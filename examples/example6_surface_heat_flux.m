@@ -1,7 +1,7 @@
 % Script to demonstrate a FjordRPM simulation of fjord response to
-% seasonally-varying riverine freshwater input (or this could also be
-% precipitation). The shelf conditions are constant in time and depth and 
-% there are no icebergs.
+% seasonally-varying atmosphere-ocean heat flux. The shelf conditions are 
+% constant in time and depth and there are no icebergs, no subglacial
+% discharge and no riverine input.
 
 % clear workspace and close any figures to ensure clean environment
 clear; close all;
@@ -12,7 +12,7 @@ addpath(genpath(path2sourcecode));
 
 % get basic constants and default controlling parameters
 p = default_parameters;
-p.Kb = 1e-4; % vertical mixing
+p.Kb = 1e-5; % vertical mixing
 
 % can adjust any of the default parameters afterwards if needed
 % p.C0 = 5e4; % for example adjust shelf exchange parameter
@@ -38,7 +38,7 @@ p.Wp = 250; % subglacial discharge plume width (m)
 % p.Wp = [300,200,300];
 
 % set up model layers
-p.N = 80; % number of layers
+p.N = 40; % number of layers
 a.H0 = (p.H/p.N)*ones(p.N,1); % layer thicknesses, here taken to be equal
 
 % set up time stepping
@@ -50,9 +50,10 @@ p.t_save = 0:1:t_end; % times on which to save output
 % set up surface forcing - surface freshwater input
 % here use idealised seasonal gaussian peaked at julian day 200
 f.tsurf = t; % time vector for surface forcing
-f.Qr = 300*exp(-((mod(f.tsurf,365)-200)/30).^2); % riverine input on ta
+f.Qr = 0*t; % riverine input on ta
 f.Tr = 0*t; % temperature of riverine input
 f.Sr = 0*t; % salinity of riverine input
+f.Ta = -10+25*exp(-((mod(f.tsurf,365)-182)/75).^2); % air temperature
 
 % set up shelf forcing - here constant in time and depth
 % for more complexity see other examples
@@ -82,10 +83,10 @@ a.I0 = 0*a.H0;
 s = run_model(p, t, f, a);
 
 % save the output
-save example5_riverine_input.mat s p t f a
+save example6_surface_heat_flux.mat s p t f a
 
 % make an animation of the output (takes a few minutes)
-% animate(p,s,50,'example5_riverine_input');
+animate(p,s,50,'example6_surface_heat_flux');
 
 % make basic plots of the output
 plotrpm(p,s,50);

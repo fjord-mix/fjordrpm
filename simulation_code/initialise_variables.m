@@ -29,7 +29,7 @@ s.knb = zeros(length(p.Wp), length(t));
 s.Qsg = zeros(length(p.Wp), length(t));
 
 % fields with dimensions 1 x length(t)
-[s.Qr, s.Tr, s.Sr] = deal(zeros(1, length(t)));
+[s.Qr, s.Tr, s.Sr, s.Ta] = deal(zeros(1, length(t)));
 
 %% initialise layer depths
 
@@ -64,10 +64,14 @@ end
 % resulting layer volumes
 s.V = s.H*p.W*p.L;
 
+% layer centres (useful to have at various points in the code)
+ints = -[0;cumsum(s.H(:,1))];
+s.z = 0.5*(ints(1:end-1)+ints(2:end));
+
 %% model forcings
 
 % get forcings on model layers and at model time steps
-[s.Ts, s.Ss, s.Qsg, s.Qr, s.Tr, s.Sr] = bin_forcings(f, s.H, t);
+[s.Ts, s.Ss, s.Qsg, s.Qr, s.Tr, s.Sr, s.Ta] = bin_forcings(f, s.H, t);
 
 % set any discharge values less than 1e-3 to 0, because the plume
 % model struggles to deal with small values

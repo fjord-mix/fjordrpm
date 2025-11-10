@@ -21,10 +21,6 @@ inx = find(ismember(t, p.t_save));
 % time vector
 s.t = t(inx);
 
-% vertical grid
-ints = -[0;cumsum(s.H(:,1))];
-s.z = 0.5*(ints(1:end-1)+ints(2:end));
-
 % layer properties
 s.T = s.T(:,inx);
 s.S = s.S(:,inx);
@@ -80,6 +76,9 @@ s.Qsg = s.Qsg(:,inx);
 s.Qr = s.Qr(inx);
 s.Tr = s.Tr(inx);
 s.Sr = s.Sr(inx);
+
+% air temperature
+s.Ta = s.Ta(inx);
 
 % error status
 s.status = status;

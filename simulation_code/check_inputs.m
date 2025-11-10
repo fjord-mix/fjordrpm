@@ -69,6 +69,10 @@ end
 if ~isequal(size(f.Sr,2),nt)
     error('Second dimension of f.Sr must have length nt');
 end
+% f.Ta
+if ~isequal(size(f.Ta,2),nt)
+    error('Second dimension of f.Ta must have length nt');
+end
 
 end
 
