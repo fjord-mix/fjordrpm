@@ -8,9 +8,12 @@ function [QVsurf0, QTsurf0, QSsurf0] = get_surface_fluxes(i, p, s)
 % get tracer variables at timestep i
 H0 = s.H; T0 = s.T(:,i); S0 = s.S(:,i);
 
-% riverine input at timestep i
-Qr0 = s.Qr(:,i);
-
+% initialise outputs
 [QVsurf0, QTsurf0, QSsurf0] = deal(0*H0);
+
+% riverine input at timestep i goes into top layer
+QVsurf0(1) = s.Qr(:,i);
+
+% heat and salt fluxes remain 0 because T=0, S=0 assumed for riverine input
 
 end

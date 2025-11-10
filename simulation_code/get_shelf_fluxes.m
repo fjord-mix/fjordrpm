@@ -25,8 +25,8 @@ end
 Q = p.C0*p.W*H0(1:s.ksill).*phi0(1:s.ksill)/p.L;
 
 % compute the above-sill fluxes after barotropic compensation, ensuring
-% depth mean = Qsg0+submarine melt flux
-QVs0(1:s.ksill) = Q - H0(1:s.ksill)*(sum(s.Qsg(:,i))+sum(sum(s.QMp(:,:,i)))+sum(Q))/sum(H0(1:s.ksill));
+% depth mean = Qsg0+submarine melt flux+riverine flux
+QVs0(1:s.ksill) = Q - H0(1:s.ksill)*(s.Qr(i)+sum(s.Qsg(:,i))+sum(sum(s.QMp(:,:,i)))+sum(Q))/sum(H0(1:s.ksill));
 
 % compute the resulting heat/salt fluxes
 QTs0 = (QVs0>=0).*QVs0.*Ts0 + (QVs0<0).*QVs0.*T0;
