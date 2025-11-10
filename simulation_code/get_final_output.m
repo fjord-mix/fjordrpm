@@ -78,6 +78,8 @@ s.Qsg = s.Qsg(:,inx);
 
 % riverine input
 s.Qr = s.Qr(inx);
+s.Tr = s.Tr(inx);
+s.Sr = s.Sr(inx);
 
 % error status
 s.status = status;

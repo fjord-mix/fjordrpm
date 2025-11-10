@@ -51,6 +51,8 @@ p.t_save = 0:1:t_end; % times on which to save output
 % here use idealised seasonal gaussian peaked at julian day 200
 f.tsurf = t; % time vector for surface forcing
 f.Qr = 300*exp(-((mod(f.tsurf,365)-200)/30).^2); % riverine input on ta
+f.Tr = 0*t; % temperature of riverine input
+f.Sr = 0*t; % salinity of riverine input
 
 % set up shelf forcing - here constant in time and depth
 % for more complexity see other examples

@@ -61,6 +61,14 @@ end
 if ~isequal(size(f.Qr,2),nt)
     error('Second dimension of f.Qr must have length nt');
 end
+% f.Tr
+if ~isequal(size(f.Tr,2),nt)
+    error('Second dimension of f.Tr must have length nt');
+end
+% f.Sr
+if ~isequal(size(f.Sr,2),nt)
+    error('Second dimension of f.Sr must have length nt');
+end
 
 end
 

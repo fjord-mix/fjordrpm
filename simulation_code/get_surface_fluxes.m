@@ -11,9 +11,14 @@ H0 = s.H; T0 = s.T(:,i); S0 = s.S(:,i);
 % initialise outputs
 [QVsurf0, QTsurf0, QSsurf0] = deal(0*H0);
 
-% riverine input at timestep i goes into top layer
-QVsurf0(1) = s.Qr(:,i);
+% riverine inputs at timestep i
+Qr0 = s.Qr(:,i); % volume
+Tr0 = s.Tr(:,i); % temperature
+Sr0 = s.Sr(:,i); % salinity
 
-% heat and salt fluxes remain 0 because T=0, S=0 assumed for riverine input
+% fluxes go into surface layer
+QVsurf0(1) = Qr0;
+QTsurf0(1) = Qr0*Tr0;
+QSsurf0(1) = Qr0*Sr0;
 
 end
