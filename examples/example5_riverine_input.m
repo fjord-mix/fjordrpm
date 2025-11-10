@@ -1,7 +1,7 @@
 % Script to demonstrate a FjordRPM simulation of fjord response to
-% seasonally-varying surface forcing (freshwater input and atmosphere-ocean
-% fluxes). The shelf conditions are constant in time and depth and there 
-% are no icebergs.
+% seasonally-varying riverine freshwater input (or this could also be
+% precipitation). The shelf conditions are constant in time and depth and 
+% there are no icebergs.
 
 % clear workspace and close any figures to ensure clean environment
 clear; close all;
@@ -12,6 +12,7 @@ addpath(genpath(path2sourcecode));
 
 % get basic constants and default controlling parameters
 p = default_parameters;
+p.Kb = 1e-4; % vertical mixing
 
 % can adjust any of the default parameters afterwards if needed
 % p.C0 = 5e4; % for example adjust shelf exchange parameter
@@ -22,7 +23,7 @@ p.W = 6e3; % fjord width (m)
 p.L = 60e3; % fjord length (m)
 p.H = 800; % fjord depth (m)
 p.sill = 1; % p.sill=1 for presence of sill, p.sill=0 for no sill
-p.Hsill = 400; % sill depth below surface (m), only used if p.sill=1
+p.Hsill = 100; % sill depth below surface (m), only used if p.sill=1
 
 % set up glacier geometry
 % (only used if there is non-zero subglacial discharge)
@@ -37,7 +38,7 @@ p.Wp = 250; % subglacial discharge plume width (m)
 % p.Wp = [300,200,300];
 
 % set up model layers
-p.N = 40; % number of layers
+p.N = 80; % number of layers
 a.H0 = (p.H/p.N)*ones(p.N,1); % layer thicknesses, here taken to be equal
 
 % set up time stepping
@@ -49,7 +50,7 @@ p.t_save = 0:1:t_end; % times on which to save output
 % set up surface forcing - surface freshwater input
 % here use idealised seasonal gaussian peaked at julian day 200
 f.tsurf = t; % time vector for surface forcing
-f.Qr = 100*exp(-((mod(f.tsurf,365)-200)/30).^2); % riverine input on ta
+f.Qr = 300*exp(-((mod(f.tsurf,365)-200)/30).^2); % riverine input on ta
 
 % set up shelf forcing - here constant in time and depth
 % for more complexity see other examples
@@ -79,7 +80,7 @@ a.I0 = 0*a.H0;
 s = run_model(p, t, f, a);
 
 % save the output
-save example5_surface_fluxes.mat s p t f a
+save example5_riverine_input.mat s p t f a
 
 % make an animation of the output (takes a few minutes)
 % animate(p,s,50,'example5_surface_fluxes');
