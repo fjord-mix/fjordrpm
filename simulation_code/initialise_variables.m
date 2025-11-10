@@ -18,14 +18,18 @@ s.dt = t(2:end)-t(1:end-1);
  s.QVs, s.QTs, s.QSs, s.Ts, s.Ss, s.phi, ...
  s.QVk, s.QTk, s.QSk, ...
  s.QVi, s.QTi, s.QSi, s.QMi, ...
- s.QVv, s.QTv, s.QSv] = deal(zeros(p.N, length(t)));
+ s.QVv, s.QTv, s.QSv, ...
+ s.QVsurf, s.QTsurf, s.QSsurf] = deal(zeros(p.N, length(t)));
 
 % fields with dimensions num plumes x p.N x length(t)
 [s.QVp, s.QTp, s.QSp, s.QMp, s.QEp] = deal(zeros(length(p.Wp), p.N, length(t)));
 
-% Fields with dimensions num plumes x length(t)
+% fields with dimensions num plumes x length(t)
 s.knb = zeros(length(p.Wp), length(t));
 s.Qsg = zeros(length(p.Wp), length(t));
+
+% fields with dimensions 1 x length(t)
+s.Qr = zeros(1, length(t));
 
 %% initialise layer depths
 
@@ -63,7 +67,7 @@ s.V = s.H*p.W*p.L;
 %% model forcings
 
 % get forcings on model layers and at model time steps
-[s.Ts, s.Ss, s.Qsg] = bin_forcings(f, s.H, t);
+[s.Ts, s.Ss, s.Qsg, s.Qr] = bin_forcings(f, s.H, t);
 
 % set any discharge values less than 1e-3 to 0, because the plume
 % model struggles to deal with small values

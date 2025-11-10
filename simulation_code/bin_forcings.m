@@ -1,10 +1,10 @@
-function [Ts, Ss, Qsg] = bin_forcings(f, H, t)
+function [Ts, Ss, Qsg, Qr] = bin_forcings(f, H, t)
 
 % BIN_FORCINGS Puts forcings onto model layers and time steps.
-%   [Ts, Ss, Qsg] = BIN_FORCINGS(f, H, t) calculates the mean value of
+%   [Ts, Ss, Qsg, Qr] = BIN_FORCINGS(f, H, t) calculates the mean value of
 % shelf temperature and salinity over the depths of each model layer. It
 % then interpolates both the resulting shelf profiles and subglacial
-% discharge onto the model time steps.
+% discharge and riverine input onto the model time steps.
 
 % remove any nan entries from the shelf profiles
 % (assumes the nan entries are the same at every time)
@@ -43,5 +43,8 @@ Ts = interp1(f.ts,Ts',t,'linear')';
 for j=1:size(f.Qsg,1)
     Qsg(j,:) = interp1(f.tsg,f.Qsg(j,:),t,'linear');
 end
+
+% riverine input
+Qr = interp1(f.tsurf,f.Qr,t,'linear');
       
 end

@@ -51,5 +51,16 @@ if ~isequal(size(f.Qsg,1),length(p.Wp),length(p.Hgl))
     error('Check num plumes=size(f.Qsg,1)=length(p.Wp)=length(p.Hgl)');
 end
 
+% check dimensionality of surface forcing
+nt = length(f.tsurf);
+% f.tsurf
+if ~isequal(size(f.tsurf),[1,nt])
+    error('f.tsurf must have dimensions 1 x nt');
+end
+% f.Qr
+if ~isequal(size(f.Qr,2),nt)
+    error('Second dimension of f.Qr must have length nt');
+end
+
 end
 

@@ -59,6 +59,11 @@ s.QVv = s.QVv(:,inx);
 s.QTv = s.QTv(:,inx);
 s.QSv = s.QSv(:,inx);
 
+% surface fluxes
+s.QVsurf = s.QVsurf(:,inx);
+s.QTsurf = s.QTsurf(:,inx);
+s.QSsurf = s.QSsurf(:,inx);
+
 % iceberg fluxes and melt rates
 s.QVi = s.QVi(:,inx);
 s.QTi = s.QTi(:,inx);
@@ -70,6 +75,9 @@ s.mi(s.I==0,:) = 0;
 
 % subglacial discharge
 s.Qsg = s.Qsg(:,inx);
+
+% riverine input
+s.Qr = s.Qr(inx);
 
 % error status
 s.status = status;

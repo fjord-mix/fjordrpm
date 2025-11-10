@@ -83,10 +83,10 @@ a.I0 = (1e8/sum(iceprofile))*iceprofile; % surface area profile used by FjordRPM
 s = run_model(p, t, f, a);
 
 % save the output
-save example_combined.mat s p t f a
+save example4_combined.mat s p t f a
 
 % make an animation of the output (takes a few minutes)
-% animate(p,s,100,'example_combined');
+% animate(p,s,100,'example4_combined');
 
 % make basic plots of the output
 plotrpm(p,s,50);

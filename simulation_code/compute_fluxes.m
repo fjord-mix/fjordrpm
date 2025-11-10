@@ -5,6 +5,9 @@ function s = compute_fluxes(i, p, s)
 %   fluxes, shelf fluxes, mixing fluxes, iceberg fluxes and vertical 
 %   fluxes for parameters structure p and solution s at timestep i.
 
+% calculate/impose surface fluxes
+[s.QVsurf(:,i), s.QTsurf(:,i), s.QSsurf(:,i)] = get_surface_fluxes(i, p, s);
+
 % calculate plume fluxes
 [s.QVp(:,:,i), s.QTp(:,:,i), s.QSp(:,:,i), ...
     s.QEp(:,:,i), s.QMp(:,:,i), s.knb(:,i)] = get_plume_fluxes(i, p, s);

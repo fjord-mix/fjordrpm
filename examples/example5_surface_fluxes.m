@@ -1,8 +1,7 @@
 % Script to demonstrate a FjordRPM simulation of fjord response to
-% synoptic shelf variability, for example shoaling and deepening of the
-% pycnocline on the shelf in response to wind events. This sets up an 
-% intermediary circulation in the fjord. There is no subglacial discharge 
-% and there are no icebergs.
+% seasonally-varying surface forcing (freshwater input and atmosphere-ocean
+% fluxes). The shelf conditions are constant in time and depth and there 
+% are no icebergs.
 
 % clear workspace and close any figures to ensure clean environment
 clear; close all;
@@ -26,9 +25,16 @@ p.sill = 1; % p.sill=1 for presence of sill, p.sill=0 for no sill
 p.Hsill = 400; % sill depth below surface (m), only used if p.sill=1
 
 % set up glacier geometry
-% (not actually used since there is no subglacial discharge)
+% (only used if there is non-zero subglacial discharge)
 p.Hgl = 800; % grounding line depth (m)
 p.Wp = 250; % subglacial discharge plume width (m)
+
+% in the case of multiple plumes, either at the same glacier or at
+% different glaciers, specify vectors of grounding line depth and plume
+% width. for example, 3 glaciers of grounding line depth 800, 700, 600 m
+% and plume width 300, 200 and 300 m would require
+% p.Hgl = [800,700,600];
+% p.Wp = [300,200,300];
 
 % set up model layers
 p.N = 40; % number of layers
@@ -36,34 +42,30 @@ a.H0 = (p.H/p.N)*ones(p.N,1); % layer thicknesses, here taken to be equal
 
 % set up time stepping
 dt = 0.2; % time step (in days)
-t_end = 100; % time to end the simulation (in days)
+t_end = 3*365; % time to end the simulation (in days)
 t = 0:dt:t_end; % resulting time vector for simulation
 p.t_save = 0:1:t_end; % times on which to save output
 
-% set up shelf forcing
-% here make it an exponential profile that shoals and deepens every 10 days
+% set up surface forcing - surface freshwater input
+% here use idealised seasonal gaussian peaked at julian day 200
+f.tsurf = t; % time vector for surface forcing
+f.Qr = 100*exp(-((mod(f.tsurf,365)-200)/30).^2); % riverine input on ta
+
+% set up shelf forcing - here constant in time and depth
+% for more complexity see other examples
 % f.ts must have dimensions 1 x nt
 % f.zs must have dimensions nz x 1
 % f.Ss and f.Ts must have dimensions nz x nt
-f.ts = t; % time vector for shelf forcing
-f.zs = [-p.H:0]'; % depth vector for shelf forcing (negative below surface)
-Sbottom = 35; % salinity at bottom
-Stop = 30; % salinity at top
-Tbottom = 4; % temperature at bottom
-Ttop = 0; % temperature at top
-tw = 10; % period of oscillation (days)
-zi = 50+(30/2)*sin(2*pi*f.ts/tw); % 'pycnocline' oscillation
-for k=1:length(f.ts),
-    f.Ss(:,k) = Sbottom-(Sbottom-Stop)*exp(f.zs/zi(k)); % shelf salinity
-    f.Ts(:,k) = Tbottom-(Tbottom-Ttop)*exp(f.zs/zi(k)); % shelf temperature
-end
+f.ts = [0,t_end]; % time vector for shelf forcing
+f.zs = [-p.H;0]; % depth vector for shelf forcing (negative below surface)
+f.Ss = 34*ones(length(f.zs),length(f.ts)); % shelf salinity on (zs,ts)
+f.Ts = 3*ones(length(f.zs),length(f.ts)); % shelf temperature on (zs,ts)
 
-% set up subglacial discharge forcing
-% in this example there is no subglacial discharge
+% no subglacial discharge because no marine-terminating glacier
 % f.tsg must have dimensions 1 x nt
 % f.Qsg must have dimensions num plumes x nt
 f.tsg = t; % time vector for subglacial discharge
-f.Qsg = 0*f.tsg; % subglacial discharge on tsg
+f.Qsg = 0*t; % subglacial discharge on tsg
 
 % fjord initial conditions
 % set up to be same as initial shelf profiles
@@ -77,14 +79,13 @@ a.I0 = 0*a.H0;
 s = run_model(p, t, f, a);
 
 % save the output
-save example2_intermediary.mat s p t f a
+save example5_surface_fluxes.mat s p t f a
 
 % make an animation of the output (takes a few minutes)
-% animate(p,s,50,'example2_intermediary');
+% animate(p,s,50,'example5_surface_fluxes');
 
 % make basic plots of the output
 plotrpm(p,s,50);
-
 
 
 
