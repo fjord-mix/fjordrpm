@@ -36,13 +36,15 @@ s.Qsg = zeros(length(p.Wp), length(t));
 % first deal with case where sill is so shallow or so deep that it would
 % result in less than half a layer at top or bottom, by tweaking the
 % sill depth itself
-if p.Hsill<p.H/p.N % avoid very thin layers at top
-    p.Hsill = p.H/p.N;
-elseif p.Hsill>=p.H-0.5*p.H/p.N % if very deep, round to no sill
-    p.Hsill = p.H; 
-    p.sill = 0;
-elseif p.Hsill>=p.H-p.H/p.N % avoid very thin layers at bottom
-    p.Hsill = p.H-p.H/p.N;
+if p.sill==1
+    if p.Hsill<p.H/p.N % avoid very thin layers at top
+        p.Hsill = p.H/p.N;
+    elseif p.Hsill>=p.H-0.5*p.H/p.N % if very deep, round to no sill
+        p.Hsill = p.H; 
+        p.sill = 0;
+    elseif p.Hsill>=p.H-p.H/p.N % avoid very thin layers at bottom
+        p.Hsill = p.H-p.H/p.N;
+    end
 end
 
 % then make sill depth coincide with layer boundary
