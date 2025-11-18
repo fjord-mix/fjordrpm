@@ -77,10 +77,10 @@ a.I0 = 0*a.H0;
 s = run_model(p, t, f, a);
 
 % save the output
-save example_intermediary.mat s p t f a
+save example2_intermediary.mat s p t f a
 
 % make an animation of the output (takes a few minutes)
-% animate(p,s,50,'example_intermediary');
+% animate(p,s,50,'example2_intermediary');
 
 % make basic plots of the output
 plotrpm(p,s,50);

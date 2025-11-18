@@ -18,27 +18,33 @@ s.dt = t(2:end)-t(1:end-1);
  s.QVs, s.QTs, s.QSs, s.Ts, s.Ss, s.phi, ...
  s.QVk, s.QTk, s.QSk, ...
  s.QVi, s.QTi, s.QSi, s.QMi, ...
- s.QVv, s.QTv, s.QSv] = deal(zeros(p.N, length(t)));
+ s.QVv, s.QTv, s.QSv, ...
+ s.QVsurf, s.QTsurf, s.QSsurf] = deal(zeros(p.N, length(t)));
 
 % fields with dimensions num plumes x p.N x length(t)
 [s.QVp, s.QTp, s.QSp, s.QMp, s.QEp] = deal(zeros(length(p.Wp), p.N, length(t)));
 
-% Fields with dimensions num plumes x length(t)
+% fields with dimensions num plumes x length(t)
 s.knb = zeros(length(p.Wp), length(t));
 s.Qsg = zeros(length(p.Wp), length(t));
+
+% fields with dimensions 1 x length(t)
+[s.Qr, s.Tr, s.Sr, s.Ta] = deal(zeros(1, length(t)));
 
 %% initialise layer depths
 
 % first deal with case where sill is so shallow or so deep that it would
 % result in less than half a layer at top or bottom, by tweaking the
 % sill depth itself
-if p.Hsill<p.H/p.N % avoid very thin layers at top
-    p.Hsill = p.H/p.N;
-elseif p.Hsill>=p.H-0.5*p.H/p.N % if very deep, round to no sill
-    p.Hsill = p.H; 
-    p.sill = 0;
-elseif p.Hsill>=p.H-p.H/p.N % avoid very thin layers at bottom
-    p.Hsill = p.H-p.H/p.N;
+if p.sill==1
+    if p.Hsill<p.H/p.N % avoid very thin layers at top
+        p.Hsill = p.H/p.N;
+    elseif p.Hsill>=p.H-0.5*p.H/p.N % if very deep, round to no sill
+        p.Hsill = p.H; 
+        p.sill = 0;
+    elseif p.Hsill>=p.H-p.H/p.N % avoid very thin layers at bottom
+        p.Hsill = p.H-p.H/p.N;
+    end
 end
 
 % then make sill depth coincide with layer boundary
@@ -60,10 +66,14 @@ end
 % resulting layer volumes
 s.V = s.H*p.W*p.L;
 
+% layer centres (useful to have at various points in the code)
+ints = -[0;cumsum(s.H(:,1))];
+s.z = 0.5*(ints(1:end-1)+ints(2:end));
+
 %% model forcings
 
 % get forcings on model layers and at model time steps
-[s.Ts, s.Ss, s.Qsg] = bin_forcings(f, s.H, t);
+[s.Ts, s.Ss, s.Qsg, s.Qr, s.Tr, s.Sr, s.Ta] = bin_forcings(f, s.H, t);
 
 % set any discharge values less than 1e-3 to 0, because the plume
 % model struggles to deal with small values

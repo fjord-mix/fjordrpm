@@ -20,9 +20,13 @@ cmap_temp = cmocean('thermal');
 cmap_anom = cmocean('delta');
 
 % some nice plotting colours
-cols = [0.000,0.447,0.741;
-        0.850,0.325,0.098;
-        0.301,0.745,0.933];
+cols = get(groot, 'DefaultAxesColorOrder');
+
+% set interpreters to ensure labels show up as expected
+set(groot,'DefaultTextInterpreter','tex');
+set(groot,'DefaultAxesTickLabelInterpreter','tex');
+set(groot,'DefaultLegendInterpreter','tex');
+set(groot,'DefaultColorbarTickLabelInterpreter','tex');
 
 % plotting font size
 fs = 10;
@@ -39,12 +43,14 @@ ulims = max(abs(u0(:)))*[-1,1];
 w0 = cumsum(s.QVp+s.QVs)/(p.W*p.L);
 wlims = max(abs(w0(:)))*[-1,1];
 Slims = [min(s.S(:)),max(s.S(:))];
+if diff(Slims)==0, Slims = [Slims(2)-0.1,Slims(2)]; end
 Splims = [min([s.Ss(:);s.S(:)]),max([s.Ss(:);s.S(:)])];
+if diff(Splims)==0, Splims = [Splims(2)-0.1,Splims(2)]; end
 Tlims = [min(s.T(:)),max(s.T(:))];
 Tplims = [min([s.Ts(:);s.T(:)]),max([s.Ts(:);s.T(:)])];
 Sanomlims = max(abs(s.S(:)-s.Ss(:)))*[-1,1];
 Tanomlims = max(abs(s.T(:)-s.Ts(:)))*[-1,1];
-fluxlims = [min([s.Qsg,sum(s.QMi)]),max([s.Qsg,sum(s.QMi)])];
+fluxlims = [min([s.Qsg,sum(s.QMi),s.Qr]),max([s.Qsg,sum(s.QMi),s.Qr])];
 if length(unique(fluxlims))==1
     fluxlims(2)=fluxlims(2)+1;
 end
@@ -165,19 +171,21 @@ for k=1:length(inx)
     xlim(ulims); ylim([-p.H,0]);
     title('positive values out of fjord','fontsize',fs);
 
-    % plot subglacial discharge, iceberg melt and plume melt time series
+    % plot freshwater time series
     subplot(2,6,12); hold on;
     l1 = plot(s.t,s.Qsg,'linewidth',2,'color',cols(1,:));
     plot(s.t(i),s.Qsg(i),'o','color',cols(1,:));
-    l2 = plot(s.t,sum(s.QMi),'linewidth',2,'color',cols(3,:));
-    plot(s.t(i),sum(s.QMi(:,i)),'o','color',cols(3,:));
-    l3 = plot(s.t,sum(s.QMp),'linewidth',2,'color',cols(2,:));
-    plot(s.t(i),sum(s.QMp(:,i)),'o','color',cols(2,:));
+    l2 = plot(s.t,sum(s.QMi),'linewidth',2,'color',cols(6,:));
+    plot(s.t(i),sum(s.QMi(:,i)),'o','color',cols(6,:));
+    l3 = plot(s.t,sum(s.QMp),'linewidth',2,'color',cols(3,:));
+    plot(s.t(i),sum(s.QMp(:,i)),'o','color',cols(3,:));
+    l4 = plot(s.t,s.Qr,'linewidth',2,'color',cols(4,:));
+    plot(s.t(i),s.Qr(i),'o','color',cols(4,:));
     xlabel('time (days)','fontsize',fs);
-    ylabel('flux (m$^3$/s)','fontsize',fs);
+    ylabel('flux (m^3/s)','fontsize',fs);
     set(gca,'box','on','fontsize',fs); grid on;
-    legend([l1,l2,l3],'discharge','iceberg melt',...
-        'plume melt','location','best','fontsize',fs-2);
+    legend([l1,l2,l3,l4],'discharge','iceberg melt',...
+        'plume melt','river','location','best','fontsize',fs-2);
     xlim(tlims); ylim(fluxlims);
      
     % time step

@@ -20,6 +20,7 @@ p.Cd = 2.5e-3;     % drag coefficient (-)
 p.Ti = -10;        % ice temperature (degC)
 p.alphai = 0.1;    % iceberg plume entrainment coefficient (-)
 p.alphap = 0.1;    % discharge plume entrainment coefficient (-)
+p.rhoref = 1027;   % reference density for air-sea heat flux
 p.sid = 86400;     % seconds in a day (useful to have)
 
 % controlling parameters
@@ -30,6 +31,7 @@ p.Kb = 1e-6;       % background vertical mixing
 p.Ri0 = 0.7;       % Richardson number dependency of mixing
 p.M0 = 5e-7;       % iceberg melt efficiency (m s^-1 degC^-1)
 p.U0 = 1;          % scale iceberg upwelling
+p.kairsea = 30;    % air-sea heat flux coefficient (W m^-2 degC^-1)
 
 % plume update frequency
 p.run_plume_every = 1; % number of timesteps between plume dynamics update
