@@ -21,9 +21,13 @@ p.H = 800; % fjord depth (m)
 p.sill = 1; % p.sill=1 for presence of sill, p.sill=0 for no sill
 p.Hsill = 200; % sill depth below surface (m), only used if p.sill=1
 
-% set up model layers
-p.N = 80; % number of layers
-a.H0 = (p.H/p.N)*ones(p.N,1); % layer thicknesses, here taken to be equal
+% set up layer thickness - dHmin at surface and linearly increasing below
+dHmin = 1;
+p.N = 50;
+% required increase from layer-to-layer so that sum(a.H0)=p.H when we have p.N layers
+alpha = (p.H-p.N*dHmin)/(0.5*p.N*(p.N-1));
+% resulting thicknesses
+a.H0 = dHmin+alpha*[0:p.N-1]';
 
 % set up time stepping
 dt = 0.2; % time step (in days)
@@ -58,7 +62,7 @@ s = run_model(p, t, f, a);
 save example6_surface_heat_flux.mat s p t f a
 
 % make an animation of the output (takes a few minutes)
-% animate(p,s,50,'example6_surface_heat_flux');
+animate(p,s,50,'example6_surface_heat_flux');
 
 % make basic plots of the output
 plotrpm(p,s,50);
