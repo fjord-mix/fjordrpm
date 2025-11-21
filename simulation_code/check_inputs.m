@@ -17,9 +17,12 @@ end
 if p.sill && ~isfield(p,"Hsill")
     error('When p.sill=1, must specify sill depth p.Hsill')
 end
-if isfield(p,"Hsill")
+if p.sill && isfield(p,"Hsill")
     if p.Hsill<0
         error('p.Hsill must be positive');
+    end
+    if p.Hsill==p.H
+        error('When p.sill=1, p.Hsill must differ from p.H')
     end
 end
 if p.H<0
