@@ -5,7 +5,7 @@ function [QVv0,QTv0,QSv0,QCv0] = get_vertical_fluxes(i, s)
 %   vertical fluxes QVv0, QTv0, QSv0, QCv0 for the solution s at timestep i.
 
 % get tracer variables at timestep i
-T0 = s.T(:,i); S0 = s.S(:,i); C0 = s.C(:,i);
+T0 = s.T(:,i); S0 = s.S(:,i); C0 = s.C(:,:,i);
 
 % net flux imbalance
 Qnet = sum(s.QVp(:,:,i),1)'+s.QVs(:,i)+s.QVi(:,i)+s.QVsurf(:,i);
@@ -16,13 +16,17 @@ QVint = -cumsum(Qnet(1:end-1));
 % the relevant temperature/salinity/tracer flux depends on the direction
 QTint = (QVint<0).*QVint.*T0(1:end-1) + (QVint>=0).*QVint.*T0(2:end);
 QSint = (QVint<0).*QVint.*S0(1:end-1) + (QVint>=0).*QVint.*S0(2:end);
-QCint = (QVint<0).*QVint.*C0(1:end-1) + (QVint>=0).*QVint.*C0(2:end);
+for nt=1:size(C0,1)
+    QCint(nt,:) = (QVint<0).*QVint.*C0(nt,1:end-1)' + (QVint>=0).*QVint.*C0(nt,2:end)';
+end
 
 % the final fluxes are the sum of the fluxes going in and out of each
 % layer
 QVv0 = [QVint;0]-[0;QVint];
 QTv0 = [QTint;0]-[0;QTint];
 QSv0 = [QSint;0]-[0;QSint];
-QCv0 = [QCint;0]-[0;QCint];
+for nt=1:size(C0,1)
+    QCv0(nt,:) = [QCint(nt,:)';0]-[0;QCint(nt,:)'];
+end
 
 end

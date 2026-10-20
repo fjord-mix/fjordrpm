@@ -11,7 +11,7 @@ function s = homogenise_unstable_layers(i, p, s)
 V = s.V;
 T = s.T(:,i);
 S = s.S(:,i);
-C = s.C(:,i);
+C = s.C(:,:,i);
 
 % compute the buoyancy jump between boxes
 B = p.g*(p.betaS*(S(2:end)-S(1:end-1))-p.betaT*(T(2:end)-T(1:end-1)));
@@ -24,18 +24,22 @@ if any(B < 0)
         inds = [inx(k), inx(k)+1];
         T(inds) = sum(T(inds).*V(inds))./sum(V(inds));
         S(inds) = sum(S(inds).*V(inds))./sum(V(inds));
-        C(inds) = sum(C(inds).*V(inds))./sum(V(inds));
+        for nt=1:size(C,1)
+            C(nt,inds) = sum(C(nt,inds)'.*V(inds))./sum(V(inds));
+        end
         % store associated fluxes
         s.QTc(inds,i) = V(inds).*(T(inds)-s.T(inds,i))/(s.dt(i)*p.sid);
         s.QSc(inds,i) = V(inds).*(S(inds)-s.S(inds,i))/(s.dt(i)*p.sid);
-        s.QCc(inds,i) = V(inds).*(C(inds)-s.C(inds,i))/(s.dt(i)*p.sid);
+        for nt=1:size(C,1)
+            s.QCc(nt,inds,i) = V(inds).*(C(nt,inds)'-s.C(nt,inds,i)')/(s.dt(i)*p.sid);
+        end
     end
 end
 
 % put homogenised solution into output structure
 s.T(:,i) = T;
 s.S(:,i) = S;
-s.C(:,i) = C;
+s.C(:,:,i) = C;
 
 end
 

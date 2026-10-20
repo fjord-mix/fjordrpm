@@ -9,7 +9,7 @@ function [QVk0,QTk0,QSk0,QCk0] = get_mixing_fluxes(i, p, s)
 H0 = s.H;
 T0 = s.T(:,i);
 S0 = s.S(:,i);
-C0 = s.C(:,i);
+C0 = s.C(:,:,i);
 
 % the net volume mixing fluxes are always zero
 QVk0 = 0*H0;
@@ -37,11 +37,15 @@ Kz = p.Kb + (Ri<p.Ri0 & Ri>0)*p.K0.*(1-(Ri/p.Ri0).^2).^3;
 % compute the mixing fluxes going in/out of each layer.
 QS = 2*p.W*p.L*Kz.*(S0(2:end)-S0(1:end-1))./(H0(2:end)+H0(1:end-1));
 QT = 2*p.W*p.L*Kz.*(T0(2:end)-T0(1:end-1))./(H0(2:end)+H0(1:end-1));
-QC = 2*p.W*p.L*Kz.*(C0(2:end)-C0(1:end-1))./(H0(2:end)+H0(1:end-1));
+for nt=1:size(C0,1)
+    QC(nt,:) = 2*p.W*p.L*Kz.*(C0(nt,2:end)'-C0(nt,1:end-1)')./(H0(2:end)+H0(1:end-1));
+end
 
 % the final layer fluxes are the net of the interface fluxes
 QTk0 = [QT;0]-[0;QT];
 QSk0 = [QS;0]-[0;QS];
-QCk0 = [QC;0]-[0;QC];
+for nt=1:size(C0,1)
+    QCk0(nt,:) = [QC(nt,:)';0]-[0;QC(nt,:)'];
+end
 
 end
