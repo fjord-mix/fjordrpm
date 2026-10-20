@@ -24,11 +24,13 @@ s.t = t(inx);
 % layer properties
 s.T = s.T(:,inx);
 s.S = s.S(:,inx);
+s.C = s.C(:,inx);
 
 % plume fluxes
 s.QVp = s.QVp(:,:,inx);
 s.QTp = s.QTp(:,:,inx);
 s.QSp = s.QSp(:,:,inx);
+s.QCp = s.QCp(:,:,inx);
 s.QMp = s.QMp(:,:,inx);
 s.QEp = s.QEp(:,:,inx);
 s.knb = s.knb(inx);
@@ -41,6 +43,7 @@ end
 s.QVs = s.QVs(:,inx);
 s.QTs = s.QTs(:,inx);
 s.QSs = s.QSs(:,inx);
+s.QCs = s.QCs(:,inx);
 s.Ss = s.Ss(:,inx);
 s.Ts = s.Ts(:,inx);
 s.phi = s.phi(:,inx);
@@ -49,16 +52,19 @@ s.phi = s.phi(:,inx);
 s.QVk = s.QVk(:,inx);
 s.QTk = s.QTk(:,inx);
 s.QSk = s.QSk(:,inx);
+s.QCk = s.QCk(:,inx);
 
 % vertical fluxes
 s.QVv = s.QVv(:,inx);
 s.QTv = s.QTv(:,inx);
 s.QSv = s.QSv(:,inx);
+s.QCv = s.QCv(:,inx);
 
 % convection fluxes
 s.QVc = s.QVc(:,inx);
 s.QTc = s.QTc(:,inx);
 s.QSc = s.QSc(:,inx);
+s.QCc = s.QCc(:,inx);
 
 % surface fluxes
 s.QVsurf = s.QVsurf(:,inx);
