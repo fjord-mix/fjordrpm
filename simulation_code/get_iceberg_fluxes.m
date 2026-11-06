@@ -1,4 +1,4 @@
-function [QVi0, QTi0, QSi0, QMi0] = get_iceberg_fluxes(i, p, s)
+function [QVi0, QTi0, QSi0, QMi0, QCi0] = get_iceberg_fluxes(i, p, s)
 
 % GET_ICEBERG_FLUXES Compute iceberg fluxes.
 %   [QVi0, QTi0, QSi0, QMi0] = GET_ICEBERG_FLUXES(i, p, s)
@@ -6,12 +6,13 @@ function [QVi0, QTi0, QSi0, QMi0] = get_iceberg_fluxes(i, p, s)
 %   for the given parameters p at timestep i.
 
 % get tracer variables at timestep i
-H0 = s.H; T0 = s.T(:,i); S0 = s.S(:,i); I0 = s.I;
+H0 = s.H; T0 = s.T(:,i); S0 = s.S(:,i); I0 = s.I; C0 = s.C(:,:,i);
 
 % if there are no icebergs or melt parameter is 0, the fluxes are zero
 if sum(I0~=0)==0 | p.M0==0 
 
     [QVi0, QTi0, QSi0, QMi0] = deal(0*H0);
+    QCi0 = 0*C0;
 
 % otherwise there will be non-zero fluxes
 else
@@ -38,10 +39,13 @@ else
     % scale the upwelling flux
     Qentscaled = p.U0*fice.*Qent;
 
-    % net volume, heat and salt fluxes from upwelling
+    % net volume, heat, salt and tracer fluxes from upwelling
     QVi0 = [Qentscaled(2:end);0]-[0;Qentscaled(2:end)];
     QTi0 = [Qentscaled(2:end).*T0(2:end);0]-[0;Qentscaled(2:end).*T0(2:end)];
     QSi0 = [Qentscaled(2:end).*S0(2:end);0]-[0;Qentscaled(2:end).*S0(2:end)];
+    for nt=1:size(C0,1)
+        QCi0(nt,:) = [Qentscaled(2:end).*C0(nt,2:end)';0]-[0;Qentscaled(2:end).*C0(nt,2:end)'];
+    end
 
     % add the meltwater contributions to heat and salt fluxes
     meltcont = [fice(2:end);0].*[QMi0(2:end);0] + (1-fice).*QMi0;

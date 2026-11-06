@@ -19,7 +19,7 @@ function s = compute_fluxes(i, p, s)
 [s.QVk(:,i), s.QTk(:,i), s.QSk(:,i), s.QCk(:,:,i)] = get_mixing_fluxes(i, p, s);
 
 % calculate iceberg fluxes
-[s.QVi(:,i), s.QTi(:,i), s.QSi(:,i), s.QMi(:,i)] = get_iceberg_fluxes(i, p, s);
+[s.QVi(:,i), s.QTi(:,i), s.QSi(:,i), s.QMi(:,i), s.QCi(:,:,i)] = get_iceberg_fluxes(i, p, s);
 
 % calculate vertical fluxes
 [s.QVv(:,i), s.QTv(:,i), s.QSv(:,i), s.QCv(:,:,i)] = get_vertical_fluxes(i, s);

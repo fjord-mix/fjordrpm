@@ -64,7 +64,7 @@ s.QCv = s.QCv(:,:,inx);
 s.QVc = s.QVc(:,inx);
 s.QTc = s.QTc(:,inx);
 s.QSc = s.QSc(:,inx);
-s.QCc = s.QCc(:,inx);
+s.QCc = s.QCc(:,:,inx);
 
 % surface fluxes
 s.QVsurf = s.QVsurf(:,inx);
@@ -76,6 +76,7 @@ s.QVi = s.QVi(:,inx);
 s.QTi = s.QTi(:,inx);
 s.QSi = s.QSi(:,inx);
 s.QMi = s.QMi(:,inx);
+s.QCi = s.QCi(:,:,inx);
 % calculate iceberg melt rates in m/d
 s.mi = p.sid*s.QMi./s.I;
 s.mi(s.I==0,:) = 0;

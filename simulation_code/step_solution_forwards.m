@@ -9,7 +9,7 @@ function s = step_solution_forwards(i, p, s)
 s.T(:,i+1) = s.T(:,i)+s.dt(i)*p.sid*(sum(s.QTp(:,:,i),1)'+s.QTs(:,i)+s.QTk(:,i)+s.QTi(:,i)+s.QTv(:,i)+s.QTsurf(:,i))./s.V;
 s.S(:,i+1) = s.S(:,i)+s.dt(i)*p.sid*(sum(s.QSp(:,:,i),1)'+s.QSs(:,i)+s.QSk(:,i)+s.QSi(:,i)+s.QSv(:,i)+s.QSsurf(:,i))./s.V;
 for nt=1:size(s.C,1)
-    s.C(nt,:,i+1) = s.C(nt,:,i)+s.dt(i)*p.sid*(squeeze(sum(s.QCp(:,nt,:,i),1))'+s.QCs(nt,:,i)+s.QCk(nt,:,i)+s.QCv(nt,:,i))./s.V';
+    s.C(nt,:,i+1) = s.C(nt,:,i)+s.dt(i)*p.sid*(squeeze(sum(s.QCp(:,nt,:,i),1))'+s.QCs(nt,:,i)+s.QCk(nt,:,i)+s.QCi(nt,:,i)+s.QCv(nt,:,i))./s.V';
 end
 
 % check for temperatures going below in-situ freezing point and reset to
