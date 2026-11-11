@@ -70,6 +70,7 @@ s.QCc = s.QCc(:,:,inx);
 s.QVsurf = s.QVsurf(:,inx);
 s.QTsurf = s.QTsurf(:,inx);
 s.QSsurf = s.QSsurf(:,inx);
+s.QCsurf = s.QCsurf(:,:,inx);
 
 % iceberg fluxes and melt rates
 s.QVi = s.QVi(:,inx);
