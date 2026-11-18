@@ -50,7 +50,11 @@ for j = 1:length(p.Wp)
         QTp0(j,knb) = Qsg0*Tsg0 + sum(Qmelt(knb+1:kgl))*Teff - sum(QTp0(j,knb+1:kgl));
         QSp0(j,knb) = -sum(QSp0(j,knb+1:kgl));
         for nt=1:size(C0,1)
-            QCp0(nt,j,knb) = -sum(QCp0(nt,j,knb+1:kgl)) + Qsg0;
+            if nt==1 % subglacial discharge tracer
+                QCp0(nt,j,knb) = -sum(QCp0(nt,j,knb+1:kgl)) + Qsg0;
+            else % all other tracers
+                QCp0(nt,j,knb) = -sum(QCp0(nt,j,knb+1:kgl));
+            end
         end
     
         % store entrainment, submarine melt flux and neutral buoyancy
