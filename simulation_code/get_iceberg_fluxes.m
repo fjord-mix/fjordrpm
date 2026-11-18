@@ -51,6 +51,8 @@ else
     meltcont = [fice(2:end);0].*[QMi0(2:end);0] + (1-fice).*QMi0;
     QTi0 = QTi0-meltcont*p.l/p.cw;
     QSi0 = QSi0-meltcont.*S0;
+    % and the iceberg tracer
+    QCi0(3,:) = QCi0(3,:) + meltcont';
 
 end
 

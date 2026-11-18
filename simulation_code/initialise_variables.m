@@ -23,13 +23,13 @@ s.dt = t(2:end)-t(1:end-1);
  s.QVsurf, s.QTsurf, s.QSsurf] = deal(zeros(p.N, length(t)));
 
 % fields with dimensions num tracers x p.N x length(t)
-[s.C, s.QCs, s.QCk, s.QCv, s.QCi, s.QCc, s.QCsurf] = deal(zeros(2, p.N, length(t)));
+[s.C, s.QCs, s.QCk, s.QCv, s.QCi, s.QCc, s.QCsurf] = deal(zeros(3, p.N, length(t)));
 
 % fields with dimensions num plumes x p.N x length(t)
 [s.QVp, s.QTp, s.QSp, s.QMp, s.QEp] = deal(zeros(length(p.Wp), p.N, length(t)));
 
 % fields with dimensions num plumes x num tracers x p.N x length(t)
-s.QCp = zeros(length(p.Wp), 2, p.N, length(t));
+s.QCp = zeros(length(p.Wp), 3, p.N, length(t));
 
 % fields with dimensions num plumes x length(t)
 s.knb = zeros(length(p.Wp), length(t));
